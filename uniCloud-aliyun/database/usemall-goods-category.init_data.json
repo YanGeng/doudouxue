@@ -1,0 +1,366 @@
+[
+  {
+    "_id": {
+      "$oid": "60812def3ef4cf0001e352a4"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "sort": 1,
+    "pid": "",
+    "name": "家电",
+    "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/b0437310-01a2-4cee-acf3-d763047831a2.png",
+    "state": "启用",
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "60812f29f61a74000134eee2"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "sort": 2,
+    "pid": "",
+    "name": "服装",
+    "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/19d2c7cd-8cc1-4970-9f82-401eb2c4c97f.jpg",
+    "state": "启用",
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "60812f3ca3a24100014b186d"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "sort": 3,
+    "pid": "",
+    "name": "箱包",
+    "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/ab256340-1233-4579-b08c-61974cffdecc.jpg",
+    "state": "启用",
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "60812f4e19a4150001b073b3"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "sort": 4,
+    "pid": "",
+    "name": "饰品",
+    "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/1d3d91bf-ff7c-4afb-8987-0bbefb1b4e1c.jpg",
+    "state": "启用",
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "608134e52c8abc000163b006"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "sort": 1,
+    "pid": {
+      "$oid": "60812def3ef4cf0001e352a4"
+    },
+    "name": "冰箱",
+    "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/36fbb7b6-2761-4955-ab2a-adf1803554da.jpg",
+    "state": "启用",
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "60813633b09d4a00017092bf"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "sort": 2,
+    "pid": {
+      "$oid": "60812def3ef4cf0001e352a4"
+    },
+    "name": "微波炉",
+    "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/c696dc46-40ba-4adb-ae8a-99271b70602e.jpg",
+    "state": "启用",
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6081365dff01b00001b598b0"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "sort": 1,
+    "pid": {
+      "$oid": "60812f29f61a74000134eee2"
+    },
+    "name": "上衣",
+    "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/bd0f50a2-59b0-4744-8677-7e2626855824.jpg",
+    "state": "启用",
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6081367276decc0001831198"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "sort": 2,
+    "pid": {
+      "$oid": "60812f29f61a74000134eee2"
+    },
+    "name": "裤子",
+    "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/c9adfe6d-48d2-48da-96c1-394da2f1bc33.jpg",
+    "state": "启用",
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "60813685f61a7400013506f9"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "sort": 1,
+    "pid": {
+      "$oid": "60812f3ca3a24100014b186d"
+    },
+    "name": "行李箱",
+    "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/a37e7297-5b5e-413e-ba7c-74c5416dfca3.jpg",
+    "state": "启用",
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6081369ece18950001759d0a"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "sort": 2,
+    "pid": {
+      "$oid": "60812f3ca3a24100014b186d"
+    },
+    "name": "手提包",
+    "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/9b88ba14-f921-4afc-acb3-4291c5e63672.jpg",
+    "state": "启用",
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "608136cad39bb80001c3b51b"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "sort": 1,
+    "pid": {
+      "$oid": "60812f4e19a4150001b073b3"
+    },
+    "name": "耳钉",
+    "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/1208c984-3453-487d-a65c-7b7965dfc725.jpg",
+    "state": "启用",
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "60ace07724957900014e7f4e"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "sort": 5,
+    "pid": "",
+    "name": "手机",
+    "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/0dde0440-20fc-4ac7-9601-621ef533db49.jpg",
+    "state": "启用",
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "60ace19670f77400013d0c33"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "sort": 1,
+    "pid": {
+      "$oid": "60ace07724957900014e7f4e"
+    },
+    "name": "华为",
+    "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/1d62db39-b432-49c9-9529-827c4d5bbb25.jpg",
+    "state": "启用",
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "60ace64d8a69dc00018d3e4b"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "sort": 2,
+    "pid": {
+      "$oid": "60ace07724957900014e7f4e"
+    },
+    "name": "小米",
+    "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/4b173215-0b14-480c-8c54-747838980766.jpg",
+    "state": "启用",
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "60ace679f3ff4f0001b01e5f"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "sort": 3,
+    "pid": {
+      "$oid": "60ace07724957900014e7f4e"
+    },
+    "name": "苹果",
+    "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/b8c5dd09-71ff-4c6c-af49-6678a54081a3.jpg",
+    "state": "启用",
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "60acec0e9056cd0001af172b"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "sort": 6,
+    "pid": "",
+    "name": "鞋",
+    "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/5360bef9-58d9-4294-ba01-0999ab56816a.jpg",
+    "state": "启用",
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "60acec402881d30001cf4104"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "sort": 1,
+    "pid": {
+      "$oid": "60acec0e9056cd0001af172b"
+    },
+    "name": "回力",
+    "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/c8ed943b-ea4b-4dd6-acf5-a8f8ec086585.jpg",
+    "state": "启用",
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "60acec5c24957900014eb04a"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "sort": 2,
+    "pid": {
+      "$oid": "60acec0e9056cd0001af172b"
+    },
+    "name": "耐克",
+    "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/f25c623e-003d-466c-9e86-9d545f36826c.jpg",
+    "state": "启用",
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "60acec79a30ce800015bed97"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "sort": 0,
+    "pid": {
+      "$oid": "60acec0e9056cd0001af172b"
+    },
+    "name": "361°",
+    "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/bb4d58ad-dd16-4f1f-8d48-b36d6aa254ad.jpg",
+    "state": "启用",
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "60acfd68f6a39800017af20e"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "sort": 7,
+    "pid": "",
+    "name": "数码",
+    "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/682ee06d-9b67-4d90-a33b-b4ad6cc27807.jpg",
+    "state": "启用",
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "60acfda270f77400013d8ba8"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "sort": 1,
+    "pid": {
+      "$oid": "60acfd68f6a39800017af20e"
+    },
+    "name": "相机",
+    "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/741b45f3-aae2-451d-b196-ffa65936f814.jpg",
+    "state": "启用",
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  }
+]

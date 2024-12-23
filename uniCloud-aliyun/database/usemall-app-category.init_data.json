@@ -1,0 +1,154 @@
+[
+    {
+        "_id": {
+            "$oid": "6083a6f6ff01b00001bb5a26"
+        },
+        "version": 1,
+        "is_delete": 0,
+        "cid": "",
+        "name": "饰品",
+        "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/399edab2-5b19-4079-a51f-4432130d612d.png",
+        "type": "页面",
+        "url": "/pages/goods/goods-list?cid=60812f4e19a4150001b073b3",
+        "sort": 6,
+        "remark": "",
+        "state": "启用",
+        "create_time": 1710432000000,
+        "create_uid": {
+            "$oid": "607e63e021576100016eded3"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "6083a8fcff01b00001bb5e22"
+        },
+        "version": 1,
+        "is_delete": 0,
+        "cid": null,
+        "name": "家电",
+        "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/3d231a02-d334-4d3b-856f-2ab4980403a2.png",
+        "type": "页面",
+        "url": "/pages/goods/goods-list?cid=60812def3ef4cf0001e352a4",
+        "sort": 7,
+        "remark": "",
+        "state": "启用",
+        "create_time": 1710432000000,
+        "create_uid": {
+            "$oid": "607e63e021576100016eded3"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "6083a93852027d00014aa76b"
+        },
+        "version": 1,
+        "is_delete": 0,
+        "cid": "",
+        "name": "服装",
+        "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/a1306bbc-dad9-4219-a48c-a9d518162be9.png",
+        "type": "页面",
+        "url": "/pages/goods/goods-list?cid=60812f29f61a74000134eee2",
+        "sort": 2,
+        "remark": "",
+        "state": "启用",
+        "create_time": 1710432000000,
+        "create_uid": {
+            "$oid": "607e63e021576100016eded3"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "6083a925ce8d7d0001035b25"
+        },
+        "version": 1,
+        "is_delete": 0,
+        "cid": "",
+        "name": "手机",
+        "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/c52697ca-fbe0-44cd-bad5-6f2708e0f321.png",
+        "type": "页面",
+        "url": "/pages/goods/goods-list?cid=60ace07724957900014e7f4e",
+        "sort": 1,
+        "remark": "",
+        "state": "启用",
+        "create_time": 1710432000000,
+        "create_uid": {
+            "$oid": "607e63e021576100016eded3"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "6083a95152027d00014aa799"
+        },
+        "version": 1,
+        "is_delete": 0,
+        "cid": "",
+        "name": "鞋",
+        "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/a92cb66c-d06e-41f8-8038-2ab1ab2ac3fb.png",
+        "type": "页面",
+        "url": "/pages/goods/goods-list?cid=60acec0e9056cd0001af172b",
+        "sort": 3,
+        "remark": "",
+        "state": "启用",
+        "create_time": 1710432000000,
+        "create_uid": {
+            "$oid": "607e63e021576100016eded3"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "6083a669ff01b00001bb591e"
+        },
+        "version": 1,
+        "is_delete": 0,
+        "cid": 0,
+        "name": "优惠券",
+        "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/f66f1074-b496-4bf8-8283-c29d89a2884b.png",
+        "type": "页面",
+        "url": "/pages/user/coupon/coupon",
+        "sort": 8,
+        "remark": "",
+        "state": "启用",
+        "create_time": 1710432000000,
+        "create_uid": {
+            "$oid": "607e63e021576100016eded3"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "6083a963d39bb80001c99c48"
+        },
+        "version": 1,
+        "is_delete": 0,
+        "cid": "",
+        "name": "箱包",
+        "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/6dd111fe-69b4-4bc6-a31f-c21875dfbdf9.png",
+        "type": "页面",
+        "url": "/pages/goods/goods-list?cid=60812f3ca3a24100014b186d",
+        "sort": 5,
+        "remark": "",
+        "state": "启用",
+        "create_time": 1710432000000,
+        "create_uid": {
+            "$oid": "607e63e021576100016eded3"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "6083a911c0e66500010d69d1"
+        },
+        "version": 1,
+        "is_delete": 0,
+        "cid": "",
+        "name": "数码",
+        "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/657e1569-a787-49bb-91aa-9acb46b5cd1a.png",
+        "type": "页面",
+        "url": "/pages/goods/goods-list?cid=60acfd68f6a39800017af20e",
+        "sort": 4,
+        "remark": "",
+        "state": "启用",
+        "create_time": 1710432000000,
+        "create_uid": {
+            "$oid": "607e63e021576100016eded3"
+        }
+    }
+]

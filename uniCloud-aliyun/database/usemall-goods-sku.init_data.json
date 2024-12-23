@@ -1,0 +1,288 @@
+[
+    {
+        "_id": {
+            "$oid": "65f486d909664cbba0c51e16"
+        },
+        "price": 13900,
+        "stock_num": 999,
+        "spec": "26寸+白",
+        "spec_s": 3,
+        "goods_id": "1710524121078842087",
+        "goods_sku": "1710524121078842087_3",
+        "market_price": 16900,
+        "stock_wh_num": 999,
+        "limit": 0,
+        "img": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/dd6e4623-732c-4dda-b3a6-b46f9228ebdc.webp",
+        "version": 1,
+        "is_delete": 0,
+        "create_time": 1710432000000,
+        "create_uid": {
+            "$oid": "607e63e021576100016eded3"
+        },
+        "create_uname": "admin"
+    },
+    {
+        "_id": {
+            "$oid": "65f486d909664cbba0c51e13"
+        },
+        "price": 10900,
+        "stock_num": 999,
+        "spec": "20寸+白",
+        "spec_s": 0,
+        "goods_id": "1710524121078842087",
+        "goods_sku": "1710524121078842087_0",
+        "market_price": 16900,
+        "stock_wh_num": 999,
+        "limit": 0,
+        "img": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/dd6e4623-732c-4dda-b3a6-b46f9228ebdc.webp",
+        "version": 1,
+        "is_delete": 0,
+        "create_time": 1710432000000,
+        "create_uid": {
+            "$oid": "607e63e021576100016eded3"
+        },
+        "create_uname": "admin"
+    },
+    {
+        "_id": {
+            "$oid": "65f486d909664cbba0c51e17"
+        },
+        "price": 14900,
+        "stock_num": 999,
+        "spec": "28寸+白",
+        "spec_s": 4,
+        "goods_id": "1710524121078842087",
+        "goods_sku": "1710524121078842087_4",
+        "market_price": 16900,
+        "stock_wh_num": 999,
+        "limit": 0,
+        "img": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/dd6e4623-732c-4dda-b3a6-b46f9228ebdc.webp",
+        "version": 1,
+        "is_delete": 0,
+        "create_time": 1710432000000,
+        "create_uid": {
+            "$oid": "607e63e021576100016eded3"
+        },
+        "create_uname": "admin"
+    },
+    {
+        "_id": {
+            "$oid": "65f486d909664cbba0c51e15"
+        },
+        "price": 12900,
+        "stock_num": 999,
+        "spec": "24寸+白",
+        "spec_s": 2,
+        "goods_id": "1710524121078842087",
+        "goods_sku": "1710524121078842087_2",
+        "market_price": 16900,
+        "stock_wh_num": 999,
+        "limit": 0,
+        "img": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/dd6e4623-732c-4dda-b3a6-b46f9228ebdc.webp",
+        "version": 1,
+        "is_delete": 0,
+        "create_time": 1710432000000,
+        "create_uid": {
+            "$oid": "607e63e021576100016eded3"
+        },
+        "create_uname": "admin"
+    },
+    {
+        "_id": {
+            "$oid": "65f486d909664cbba0c51e14"
+        },
+        "price": 11900,
+        "stock_num": 999,
+        "spec": "22寸+白",
+        "spec_s": 1,
+        "goods_id": "1710524121078842087",
+        "goods_sku": "1710524121078842087_1",
+        "market_price": 16900,
+        "stock_wh_num": 999,
+        "limit": 0,
+        "img": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/dd6e4623-732c-4dda-b3a6-b46f9228ebdc.webp",
+        "version": 1,
+        "is_delete": 0,
+        "create_time": 1710432000000,
+        "create_uid": {
+            "$oid": "607e63e021576100016eded3"
+        },
+        "create_uname": "admin"
+    },
+    {
+        "_id": {
+            "$oid": "65f4813f55b3372a1fd120c8"
+        },
+        "price": 669900,
+        "stock_num": 999,
+        "spec": "12GB+512GB",
+        "spec_s": 1,
+        "goods_id": "1710522687654466006",
+        "goods_sku": "1710522687654466006_1",
+        "market_price": 699900,
+        "stock_wh_num": 999,
+        "limit": 0,
+        "img": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/142f60b3-0f2d-45ab-8119-4eede2502b51.webp",
+        "version": 1,
+        "is_delete": 0,
+        "create_time": 1710432000000,
+        "create_uid": {
+            "$oid": "607e63e021576100016eded3"
+        },
+        "create_uname": "admin"
+    },
+    {
+        "_id": {
+            "$oid": "65f4813f55b3372a1fd120c7"
+        },
+        "price": 639900,
+        "stock_num": 999,
+        "spec": "12GB+256GB",
+        "spec_s": 0,
+        "goods_id": "1710522687654466006",
+        "goods_sku": "1710522687654466006_0",
+        "market_price": 699900,
+        "stock_wh_num": 999,
+        "limit": 0,
+        "img": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/142f60b3-0f2d-45ab-8119-4eede2502b51.webp",
+        "version": 1,
+        "is_delete": 0,
+        "create_time": 1710432000000,
+        "create_uid": {
+            "$oid": "607e63e021576100016eded3"
+        },
+        "create_uname": "admin"
+    },
+    {
+        "_id": {
+            "$oid": "65f48362a09a9b12d74b10c6"
+        },
+        "price": 5800,
+        "stock_num": 99,
+        "spec": "S+黑",
+        "spec_s": 1,
+        "goods_id": "1710523112202656703",
+        "goods_sku": "1710523112202656703_1",
+        "market_price": 6800,
+        "stock_wh_num": 99,
+        "limit": 0,
+        "img": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/b619eaf3-ca18-4d24-96cd-39ef1390b0a3.webp",
+        "version": 1,
+        "is_delete": 0,
+        "create_time": 1710432000000,
+        "create_uid": {
+            "$oid": "607e63e021576100016eded3"
+        },
+        "create_uname": "admin"
+    },
+    {
+        "_id": {
+            "$oid": "65f48362a09a9b12d74b10c5"
+        },
+        "price": 5800,
+        "stock_num": 99,
+        "spec": "S+白",
+        "spec_s": 0,
+        "goods_id": "1710523112202656703",
+        "goods_sku": "1710523112202656703_0",
+        "market_price": 6800,
+        "stock_wh_num": 99,
+        "limit": 0,
+        "img": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/b619eaf3-ca18-4d24-96cd-39ef1390b0a3.webp",
+        "version": 1,
+        "is_delete": 0,
+        "create_time": 1710432000000,
+        "create_uid": {
+            "$oid": "607e63e021576100016eded3"
+        },
+        "create_uname": "admin"
+    },
+    {
+        "_id": {
+            "$oid": "65f48362a09a9b12d74b10c7"
+        },
+        "price": 5800,
+        "stock_num": 99,
+        "spec": "M+白",
+        "spec_s": 2,
+        "goods_id": "1710523112202656703",
+        "goods_sku": "1710523112202656703_2",
+        "market_price": 6800,
+        "stock_wh_num": 99,
+        "limit": 0,
+        "img": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/b619eaf3-ca18-4d24-96cd-39ef1390b0a3.webp",
+        "version": 1,
+        "is_delete": 0,
+        "create_time": 1710432000000,
+        "create_uid": {
+            "$oid": "607e63e021576100016eded3"
+        },
+        "create_uname": "admin"
+    },
+    {
+        "_id": {
+            "$oid": "65f48362a09a9b12d74b10c9"
+        },
+        "price": 5800,
+        "stock_num": 99,
+        "spec": "L+白",
+        "spec_s": 4,
+        "goods_id": "1710523112202656703",
+        "goods_sku": "1710523112202656703_4",
+        "market_price": 6800,
+        "stock_wh_num": 99,
+        "limit": 0,
+        "img": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/b619eaf3-ca18-4d24-96cd-39ef1390b0a3.webp",
+        "version": 1,
+        "is_delete": 0,
+        "create_time": 1710432000000,
+        "create_uid": {
+            "$oid": "607e63e021576100016eded3"
+        },
+        "create_uname": "admin"
+    },
+    {
+        "_id": {
+            "$oid": "65f48362a09a9b12d74b10ca"
+        },
+        "price": 5800,
+        "stock_num": 99,
+        "spec": "L+黑",
+        "spec_s": 5,
+        "goods_id": "1710523112202656703",
+        "goods_sku": "1710523112202656703_5",
+        "market_price": 6800,
+        "stock_wh_num": 99,
+        "limit": 0,
+        "img": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/b619eaf3-ca18-4d24-96cd-39ef1390b0a3.webp",
+        "version": 1,
+        "is_delete": 0,
+        "create_time": 1710432000000,
+        "create_uid": {
+            "$oid": "607e63e021576100016eded3"
+        },
+        "create_uname": "admin"
+    },
+    {
+        "_id": {
+            "$oid": "65f48362a09a9b12d74b10c8"
+        },
+        "price": 5800,
+        "stock_num": 99,
+        "spec": "M+黑",
+        "spec_s": 3,
+        "goods_id": "1710523112202656703",
+        "goods_sku": "1710523112202656703_3",
+        "market_price": 6800,
+        "stock_wh_num": 99,
+        "limit": 0,
+        "img": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/b619eaf3-ca18-4d24-96cd-39ef1390b0a3.webp",
+        "version": 1,
+        "is_delete": 0,
+        "create_time": 1710432000000,
+        "create_uid": {
+            "$oid": "607e63e021576100016eded3"
+        },
+        "create_uname": "admin"
+    }
+]

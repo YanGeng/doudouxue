@@ -1,0 +1,42 @@
+[
+  {
+    "_id": {
+      "$oid": "607e63e021576100016eded3"
+    },
+    "username": "admin",
+    "password": "637cf7595252a4bb63cc60fc2ad8850b5ca79c9f",
+    "role": [
+      "admin"
+    ],
+    "password_secret_version": 1,
+    "register_date": 1710432000000,
+    "register_ip": "127.0.0.1",
+    "token": [],
+    "last_login_date": 1710432000000,
+    "last_login_ip": "127.0.0.1",
+    "login_ip_limit": []
+  },
+  {
+    "username": "18825282536",
+    "password": "637cf7595252a4bb63cc60fc2ad8850b5ca79c9f",
+    "user": {
+      "nickName": "用云电商",
+      "gender": 1,
+      "language": "zh_CN",
+      "city": "深圳",
+      "province": "广东",
+      "country": "中国",
+      "avatarUrl": "https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLj1JIHX0icWAu4Jw920k6ZIAqNd9ZfHLalqWsweMLphLrcwRJCYr0hcyeY6Y5Kyaqibl6icTAykDWRA/132"
+    },
+    "role": [
+      "member"
+    ],
+    "password_secret_version": 1,
+    "register_date": 1710432000000,
+    "register_ip": "127.0.0.1",
+    "token": [],
+    "last_login_date": 1710432000000,
+    "last_login_ip": "127.0.0.1",
+    "login_ip_limit": []
+  }
+]

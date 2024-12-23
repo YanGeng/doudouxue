@@ -1,0 +1,72 @@
+[
+  {
+    "_id": {
+      "$oid": "608280d4e01ac80001dfc798"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "search_cnt": 0,
+    "keyword": "手机",
+    "sort": 1,
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6083dcfd19a4150001b6e9ae"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "search_cnt": 2,
+    "keyword": "连衣",
+    "sort": 2,
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6083dd09b09d4a000176c5be"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "search_cnt": 2,
+    "keyword": "运动鞋",
+    "sort": 3,
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6083dd1176decc0001893615"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "search_cnt": 2,
+    "keyword": "iPhone",
+    "sort": 4,
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6083dd17f61a7400013b304f"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "search_cnt": 1,
+    "keyword": "游戏",
+    "sort": 5,
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  }
+]

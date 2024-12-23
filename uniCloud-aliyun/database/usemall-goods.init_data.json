@@ -1,0 +1,624 @@
+[
+    {
+        "_id": "1710520794899488332",
+        "cid": {
+            "$oid": "608136cad39bb80001c3b51b"
+        },
+        "cids": [
+            {
+                "$oid": "60812f4e19a4150001b073b3"
+            },
+            {
+                "$oid": "608136cad39bb80001c3b51b"
+            }
+        ],
+        "sort": 6,
+        "name": "银饰耳钉女耳环小众设计感高级感轻奢新款爆款耳坠耳饰",
+        "name_pw": null,
+        "limited": 1,
+        "hot": 1,
+        "tags": [
+            "饰品",
+            "假一赔四",
+            "极速退款",
+            "7天无理由退换"
+        ],
+        "price": 5990,
+        "market_price": 7990,
+        "limit": 0,
+        "stock_num": 100,
+        "sale_cnt": 0,
+        "sale": 0,
+        "visit_cnt": 0,
+        "visit": 0,
+        "collect_cnt": 0,
+        "collect": 0,
+        "share_cnt": 0,
+        "share": 0,
+        "sold_out_time": "2030-12-31 00:00:00",
+        "state": "销售中",
+        "share_title": "银饰耳钉女",
+        "share_img": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/02853c1d-6a6c-4def-bddc-1ae4ee9de38f.webp",
+        "share_desc": "银饰耳钉女耳环小众设计感高级感轻奢新款爆款耳坠耳饰",
+        "skus": "{\"spec_s\":\"规格\",\"spec\":[]}",
+        "img": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/02853c1d-6a6c-4def-bddc-1ae4ee9de38f.webp",
+        "imgs": [
+            {
+                "extname": "webp",
+                "fileType": "image",
+                "image": {
+                    "width": 800,
+                    "height": 800,
+                    "location": "blob:http://localhost:8081/2c0968a6-241a-48dc-b832-d0b669fe0c51"
+                },
+                "name": "O1CN01ooYHJG1qyoqofJaKp_!!3038315565.jpg_Q75.jpg_.webp",
+                "path": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/02853c1d-6a6c-4def-bddc-1ae4ee9de38f.webp",
+                "size": 18956,
+                "fileID": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/02853c1d-6a6c-4def-bddc-1ae4ee9de38f.webp",
+                "url": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/02853c1d-6a6c-4def-bddc-1ae4ee9de38f.webp"
+            },
+            {
+                "extname": "webp",
+                "fileType": "image",
+                "image": {
+                    "width": 800,
+                    "height": 800,
+                    "location": "blob:http://localhost:8081/ea41c5ad-bcbb-4dc6-834c-ca1dc34e63c9"
+                },
+                "name": "O1CN01Xayn6t1qyoqeZLa6N_!!0-item_pic.jpg_Q75.jpg_.webp",
+                "path": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/84a86c31-3334-45e0-afbb-e9bb27bf0517.webp",
+                "size": 17376,
+                "fileID": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/84a86c31-3334-45e0-afbb-e9bb27bf0517.webp",
+                "url": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/84a86c31-3334-45e0-afbb-e9bb27bf0517.webp"
+            },
+            {
+                "extname": "webp",
+                "fileType": "image",
+                "image": {
+                    "width": 800,
+                    "height": 800,
+                    "location": "blob:http://localhost:8081/684bca82-e603-486a-9129-bf4d928c3f56"
+                },
+                "name": "O1CN0146P6NO1qyoqo0n0ig_!!3038315565.jpg_Q75.jpg_.webp",
+                "path": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/1593eee5-cbcb-496b-bf78-7fe6c982ebbc.webp",
+                "size": 14078,
+                "fileID": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/1593eee5-cbcb-496b-bf78-7fe6c982ebbc.webp",
+                "url": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/1593eee5-cbcb-496b-bf78-7fe6c982ebbc.webp"
+            }
+        ],
+		"stock_wh_num": 100,
+		"version": 1,
+		"is_delete": 0,
+		"create_time": 1710432000000,
+		"create_uid": {
+		    "$oid": "607e63e021576100016eded3"
+		},
+		"create_uname": "admin"
+    },
+    {
+        "_id": "1710521529247811466",
+        "cid": {
+            "$oid": "60813633b09d4a00017092bf"
+        },
+        "cids": [
+            {
+                "$oid": "60812def3ef4cf0001e352a4"
+            },
+            {
+                "$oid": "60813633b09d4a00017092bf"
+            }
+        ],
+        "sort": 7,
+        "name": "微波炉新款微蒸烤箱一体家用多功能智能平板小型光波炉",
+        "name_pw": null,
+        "limited": 1,
+        "hot": 1,
+        "tags": [
+            "家电",
+            "假一赔四",
+            "极速退款",
+            "7天无理由退换"
+        ],
+        "price": 26900,
+        "market_price": 28900,
+        "limit": 0,
+        "stock_num": 1000,
+        "sale_cnt": 0,
+        "sale": 0,
+        "visit_cnt": 0,
+        "visit": 0,
+        "collect_cnt": 0,
+        "collect": 0,
+        "share_cnt": 0,
+        "share": 0,
+        "sold_out_time": "2030-12-31 00:00:00",
+        "state": "销售中",
+        "share_title": "微波炉新款微蒸烤箱一体家用多功能智能平板小型光波炉",
+        "share_img": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/cdc11985-55c5-4bb4-bb03-e2e6e8d073bf.webp",
+        "share_desc": null,
+        "skus": "{\"spec_s\":\"规格\",\"spec\":[]}",
+        "img": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/cdc11985-55c5-4bb4-bb03-e2e6e8d073bf.webp",
+        "imgs": [
+            {
+                "extname": "webp",
+                "fileType": "image",
+                "image": {
+                    "width": 800,
+                    "height": 800,
+                    "location": "blob:http://localhost:8081/963897ba-b618-4518-ae5c-474b42dcd1c8"
+                },
+                "name": "1.webp",
+                "path": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/cdc11985-55c5-4bb4-bb03-e2e6e8d073bf.webp",
+                "size": 24212,
+                "fileID": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/cdc11985-55c5-4bb4-bb03-e2e6e8d073bf.webp",
+                "url": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/cdc11985-55c5-4bb4-bb03-e2e6e8d073bf.webp"
+            },
+            {
+                "extname": "webp",
+                "fileType": "image",
+                "image": {
+                    "width": 800,
+                    "height": 800,
+                    "location": "blob:http://localhost:8081/dc8e690d-cdac-46ed-a99d-d61b4dfe7b42"
+                },
+                "name": "2.webp",
+                "path": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/9ec2e496-d993-4c64-aae0-9d2e481dd795.webp",
+                "size": 22862,
+                "fileID": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/9ec2e496-d993-4c64-aae0-9d2e481dd795.webp",
+                "url": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/9ec2e496-d993-4c64-aae0-9d2e481dd795.webp"
+            },
+            {
+                "extname": "webp",
+                "fileType": "image",
+                "image": {
+                    "width": 800,
+                    "height": 800,
+                    "location": "blob:http://localhost:8081/b4379520-b909-428b-a31c-3fcab376696c"
+                },
+                "name": "3.webp",
+                "path": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/964174de-78ea-41c1-847d-5da1164169b2.webp",
+                "size": 36878,
+                "fileID": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/964174de-78ea-41c1-847d-5da1164169b2.webp",
+                "url": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/964174de-78ea-41c1-847d-5da1164169b2.webp"
+            }
+        ],
+		"stock_wh_num": 1000,
+		"version": 1,
+		"is_delete": 0,
+		"create_time": 1710432000000,
+		"create_uid": {
+		    "$oid": "607e63e021576100016eded3"
+		},
+		"create_uname": "admin"
+    },
+    {
+        "_id": "1710522240119490522",
+        "cid": {
+            "$oid": "60acfda270f77400013d8ba8"
+        },
+        "cids": [
+            {
+                "$oid": "60acfd68f6a39800017af20e"
+            },
+            {
+                "$oid": "60acfda270f77400013d8ba8"
+            }
+        ],
+        "sort": 4,
+        "name": "数码相机CCD校园高清随身vlog入门级小型单反",
+        "name_pw": null,
+        "limited": 1,
+        "hot": 1,
+        "tags": [],
+        "price": 12500,
+        "market_price": 13500,
+        "limit": 0,
+        "stock_num": 99,
+        "sale_cnt": 0,
+        "sale": 0,
+        "visit_cnt": 0,
+        "visit": 0,
+        "collect_cnt": 0,
+        "collect": 0,
+        "share_cnt": 0,
+        "share": 0,
+        "sold_out_time": "2030-12-31 00:00:00",
+        "state": "销售中",
+        "share_title": "数码相机CCD校园高清随身vlog入门级小型单反",
+        "share_img": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/5f66cd3a-a02c-4cd5-b316-74538db05b44.webp",
+        "share_desc": null,
+        "skus": "{\"spec_s\":\"规格\",\"spec\":[]}",
+        "img": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/52f28598-56cd-4c58-aa58-46a9b14904bb.webp",
+        "imgs": [
+            {
+                "extname": "webp",
+                "fileType": "image",
+                "image": {
+                    "width": 800,
+                    "height": 800,
+                    "location": "blob:http://localhost:8081/3fd2f661-6666-48b0-9dca-db361d064097"
+                },
+                "name": "2.webp",
+                "path": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/52f28598-56cd-4c58-aa58-46a9b14904bb.webp",
+                "size": 30326,
+                "fileID": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/52f28598-56cd-4c58-aa58-46a9b14904bb.webp",
+                "url": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/52f28598-56cd-4c58-aa58-46a9b14904bb.webp"
+            },
+            {
+                "extname": "webp",
+                "fileType": "image",
+                "image": {
+                    "width": 800,
+                    "height": 800,
+                    "location": "blob:http://localhost:8081/fadf8d64-1b2a-414b-bac1-c43aee23f8ec"
+                },
+                "name": "3.webp",
+                "path": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/2b419223-582b-4947-be8e-988ab3313cfd.webp",
+                "size": 38422,
+                "fileID": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/2b419223-582b-4947-be8e-988ab3313cfd.webp",
+                "url": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/2b419223-582b-4947-be8e-988ab3313cfd.webp"
+            },
+            {
+                "extname": "webp",
+                "fileType": "image",
+                "image": {
+                    "width": 800,
+                    "height": 800,
+                    "location": "blob:http://localhost:8081/10333c6d-3d1c-4a48-a8a5-b82e95e86633"
+                },
+                "name": "4.webp",
+                "path": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/39daea53-d4de-4c29-956f-a0c679809712.webp",
+                "size": 37246,
+                "fileID": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/39daea53-d4de-4c29-956f-a0c679809712.webp",
+                "url": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/39daea53-d4de-4c29-956f-a0c679809712.webp"
+            }
+        ],
+		"stock_wh_num": 99,
+		"version": 1,
+		"is_delete": 0,
+		"create_time": 1710432000000,
+		"create_uid": {
+		    "$oid": "607e63e021576100016eded3"
+		},
+		"create_uname": "admin"
+    },
+    {
+        "_id": "1710522687654466006",
+        "cid": {
+            "$oid": "60ace19670f77400013d0c33"
+        },
+        "cids": [
+            {
+                "$oid": "60ace07724957900014e7f4e"
+            },
+            {
+                "$oid": "60ace19670f77400013d0c33"
+            }
+        ],
+        "sort": 1,
+        "name": "Huawei华为 Mate 60 Pro麒麟芯片官方正品卫星通话旗舰曲屏手机",
+        "name_pw": null,
+        "limited": 1,
+        "hot": 1,
+        "tags": [
+            "手机",
+            "假一赔四",
+            "极速退款",
+            "7天无理由退换"
+        ],
+        "price": 639900,
+        "market_price": 699900,
+        "limit": 0,
+        "stock_num": 999,
+        "sale_cnt": 0,
+        "sale": 0,
+        "visit_cnt": 0,
+        "visit": 0,
+        "collect_cnt": 0,
+        "collect": 0,
+        "share_cnt": 0,
+        "share": 0,
+        "sold_out_time": "2030-12-31 00:00:00",
+        "state": "销售中",
+        "share_title": "Huawei华为 Mate 60 Pro麒麟芯片官方正品卫星通话旗舰曲屏手机",
+        "share_img": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/142f60b3-0f2d-45ab-8119-4eede2502b51.webp",
+        "share_desc": null,
+        "skus": "{\"spec_s\":\"规格\",\"spec\":[\"12GB+256GB\",\"12GB+512GB\"]}",
+        "img": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/142f60b3-0f2d-45ab-8119-4eede2502b51.webp",
+        "imgs": [
+            {
+                "extname": "webp",
+                "fileType": "image",
+                "image": {
+                    "width": 600,
+                    "height": 800,
+                    "location": "blob:http://localhost:8081/15899b0b-009d-4520-8f6e-c57d39b4034c"
+                },
+                "name": "O1CN01ORbNgm25ZpfBoDCzK_!!393177541.jpg_Q75.jpg_.webp",
+                "path": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/142f60b3-0f2d-45ab-8119-4eede2502b51.webp",
+                "size": 20078,
+                "fileID": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/142f60b3-0f2d-45ab-8119-4eede2502b51.webp",
+                "url": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/142f60b3-0f2d-45ab-8119-4eede2502b51.webp"
+            }
+        ],
+		"stock_wh_num": 999,
+		"version": 1,
+		"is_delete": 0,
+		"create_time": 1710432000000,
+		"create_uid": {
+		    "$oid": "607e63e021576100016eded3"
+		},
+		"create_uname": "admin"
+    },
+    {
+        "_id": "1710523112202656703",
+        "cid": {
+            "$oid": "6081365dff01b00001b598b0"
+        },
+        "cids": [
+            {
+                "$oid": "60812f29f61a74000134eee2"
+            },
+            {
+                "$oid": "6081365dff01b00001b598b0"
+            }
+        ],
+        "sort": 2,
+        "name": "纯棉美式印花短袖T恤男夏季新款内搭打底衫潮牌男装半袖上衣",
+        "name_pw": null,
+        "limited": 1,
+        "hot": 1,
+        "tags": [
+            "服装",
+            "假一赔四",
+            "极速退款",
+            "7天无理由退换"
+        ],
+        "price": 5800,
+        "market_price": 6800,
+        "limit": 0,
+        "stock_num": 99,
+        "sale_cnt": 0,
+        "sale": 0,
+        "visit_cnt": 0,
+        "visit": 0,
+        "collect_cnt": 0,
+        "collect": 0,
+        "share_cnt": 0,
+        "share": 0,
+        "sold_out_time": "2030-12-31 00:00:00",
+        "state": "销售中",
+        "share_title": "纯棉美式印花短袖T恤男夏季新款内搭打底衫潮牌男装半袖上衣",
+        "share_img": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/b619eaf3-ca18-4d24-96cd-39ef1390b0a3.webp",
+        "share_desc": null,
+        "skus": "{\"spec_s\":\"规格\",\"spec\":[\"S+白\",\"S+黑\",\"M+白\",\"M+黑\",\"L+白\",\"L+黑\"]}",
+        "img": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/b619eaf3-ca18-4d24-96cd-39ef1390b0a3.webp",
+        "imgs": [
+            {
+                "extname": "webp",
+                "fileType": "image",
+                "image": {
+                    "width": 750,
+                    "height": 1000,
+                    "location": "blob:http://localhost:8081/72935d56-082a-4e7f-ae95-bee3e9c90175"
+                },
+                "name": "1.webp",
+                "path": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/b619eaf3-ca18-4d24-96cd-39ef1390b0a3.webp",
+                "size": 13122,
+                "fileID": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/b619eaf3-ca18-4d24-96cd-39ef1390b0a3.webp",
+                "url": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/b619eaf3-ca18-4d24-96cd-39ef1390b0a3.webp"
+            },
+            {
+                "extname": "webp",
+                "fileType": "image",
+                "image": {
+                    "width": 750,
+                    "height": 1000,
+                    "location": "blob:http://localhost:8081/1a9366fc-2be7-4c72-971b-406b83552eed"
+                },
+                "name": "2.webp",
+                "path": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/e4919878-dca1-4c50-8296-2766c53044f8.webp",
+                "size": 119686,
+                "fileID": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/e4919878-dca1-4c50-8296-2766c53044f8.webp",
+                "url": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/e4919878-dca1-4c50-8296-2766c53044f8.webp"
+            },
+            {
+                "extname": "webp",
+                "fileType": "image",
+                "image": {
+                    "width": 750,
+                    "height": 1000,
+                    "location": "blob:http://localhost:8081/700d03e1-b494-405f-9839-d0ada276b868"
+                },
+                "name": "3.webp",
+                "path": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/8f064ae3-e752-4384-8d1a-014c21f27b2d.webp",
+                "size": 38702,
+                "fileID": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/8f064ae3-e752-4384-8d1a-014c21f27b2d.webp",
+                "url": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/8f064ae3-e752-4384-8d1a-014c21f27b2d.webp"
+            }
+        ],
+		"stock_wh_num": 99,
+		"version": 1,
+		"is_delete": 0,
+		"create_time": 1710432000000,
+		"create_uid": {
+		    "$oid": "607e63e021576100016eded3"
+		},
+		"create_uname": "admin"
+    },
+    {
+        "_id": "1710523663577456866",
+        "cid": {
+            "$oid": "60acec0e9056cd0001af172b"
+        },
+        "cids": [
+            {
+                "$oid": "60acec0e9056cd0001af172b"
+            }
+        ],
+        "sort": 3,
+        "name": "鞋子小白鞋男士板鞋夏季新款白色厚底空军一号运动鞋",
+        "name_pw": null,
+        "limited": 1,
+        "hot": 1,
+        "tags": [
+            "鞋",
+            "假一赔四",
+            "极速退款",
+            "7天无理由退换"
+        ],
+        "price": 15900,
+        "market_price": 19900,
+        "limit": 0,
+        "stock_num": 999,
+        "sale_cnt": 0,
+        "sale": 0,
+        "visit_cnt": 0,
+        "visit": 0,
+        "collect_cnt": 0,
+        "collect": 0,
+        "share_cnt": 0,
+        "share": 0,
+        "sold_out_time": "2030-12-31 00:00:00",
+        "state": "销售中",
+        "share_title": "鞋子小白鞋男士板鞋夏季新款白色厚底空军一号运动鞋",
+        "share_img": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/6e880a25-c8a6-4ac2-a8b8-d1677a37e977.webp",
+        "share_desc": null,
+        "skus": "{\"spec_s\":\"规格\",\"spec\":[]}",
+        "img": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/6e880a25-c8a6-4ac2-a8b8-d1677a37e977.webp",
+        "imgs": [
+            {
+                "extname": "webp",
+                "fileType": "image",
+                "image": {
+                    "width": 750,
+                    "height": 1000,
+                    "location": "blob:http://localhost:8081/f0b4a581-3b32-4a55-9d00-4cbec6eb9003"
+                },
+                "name": "1.webp",
+                "path": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/6e880a25-c8a6-4ac2-a8b8-d1677a37e977.webp",
+                "size": 34932,
+                "fileID": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/6e880a25-c8a6-4ac2-a8b8-d1677a37e977.webp",
+                "url": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/6e880a25-c8a6-4ac2-a8b8-d1677a37e977.webp"
+            },
+            {
+                "extname": "webp",
+                "fileType": "image",
+                "image": {
+                    "width": 750,
+                    "height": 1000,
+                    "location": "blob:http://localhost:8081/0a777ae1-4000-4b84-a0a6-44f4b309b63b"
+                },
+                "name": "2.webp",
+                "path": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/339b359d-ab8c-45fa-a45e-8b7fa4c70871.webp",
+                "size": 50348,
+                "fileID": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/339b359d-ab8c-45fa-a45e-8b7fa4c70871.webp",
+                "url": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/339b359d-ab8c-45fa-a45e-8b7fa4c70871.webp"
+            }
+        ],
+        "stock_wh_num": 999,
+        "version": 1,
+        "is_delete": 0,
+        "create_time": 1710432000000,
+        "create_uid": {
+            "$oid": "607e63e021576100016eded3"
+        },
+        "create_uname": "admin"
+    },
+    {
+        "_id": "1710524121078842087",
+        "cid": {
+            "$oid": "60813685f61a7400013506f9"
+        },
+        "cids": [
+            {
+                "$oid": "60812f3ca3a24100014b186d"
+            },
+            {
+                "$oid": "60813685f61a7400013506f9"
+            }
+        ],
+        "sort": 5,
+        "name": "高品质行李箱女新款拉杆箱男多功能充电旅行箱结实耐用密码箱",
+        "name_pw": null,
+        "limited": 1,
+        "hot": 1,
+        "tags": [
+            "箱包",
+            "假一赔四",
+            "极速退款",
+            "7天无理由退换"
+        ],
+        "price": 10900,
+        "market_price": 16900,
+        "limit": 0,
+        "stock_num": 999,
+        "sale_cnt": 0,
+        "sale": 0,
+        "visit_cnt": 0,
+        "visit": 0,
+        "collect_cnt": 0,
+        "collect": 0,
+        "share_cnt": 0,
+        "share": 0,
+        "sold_out_time": "2030-12-31 00:00:00",
+        "state": "销售中",
+        "share_title": "高品质行李箱女新款拉杆箱男多功能充电旅行箱结实耐用密码箱",
+        "share_img": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/dd6e4623-732c-4dda-b3a6-b46f9228ebdc.webp",
+        "share_desc": null,
+        "skus": "{\"spec_s\":\"规格\",\"spec\":[\"20寸+白\",\"22寸+白\",\"24寸+白\",\"26寸+白\",\"28寸+白\"]}",
+        "img": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/dd6e4623-732c-4dda-b3a6-b46f9228ebdc.webp",
+        "imgs": [
+            {
+                "extname": "webp",
+                "fileType": "image",
+                "image": {
+                    "width": 800,
+                    "height": 1067,
+                    "location": "blob:http://localhost:8081/cd3923a9-913f-4189-83ba-be1396ffc9eb"
+                },
+                "name": "1.webp",
+                "path": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/dd6e4623-732c-4dda-b3a6-b46f9228ebdc.webp",
+                "size": 56792,
+                "fileID": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/dd6e4623-732c-4dda-b3a6-b46f9228ebdc.webp",
+                "url": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/dd6e4623-732c-4dda-b3a6-b46f9228ebdc.webp"
+            },
+            {
+                "extname": "webp",
+                "fileType": "image",
+                "image": {
+                    "width": 750,
+                    "height": 1000,
+                    "location": "blob:http://localhost:8081/b3e0f8b9-a838-4b9e-9cc1-e140bae3ca17"
+                },
+                "name": "2.webp",
+                "path": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/79d22483-bbfa-417b-8a65-89af833cb6ea.webp",
+                "size": 24214,
+                "fileID": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/79d22483-bbfa-417b-8a65-89af833cb6ea.webp",
+                "url": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/79d22483-bbfa-417b-8a65-89af833cb6ea.webp"
+            },
+            {
+                "extname": "webp",
+                "fileType": "image",
+                "image": {
+                    "width": 750,
+                    "height": 1000,
+                    "location": "blob:http://localhost:8081/4fbc9307-1b6f-4c4e-af14-e9a5fd6a34b3"
+                },
+                "name": "3.webp",
+                "path": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/012b968a-65b7-44dd-aad9-7c64a7079b43.webp",
+                "size": 31822,
+                "fileID": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/012b968a-65b7-44dd-aad9-7c64a7079b43.webp",
+                "url": "https://mp-04f153cc-abf2-425d-a8fa-eaac783de73a.cdn.bspapp.com/cloudstorage/012b968a-65b7-44dd-aad9-7c64a7079b43.webp"
+            }
+        ],
+        "stock_wh_num": 999,
+        "version": 1,
+        "is_delete": 0,
+        "create_time": 1710432000000,
+        "create_uid": {
+            "$oid": "607e63e021576100016eded3"
+        },
+        "create_uname": "admin"
+    }
+]

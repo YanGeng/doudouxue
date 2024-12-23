@@ -1,0 +1,35 @@
+[{
+		"_id": {
+			"$oid": "6081038ce01ac80001db768d"
+		},
+		"version": 1,
+		"is_delete": 0,
+		"img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/e3dd53b7-5106-408a-967b-9586a953e448.jpg",
+		"type": "页面",
+		"url": "/pages/home",
+		"sort": 1,
+		"remark": "",
+		"state": "启用",
+		"create_time": 1710432000000,
+		"create_uid": {
+			"$oid": "607e63e021576100016eded3"
+		}
+	},
+	{
+		"_id": {
+			"$oid": "608104842e88ef00018a86e1"
+		},
+		"version": 1,
+		"is_delete": 0,
+		"img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/d462f254-a1a6-4225-992c-f0658f6d4e0d.jpg",
+		"type": "网页",
+		"url": "https://www.use-cloud.com",
+		"sort": 2,
+		"remark": "官网",
+		"state": "启用",
+		"create_time": 1710432000000,
+		"create_uid": {
+			"$oid": "607e63e021576100016eded3"
+		}
+	}
+]

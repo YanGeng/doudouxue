@@ -1,0 +1,176 @@
+[
+  {
+    "_id": {
+      "$oid": "6082610bf463800001a3af99"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "type": "服务",
+    "name": "假一赔四",
+    "sort": 1,
+    "remark": "",
+    "state": "启用",
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "608261303ef4cf0001e69a62"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "type": "服务",
+    "name": "极速退款",
+    "sort": 2,
+    "remark": "",
+    "state": "启用",
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6082613a76decc0001863b79"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "type": "服务",
+    "name": "7天无理由退换",
+    "sort": 3,
+    "remark": "",
+    "state": "启用",
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "60826289d39bb80001c70aa1"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "type": "商品",
+    "name": "家电",
+    "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/32caea4f-580d-49de-89f6-9154dfe8906b.png",
+    "is_search": "是",
+    "sort": 1,
+    "remark": "",
+    "state": "启用",
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6082630f1f5a31000192db4e"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "type": "商品",
+    "name": "箱包",
+    "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/797f7b3d-325b-4ece-ba9d-0ae5afdacfa4.jpg",
+    "is_search": "是",
+    "sort": 2,
+    "remark": "",
+    "state": "启用",
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "60826329b09d4a000173c30c"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "type": "商品",
+    "name": "饰品",
+    "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/d5a41d92-bed5-459b-aae6-6c86cc7617be.jpg",
+    "is_search": "是",
+    "sort": 3,
+    "remark": "",
+    "state": "启用",
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6082633c19a4150001b3da4b"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "type": "商品",
+    "name": "服装",
+    "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/4635947c-52d4-4a12-9c98-5a1f484c9c98.jpg",
+    "is_search": "是",
+    "sort": 4,
+    "remark": "",
+    "state": "启用",
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "60ace2a370f77400013d108b"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "type": "商品",
+    "name": "手机",
+    "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/2f9770a0-61fe-46cf-8d51-dfddc2440280.jpg",
+    "is_search": "是",
+    "sort": 5,
+    "remark": "",
+    "state": "启用",
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "60acecf4e22fbe00015943a5"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "type": "商品",
+    "name": "鞋",
+    "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/fdc5b242-9605-42cf-9d36-bc45bfab305b.jpg",
+    "is_search": "是",
+    "sort": 6,
+    "remark": "",
+    "state": "启用",
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "60acfdc92881d30001cf953b"
+    },
+    "version": 1,
+    "is_delete": 0,
+    "type": "商品",
+    "name": "数码",
+    "img": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7e00db99-ad65-4b9f-a74b-61bccb92b124/a99df722-e028-4577-b7ac-c1d829eef539.jpg",
+    "is_search": "是",
+    "sort": 7,
+    "remark": "",
+    "state": "启用",
+    "create_time": 1710432000000,
+    "create_uid": {
+      "$oid": "607e63e021576100016eded3"
+    }
+  }
+]

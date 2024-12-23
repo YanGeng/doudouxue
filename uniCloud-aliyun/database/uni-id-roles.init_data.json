@@ -1,0 +1,19 @@
+[{
+		"_id": {
+			"$oid": "6087a1ac2c1f0d0001e36b8c"
+		},
+		"role_id": "admin",
+		"role_name": "admin",
+		"comment": "admin",
+		"create_date": 1710432000000
+	},
+	{
+		"_id": {
+			"$oid": "6087a1ef2b8f05000135f971"
+		},
+		"role_id": "test",
+		"role_name": "test",
+		"comment": "test",
+		"create_date": 1710432000000
+	}
+]
