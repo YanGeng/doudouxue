@@ -7,6 +7,101 @@ const {
 const dbcmd = uniCloud.database().command;
 
 module.exports = class GoodsController extends Controller {
+	 /**
+	     * @description 全球唯一 guid
+	     */
+	    guid() {
+	        return (this.__s4() + this.__s4() + "-" + this.__s4() + "-" + this.__s4() + "-" + this.__s4() + "-" + this.__s4() +
+	            this.__s4() + this.__s4());
+	    }
+	    __s4() {
+	        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+	    }
+	
+	    // 创建商品
+	    async createNewGoods() {
+	        const {
+	            // 商品信息 usemall-goods
+	            name,
+	            cid,
+	            price,
+	            stock_num,
+	            sort,
+	            state,
+	            version,
+	            is_delete,
+				img,
+	            imgs,
+	            // 商品详情信息 usemall-goods-detail
+	            desc_mobile
+	            // 商品sku信息 usemall-goods-sku
+	        } = this.ctx.data;
+	
+	        let goods_id = (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1) + (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+		// console.log("createNewGoods goods_id: ", goods_id);
+		let uid = '';
+		if (this.ctx.event.uniIdToken) {
+			// 已登录，获取当前登录 uid
+			const user = await uidObj.checkToken(this.ctx.event.uniIdToken);
+			if (user.code == 0) {
+				uid = user.uid;
+			}
+		}
+		
+	        let create_time = new Date().getTime();
+	let tags = ["假一赔四","极速退款","7天无理由退换"];
+	
+	        this.db.collection('usemall-goods').add({
+	            _id: goods_id,
+	            name,
+	            cid: cid,
+	            version: version,
+	            create_uid: uid,
+	            create_time: create_time,
+	            last_modify_uid: uid,
+	            last_modify_time: create_time,
+	            price: price,
+	            market_price: price,
+	            img: img,
+	            imgs: imgs,
+	            tags: tags,
+				state: '销售中',
+				sort: 1,
+				hot: 1
+	        });
+	
+	        this.db.collection('usemall-goods-detail').add({
+	            goods_id: goods_id,
+	            version: 1,
+	            is_delete: 0,
+	            create_uid: uid,
+	            desc_mobile: desc_mobile,
+	            create_time: create_time,
+	            last_modify_uid: uid,
+	            last_modify_time: create_time
+	        });
+	
+		let response = {
+			code: 1
+		};
+		response.datas = [];
+		response.code = 0;
+		response.msg = `创建成功`;
+		return response;
+	
+	//         this.db.collection('usemall-goods-sku').add({
+	//             goods_id: goods_id,
+	//             goods_sku: goods_sku,
+	//             price: price,
+	//             stock_num: stock_num,
+	//             stock_wh_num: stock_wh_num,
+	//             limit: 0,
+	//             state: state,
+	//             version: 1,
+	//             is_delete: 0,
+	//             create_uid: uid
+	//         });
+	}
 
 	// 详情
 	async detail() {

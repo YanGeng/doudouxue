@@ -140,9 +140,12 @@
 				goodsInfo: {
 				    detail_imgs: [],
 				    description: '',
+					desc_mobile: '',
 				},
 				id: 0,
 				type: 'add',
+				detailsTxtTemplate: '<div style=\"max-width:90%; margin: 0 auto;\">${TEXT}</div><br>',
+				detailsPicTemplate: '<img style=\"max-width:100%;display:block;\" src=\"${IMGURL}">',
 			};
 		},
 		onLoad(options) {
@@ -184,27 +187,27 @@
 				for (let fp of headFilesPaths) {
 					this.goods.imgs.push(fp);
 				}
-				this.goods.img = this.goods.imgs[0]
-			    console.log('successHeadPic', this.goods)
+				this.goods.img = this.goods.imgs[0];
+			    console.log('successHeadPic', this.goods);
 			},
 			deleteHeadPic(file) {
 				console.log('hhhhhhhhhhhhh')
 			    console.log('delete', file)
-				let dlFilePath = file.tempFilePath
-				let index = this.goods.imgs.indexOf(dlFilePath)
-				console.log('deleteHeadPic', index)
+				let dlFilePath = file.tempFilePath;
+				let index = this.goods.imgs.indexOf(dlFilePath);
+				console.log('deleteHeadPic', index);
 				if (index != -1) {
-					this.goods.imgs.splice(index, 1)
-					this.goods.img = this.goods.imgs[0]
+					this.goods.imgs.splice(index, 1);
+					this.goods.img = this.goods.imgs[0];
 				}
-			    console.log('deleteHeadPic', this.goods)
+			    console.log('deleteHeadPic', this.goods);
 			},
 			successDetailsPic(file) {
 				let headFilesPaths = file.tempFilePaths
 				for (let fp of headFilesPaths) {
 					this.goodsInfo.detail_imgs.push(fp);
 				}
-			    console.log('successDetailsPic', this.goodsInfo)
+			    console.log('successDetailsPic', this.goodsInfo);
 			},
 			deleteDetailsPic(file) {
 				console.log('hhhhhhhhhhhhh')
@@ -430,9 +433,41 @@
 					return;
 				}
 				
+				// 创建详情
+				let detailsTxtTmp = this.detailsTxtTemplate.replace("${TEXT}", this.goodsInfo.description)
+				let detailsPicTmp = '';
+				for (let di of this.goodsInfo.detail_imgs) {
+					detailsPicTmp = detailsPicTmp + this.detailsPicTemplate.replace("${IMGURL}", di)
+				}
+				this.goodsInfo.desc_mobile = '<p>' + detailsTxtTmp + detailsPicTmp + '</p>'
+				
 				console.log('addrData', this.addrData);
 				console.log('goods', this.goods);
 				console.log('goodsInfo', this.goodsInfo);
+				let realImgs = [];
+				for (let fp of this.goods.imgs) {
+					let imgNote = {
+						url: fp
+					};
+					realImgs.push(imgNote);
+				};
+				
+				await this.$func.usemall
+					.call('goods/createNewGoods', {
+						name: this.goods.name,
+						cid: 1,
+						price: 200,
+						stock_num: 99,
+						sort: 1,
+						state: "销售中",
+						version: 1,
+						is_delete: 0,
+						img: this.goods.img,
+						imgs: realImgs,
+						desc_mobile: this.goodsInfo.desc_mobile
+					})
+					.then(res => {
+				});
 				
 				if (this.addrDefault) {
 					// 把默认为是的改成 否
