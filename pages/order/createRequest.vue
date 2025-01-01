@@ -11,6 +11,25 @@
 			<input class="input" type="number" v-model="addrData.mobile" placeholder="请输入手机号码"
 				placeholder-class="placeholder" />
 		</view>
+		<view class="row dflex border-line padding-lr">
+			<text class="tit">标题</text>
+			<input class="input" type="text" v-model="goods.name" placeholder="请输入标题"
+				placeholder-class="placeholder" />
+		</view>
+		<view class="row dflex border-line padding-lr">
+			<text class="tit">详情</text>
+		</view>
+		
+		<br>
+		
+		<view class="uni-textarea dflex border-line padding-lr">
+			<view>
+				<textarea class="input" type="text" v-model="goodsInfo.description" placeholder="请输入详情介绍"
+					placeholder-class="placeholder" auto-height />
+			</view>
+		</view>
+		
+		<br>
 		
 		<view class="row dflex border-line padding-lr">
 			<text class="tit">首页图片</text>
@@ -18,8 +37,8 @@
 		
 		<view class="picker dflex border-line padding-lr">
 			<view>
-				<uni-file-picker file-mediatype="image" :limit="3" return-type="array" v-model="goodsInfo.detail_imgs"
-					mode="grid" @success="success"></uni-file-picker>
+				<uni-file-picker id="head" file-mediatype="image" :limit="3" return-type="array"
+					mode="grid" @success="successHeadPic" @delete="deleteHeadPic"></uni-file-picker>
 			</view>
 		</view>
 		
@@ -33,8 +52,8 @@
 		<view class="picker dflex border-line padding-lr">
 			<!-- <text class="tit">详情页图片</text> -->
 			<view>
-				<uni-file-picker file-mediatype="image" :limit="3" return-type="array" v-model="goodsInfo.detail_imgs"
-					mode="grid"></uni-file-picker>
+				<uni-file-picker id="details" file-mediatype="image" :limit="3" return-type="array"
+					mode="grid" @success="successDetailsPic" @delete="deleteDetailsPic"></uni-file-picker>
 		<!-- </uni-forms-item> -->
 			</view>
 		</view>
@@ -82,10 +101,6 @@
 </template>
 
 <script>
-	// const success = (file) => {
-	//     console.log('success', file)
-	// }
-
 	const __name = 'usemall-member-address';
 	export default {
 		components: {},
@@ -94,6 +109,8 @@
 				addrDefault: false,
 				// addressName: '请选择地址 | 地图选择',
 				addressName: '请选择地址',
+				addrDataId: '',
+				addrDataOpType: 'edit',
 				addrData: {
 					consignee: '',
 					mobile: '',
@@ -108,8 +125,21 @@
 					longitude: '',
 					latitude: '',
 				},
+				goods: {
+				    name: '',
+				    cid: '',
+				    price: '',
+				    stock_num: '',
+				    sort: '',
+				    state: '',
+				    version: 1,
+				    is_delete: 0,
+				    img: '',
+				    imgs: [],
+				},
 				goodsInfo: {
-					detail_imgs: []
+				    detail_imgs: [],
+				    description: '',
 				},
 				id: 0,
 				type: 'add',
@@ -120,21 +150,23 @@
 			let title = '新增收货人';
 			if (options.type === 'edit') {
 				title = '编辑收货人';
-				this.id = options.id;
-				
-				console.log('testetsetsets')
 
-				this.$db[__name].tofirst(this.id).then(res => {
-					if (res.code == 200) {
+				this.$db[__name].where('create_uid == $cloudEnv_uid').tolist({
+					orderby: 'is_default desc'
+				}).then(res => {
+					if (res.code === 200) {
+						let data = res.datas[0]
 						for (let key in this.addrData) {
-							this.addrData[key] = res.datas[key];
+							this.addrData[key] = data[key];
 						}
-						this.addrDefault = this.addrData.is_default == '是';
-						this.addressName = this.addrData.province_name + '-' + this.addrData.city_name +
-							'-' + this.addrData.area_name;
+						this.addrDefault = data.is_default == '是';
+						this.addressName = data.province_name + '-' + data.city_name +
+							'-' + data.area_name;
+						this.addrDataId = data._id;
 					}
+					
+					this.$api.msg(res.msg);
 				});
-
 			} else {
 				// #ifdef H5 || MP-360 || MP-QQ || MP-TOUTIAO
 				this.addressName = "请选择地址";
@@ -147,10 +179,57 @@
 			});
 		},
 		methods: {
-			success(file) {
-				console.log('hhhhhhhhhhhhh')
-			    console.log('success', file)
+			successHeadPic(file) {
+				let headFilesPaths = file.tempFilePaths
+				for (let fp of headFilesPaths) {
+					this.goods.imgs.push(fp);
+				}
+				this.goods.img = this.goods.imgs[0]
+			    console.log('successHeadPic', this.goods)
 			},
+			deleteHeadPic(file) {
+				console.log('hhhhhhhhhhhhh')
+			    console.log('delete', file)
+				let dlFilePath = file.tempFilePath
+				let index = this.goods.imgs.indexOf(dlFilePath)
+				console.log('deleteHeadPic', index)
+				if (index != -1) {
+					this.goods.imgs.splice(index, 1)
+					this.goods.img = this.goods.imgs[0]
+				}
+			    console.log('deleteHeadPic', this.goods)
+			},
+			successDetailsPic(file) {
+				let headFilesPaths = file.tempFilePaths
+				for (let fp of headFilesPaths) {
+					this.goodsInfo.detail_imgs.push(fp);
+				}
+			    console.log('successDetailsPic', this.goodsInfo)
+			},
+			deleteDetailsPic(file) {
+				console.log('hhhhhhhhhhhhh')
+			    console.log('delete', file)
+				let dlFilePath = file.tempFilePath
+				let index = this.goodsInfo.detail_imgs.indexOf(dlFilePath)
+				console.log('deleteDetailsPic', index)
+				if (index != -1) {
+					this.goodsInfo.detail_imgs.splice(index, 1)
+				}
+			    console.log('deleteDetailaPic', this.goodsInfo)
+			},
+			 // 获取上传状态
+			      select(e) {
+			        console.log('选择文件：', e)
+			      },
+			      // 获取上传进度
+			      progress(e) {
+			        console.log('上传进度：', e)
+			      },
+			
+			      // 上传失败
+			      fail(e) {
+			        console.log('上传失败：', e)
+			      },
 			switchChange(e) {
 				this.addrDefault = e.detail.value;
 			},
@@ -167,6 +246,7 @@
 
 				_this.addrData.address = res.label;
 				_this.addressName = _this.addrData.address;
+				_this.addrDataOpType = 'add';
 			},
 			// 选择地图地址
 			choiceMapAddr(options) {
@@ -317,24 +397,42 @@
 					this.addrData.is_default = '否';
 				}
 
-				let data = this.addrData;
-				if (!data.consignee) {
+				let addrData = this.addrData;
+				if (!addrData.consignee) {
 					this.$api.msg('请填写收货人');
 					return;
 				}
-				if (!/(^1[3|4|5|7|8|9][0-9]{9}$)/.test(data.mobile)) {
+				if (!/(^1[3|4|5|7|8|9][0-9]{9}$)/.test(addrData.mobile)) {
 					this.$api.msg('请输入正确的手机号码');
 					return;
 				}
 
-				if (!data.address) {
+				if (!addrData.address) {
 					this.$api.msg('请选择地址');
 					return;
 				}
-				if (!data.addr_detail) {
+				if (!addrData.addr_detail) {
 					this.$api.msg('请填写详细地址');
 					return;
 				}
+				if (!addrData.addr_detail) {
+					this.$api.msg('请填写详细地址');
+					return;
+				}
+				
+				if (!this.goods.name) {
+					this.$api.msg('请填写需求标题');
+					return;
+				}
+				
+				if (!this.goodsInfo.description) {
+					this.$api.msg('请填写需求详情');
+					return;
+				}
+				
+				console.log('addrData', this.addrData);
+				console.log('goods', this.goods);
+				console.log('goodsInfo', this.goodsInfo);
 				
 				if (this.addrDefault) {
 					// 把默认为是的改成 否
@@ -345,9 +443,9 @@
 						});
 				}
 				
-				if (this.type == 'add') {
+				if (this.addrDataOpType == 'add') {
 
-					this.$db[__name].add(data).then(res => {
+					this.$db[__name].add(addrData).then(res => {
 						if (res.code === 200) {
 							this.$api.msg('添加成功');
 							this.$api.timerout(() => {
@@ -359,12 +457,12 @@
 						this.$api.msg(res.msg);
 					});
 				} else {
-					if (!this.id) {
+					if (!this.addrDataId) {
 						this.$api.msg('当前ID异常，编辑失败');
 						return;
 					}
 					
-					this.$db[__name].update(this.id, data).then(res => {
+					this.$db[__name].update(this.addrDataId, addrData).then(res => {
 						if (res.code === 200) {
 							this.$api.msg('编辑成功');
 							this.$api.timerout(() => {

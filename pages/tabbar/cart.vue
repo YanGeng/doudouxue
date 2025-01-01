@@ -139,11 +139,12 @@
 
 			// 判断是学生，还是教员
 			isStudentFlag() {
+				debugger
 				let a = this.user_role == '学生';
-				console.log("test = " + a)
+				// console.log("test = " + a)
 				// return a;
 				uni.navigateTo({
-					url: `/pages/order/createRequest`,
+					url: `/pages/order/createRequest?type=edit`,
 					success(res) {
 						console.log(res);
 					},
