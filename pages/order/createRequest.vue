@@ -16,6 +16,23 @@
 			<input class="input" type="text" v-model="goods.name" placeholder="请输入标题"
 				placeholder-class="placeholder" />
 		</view>
+		
+		<view class="row dflex border-line padding-lr">
+			<text class="tit">教学科目</text>
+		</view>
+		<view class="row dflex border-line padding-lr">
+			<view class="dflex-e flex1">
+				<uni-data-checkbox :multiple="true" v-model="value" :localdata="rangeKemu" @change="changeKemu"></uni-data-checkbox>
+			</view>
+		</view>
+		
+		<view class="row dflex border-line padding-lr">
+			<text class="tit">价格（￥）</text>
+		</view>
+		<view>
+			<slider value="150" @change="priceSliderChange" min="50" max="500" step="10" show-value />
+		</view>
+		
 		<view class="row dflex border-line padding-lr">
 			<text class="tit">详情</text>
 		</view>
@@ -42,11 +59,8 @@
 			</view>
 		</view>
 		
-		<!-- <uni-forms-item name="imgs" label="图片列表"> -->
 		<view class="row dflex border-line padding-lr">
 			<text class="tit">详情页图片</text>
-		    <!-- <uni-file-picker file-mediatype="image" :limit="6" return-type="array" v-model="goodsInfo.detail_imgs"></uni-file-picker> -->
-		<!-- </uni-forms-item> -->
 		</view>
 		
 		<view class="picker dflex border-line padding-lr">
@@ -54,7 +68,6 @@
 			<view>
 				<uni-file-picker id="details" file-mediatype="image" :limit="3" return-type="array"
 					mode="grid" @success="successDetailsPic" @delete="deleteDetailsPic"></uni-file-picker>
-		<!-- </uni-forms-item> -->
 			</view>
 		</view>
 
@@ -106,6 +119,18 @@
 		components: {},
 		data() {
 			return {
+				value: 0,
+				rangeKemu: [
+					{"value": 0,"text": "语文"},
+					{"value": 1,"text": "数学"},
+					{"value": 2,"text": "英语"},
+					{"value": 3,"text": "物理"},
+					{"value": 4,"text": "化学"},
+					{"value": 5,"text": "音乐"},
+					{"value": 6,"text": "美术"},
+					{"value": 7,"text": "其他"},
+				],
+				selectKemu: [],
 				addrDefault: false,
 				// addressName: '请选择地址 | 地图选择',
 				addressName: '请选择地址',
@@ -128,7 +153,7 @@
 				goods: {
 				    name: '',
 				    cid: '',
-				    price: '',
+				    price: 150,
 				    stock_num: '',
 				    sort: '',
 				    state: '',
@@ -136,6 +161,7 @@
 				    is_delete: 0,
 				    img: '',
 				    imgs: [],
+					tags: [],
 				},
 				goodsInfo: {
 				    detail_imgs: [],
@@ -182,6 +208,14 @@
 			});
 		},
 		methods: {
+			priceSliderChange(e) {
+				this.goods.price = e.detail.value;
+			    console.log('value 发生变化：' + e.detail.value)
+			},
+			changeKemu(e) {
+				this.selectKemu = e.detail.value;
+				console.log('e:',this.selectKemu, e);
+			},
 			successHeadPic(file) {
 				let headFilesPaths = file.tempFilePaths
 				for (let fp of headFilesPaths) {
@@ -433,6 +467,20 @@
 					return;
 				}
 				
+				if (this.selectKemu.length == 0) {
+					this.$api.msg('请选择教学科目');
+					return;
+				}
+				
+				// goodsTags处理
+				for (let id of this.selectKemu) {
+					for (let item of this.rangeKemu) {
+						if (id == item.value) {
+							this.goods.tags.push(item.text);
+						}
+					}
+				}
+				
 				// 创建详情
 				let detailsTxtTmp = this.detailsTxtTemplate.replace("${TEXT}", this.goodsInfo.description)
 				let detailsPicTmp = '';
@@ -454,17 +502,21 @@
 				
 				await this.$func.usemall
 					.call('goods/createNewGoods', {
+						consignee: this.addrData.consignee,
+						mobile: this.addrData.mobile,
 						name: this.goods.name,
-						cid: 1,
-						price: 200,
-						stock_num: 99,
+						cid: 112,
+						cids: ["60812f4e19a4150001b073b3","608136cad39bb80001c3b51b"],
+						price: this.goods.price,
+						stock_num: 999,
 						sort: 1,
 						state: "销售中",
 						version: 1,
 						is_delete: 0,
 						img: this.goods.img,
 						imgs: realImgs,
-						desc_mobile: this.goodsInfo.desc_mobile
+						desc_mobile: this.goodsInfo.desc_mobile,
+						tags: this.goods.tags,
 					})
 					.then(res => {
 				});

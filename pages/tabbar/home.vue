@@ -85,33 +85,24 @@
 		// 监听页面加载
 		onLoad() {
 			console.log("is login: " + this.islogin)
-			if (this.islogin) {
-				uni.setTabBarItem({
-					index: 2,
-					// "pagePath": "/pages/tabbar/shopping",
-					// "iconPath": "/static/images/tabbar/shopping.png",
-					// "selectedIconPath": "/static/images/tabbar/shopping-active.png",
-					// "text": "购物圈",
-					
-					"pagePath": "/pages/tabbar/cart",
-					"iconPath": "/static/images/tabbar/cart.png",
-					"selectedIconPath": "/static/images/tabbar/cart-active.png",
-					"text": "购物车"
-				})
-			} else {
-				uni.setTabBarItem({
-					index: 2,
-					"pagePath": "/pages/tabbar/shopping",
-					"iconPath": "/static/images/tabbar/shopping.png",
-					"selectedIconPath": "/static/images/tabbar/shopping-active.png",
-					"text": "购物圈"
-					
-					// "pagePath": "pages/tabbar/cart",
-					// "iconPath": "static/images/tabbar/cart.png",
-					// "selectedIconPath": "static/images/tabbar/cart-active.png",
-					// "text": "购物车"
-				})
-			}
+			// 设置不同登录状态，不同tabbar的方法
+			// if (this.islogin) {
+			// 	uni.setTabBarItem({
+			// 		index: 2,
+			// 		"pagePath": "/pages/tabbar/cart",
+			// 		"iconPath": "/static/images/tabbar/cart.png",
+			// 		"selectedIconPath": "/static/images/tabbar/cart-active.png",
+			// 		"text": "购物车"
+			// 	})
+			// } else {
+			// 	uni.setTabBarItem({
+			// 		index: 2,
+			// 		"pagePath": "/pages/tabbar/shopping",
+			// 		"iconPath": "/static/images/tabbar/shopping.png",
+			// 		"selectedIconPath": "/static/images/tabbar/shopping-active.png",
+			// 		"text": "购物圈"
+			// 	})
+			// }
 		},
 		onPageScroll(e) {
 			// this.scrollTop = e.scrollTop

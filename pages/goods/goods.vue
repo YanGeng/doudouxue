@@ -229,7 +229,8 @@
 			</view>
 			<view class="flex1 btn-container dflex-b border-radius-big">
 				<view class="tac padding-tb-sm flex1 bg-warn" v-if="goods.stock_num > 0" @click="tocart(goods)">加入购物车</view>
-				<view class="tac padding-tb-sm flex1 bg-base" v-if="goods.stock_num > 0" @click="tobuy(goods)">立即购买</view>
+				<!-- <view class="tac padding-tb-sm flex1 bg-base" v-if="goods.stock_num > 0" @click="tobuy(goods)">立即购买</view> -->
+				<view class="tac padding-tb-sm flex1 bg-base" v-if="goods.stock_num > 0" @click="sendMsg(goods)">发送短信</view>
 				<view class="tac padding-tb-sm flex1 bg-disabled" v-else>已售磐</view>
 			</view>
 		</view>
@@ -588,6 +589,20 @@ export default {
 
 					this.$api.msg(res.msg);
 				});
+		},
+		// 发短信
+		sendMsg(item) {
+			console.log("sendMsg", item)
+		    //#ifdef APP-PLUS
+		    plus.messaging.TYPE_SMS;
+		    var msg = plus.messaging.createMessage(plus.messaging.TYPE_SMS);
+		    msg.to = [item.mobile];
+		    msg.body = item.consignee + "老师，你好！我是学生家长，我在“豆豆学”平台上，看到你发布的家教信息：“" + item.name + "”。想进一步跟你交流一下，看到回复，感谢！（豆豆学：下载链接：http://）";
+		    plus.messaging.sendMessage(msg);
+		    // #endif
+		    //#ifdef H5
+		    window.location.href = `sms:${phoneNumber}`
+		    // #endif
 		},
 		// 立即购买
 		tobuy(item) {

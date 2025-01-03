@@ -22,8 +22,11 @@ module.exports = class GoodsController extends Controller {
 	    async createNewGoods() {
 	        const {
 	            // 商品信息 usemall-goods
+				consignee,
+				mobile,
 	            name,
 	            cid,
+				cids,
 	            price,
 	            stock_num,
 	            sort,
@@ -32,12 +35,13 @@ module.exports = class GoodsController extends Controller {
 	            is_delete,
 				img,
 	            imgs,
+				tags,
 	            // 商品详情信息 usemall-goods-detail
 	            desc_mobile
 	            // 商品sku信息 usemall-goods-sku
 	        } = this.ctx.data;
 	
-	        let goods_id = (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1) + (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+	        let goods_id = (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1) + (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1) + (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1) + (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
 		// console.log("createNewGoods goods_id: ", goods_id);
 		let uid = '';
 		if (this.ctx.event.uniIdToken) {
@@ -49,25 +53,31 @@ module.exports = class GoodsController extends Controller {
 		}
 		
 	        let create_time = new Date().getTime();
-	let tags = ["假一赔四","极速退款","7天无理由退换"];
+	// let tagsTmp = tags;
+	tags.push("极速退款");
 	
+	let newPrice = price * 100;
 	        this.db.collection('usemall-goods').add({
 	            _id: goods_id,
-	            name,
+				consignee: consignee,
+				mobile: mobile,
+	            name: name,
 	            cid: cid,
+				cids: cids,
 	            version: version,
 	            create_uid: uid,
 	            create_time: create_time,
 	            last_modify_uid: uid,
 	            last_modify_time: create_time,
-	            price: price,
-	            market_price: price,
+	            price: newPrice,
+	            market_price: newPrice,
 	            img: img,
 	            imgs: imgs,
 	            tags: tags,
 				state: '销售中',
 				sort: 1,
-				hot: 1
+				hot: 1,
+				stock_num: stock_num
 	        });
 	
 	        this.db.collection('usemall-goods-detail').add({

@@ -51,18 +51,18 @@ const store = new Vuex.Store({
 				data: state.user_role
 			})
 			
-			uni.setTabBarItem({
-				index: 2,
-				// "pagePath": "/pages/tabbar/shopping",
-				// "iconPath": "/static/images/tabbar/shopping.png",
-				// "selectedIconPath": "/static/images/tabbar/shopping-active.png",
-				// "text": "购物圈",
+			// uni.setTabBarItem({
+			// 	index: 2,
+			// 	// "pagePath": "/pages/tabbar/shopping",
+			// 	// "iconPath": "/static/images/tabbar/shopping.png",
+			// 	// "selectedIconPath": "/static/images/tabbar/shopping-active.png",
+			// 	// "text": "购物圈",
 				
-				"pagePath": "/pages/tabbar/cart",
-				"iconPath": "/static/images/tabbar/cart.png",
-				"selectedIconPath": "/static/images/tabbar/cart-active.png",
-				"text": "购物车"
-			})
+			// 	"pagePath": "/pages/tabbar/cart",
+			// 	"iconPath": "/static/images/tabbar/cart.png",
+			// 	"selectedIconPath": "/static/images/tabbar/cart-active.png",
+			// 	"text": "购物车"
+			// })
 		},
 		
 		// 加载 Token
@@ -95,18 +95,18 @@ const store = new Vuex.Store({
 				key: state.__key_token_expired
 			})
 			
-			uni.setTabBarItem({
-				index: 2,
-				"pagePath": "/pages/tabbar/shopping",
-				"iconPath": "/static/images/tabbar/shopping.png",
-				"selectedIconPath": "/static/images/tabbar/shopping-active.png",
-				"text": "购物圈"
+			// uni.setTabBarItem({
+			// 	index: 2,
+			// 	"pagePath": "/pages/tabbar/shopping",
+			// 	"iconPath": "/static/images/tabbar/shopping.png",
+			// 	"selectedIconPath": "/static/images/tabbar/shopping-active.png",
+			// 	"text": "购物圈"
 				
-				// "pagePath": "pages/tabbar/cart",
-				// "iconPath": "static/images/tabbar/cart.png",
-				// "selectedIconPath": "static/images/tabbar/cart-active.png",
-				// "text": "购物车"
-			})
+			// 	// "pagePath": "pages/tabbar/cart",
+			// 	// "iconPath": "static/images/tabbar/cart.png",
+			// 	// "selectedIconPath": "static/images/tabbar/cart-active.png",
+			// 	// "text": "购物车"
+			// })
 		},
 		
 		// token 令牌

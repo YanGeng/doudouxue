@@ -1,7 +1,20 @@
 <template>
 	<view class="wh-full">
 		<!-- 头部组件 -->
-		<use-header :fixed="headerFixed" :placeholder="headerPlaceholder" :search-tip="searchTip" :search-auto="searchAuto"></use-header>
+		<!-- <use-header :fixed="headerFixed" :placeholder="headerPlaceholder" :search-tip="searchTip" :search-auto="searchAuto"></use-header> -->
+		<view class="use-header dflex w-full bg-main fixed">
+		            <scroll-view class="scroll">
+		                <view class="scroll-item" 
+		                v-for="(item,index) in scrollTitle" 
+		                :key="index" 
+		                @tap="handleSelected(index)" 
+		                :class="{'on':item.selected}">
+		                    <view class="container">
+		                        {{item.title}}
+		                    </view>
+		                </view>
+		            </scroll-view>
+		        </view>
 
 		<!-- 分类 -->
 		<view class="category dflex-s h-full padding-top-big">
@@ -69,6 +82,7 @@
 	export default {
 		data() {
 			return {
+				items: ['选项1', '选项2', '选项3'],
 				// 1分类列表 2商品列表
 				mode: 1,
 				// 兼容支付宝 height 显示 bug
@@ -100,7 +114,18 @@
 
 				top: 0,
 				scrollTop: 0,
-				navHeight: 0
+				navHeight: 0,
+				scrollTitle: [
+					{
+				        title: '学生',
+				        selected: true,
+				    },
+				    {
+				        title: '教师',
+				        selected: false,
+				    }
+				],
+				requestType: '学生',
 			};
 		},
 		watch: {
@@ -138,6 +163,21 @@
 			});
 		},
 		methods: {
+			handleSelected(index) {
+			    this.scrollTitle[index].selected = true
+			    for (let i = 0; i < this.scrollTitle.length; i++) {
+			        if (i != index) {
+			            this.scrollTitle[i].selected = false
+			        }
+			    }
+				if (index == 0) {
+					this.requestType = '学生';
+				} else if (index == 1) {
+					this.requestType = '教师';
+				}
+				
+				console.log("index is: ", index, this.requestType);
+			},
 			async loadData(callback) {
 				this.$db[_goodscategory].where({ state: '启用' }).tolist().then(res => {
 					if (res.code === 200) {
@@ -217,6 +257,7 @@
 					cid: item._id
 				});
 			},
+			onScroll() {},
 		},
 		mounted() {
 			// #ifdef H5 || MP-360
@@ -296,4 +337,35 @@
 			bottom: 0;
 		}
 	}
+	
+	.container {
+		display: flex;
+		  justify-content: center; /* 水平居中 */
+		  align-items: center; /* 垂直居中 */
+		  height: 100rpx; /* 容器高度 */
+        // height: 100vh;
+    }
+
+    .scroll {
+        background-color: #ffffff;
+		height: 100rpx;
+        border-bottom: 1upx solid #999999;
+        white-space: nowrap;/*必须要有，规定段落中的文本不进行换行*/
+    }
+
+    .scroll-item {
+        color: #333333;
+        width: 50%;
+        height: 100%;
+        line-height: 60upx;
+        display: inline-block;/*必须要有*/
+    }
+
+    .on {
+        border-bottom: 1px solid orange;
+        color: orange;
+        // border-radius: 40upx;
+        // font-size: 24px;
+        font-weight: bolder;
+    }	
 </style>
