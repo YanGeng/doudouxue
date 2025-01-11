@@ -13,61 +13,62 @@
 		</view>
 		<view class="row dflex border-line padding-lr">
 			<text class="tit">标题</text>
-			<input class="input" type="text" v-model="goods.name" placeholder="请输入标题"
-				placeholder-class="placeholder" />
+			<input class="input" type="text" v-model="goods.name" placeholder="请输入标题" placeholder-class="placeholder" />
 		</view>
-		
+
 		<view class="row dflex border-line padding-lr">
 			<text class="tit">教学科目</text>
 		</view>
 		<view class="row dflex border-line padding-lr">
 			<view class="dflex-e flex1">
-				<uni-data-checkbox :multiple="true" v-model="value" :localdata="rangeKemu" @change="changeKemu"></uni-data-checkbox>
+				<uni-data-checkbox :multiple="true" v-model="selectKemu" :localdata="rangeKemu"
+					@change="changeKemu"></uni-data-checkbox>
 			</view>
 		</view>
-		
+
 		<view class="row dflex border-line padding-lr">
 			<text class="tit">价格（￥）</text>
 		</view>
 		<view>
-			<slider value="150" @change="priceSliderChange" min="50" max="500" step="10" show-value />
+			<slider :value="goods.price/100" @change="priceSliderChange" min="50" max="500" step="10" show-value />
 		</view>
-		
+
 		<view class="row dflex border-line padding-lr">
 			<text class="tit">详情</text>
 		</view>
-		
+
 		<br>
-		
+
 		<view class="uni-textarea dflex border-line padding-lr">
 			<view>
-				<textarea class="input" type="text" v-model="goodsInfo.description" placeholder="请输入详情介绍"
+				<textarea class="input" type="text" v-model="goods.description" placeholder="请输入详情介绍"
 					placeholder-class="placeholder" auto-height />
 			</view>
 		</view>
-		
+
 		<br>
-		
+
 		<view class="row dflex border-line padding-lr">
 			<text class="tit">首页图片</text>
 		</view>
-		
+
 		<view class="picker dflex border-line padding-lr">
 			<view>
-				<uni-file-picker id="head" file-mediatype="image" :limit="3" return-type="array"
-					mode="grid" @success="successHeadPic" @delete="deleteHeadPic"></uni-file-picker>
+				<uni-file-picker v-model="headImageValue" id="head" file-mediatype="image" :limit="3"
+					return-type="array" mode="grid" @success="successHeadPic" @delete="deleteHeadPic"></uni-file-picker>
 			</view>
 		</view>
-		
+
 		<view class="row dflex border-line padding-lr">
 			<text class="tit">详情页图片</text>
 		</view>
-		
+
 		<view class="picker dflex border-line padding-lr">
 			<!-- <text class="tit">详情页图片</text> -->
 			<view>
-				<uni-file-picker id="details" file-mediatype="image" :limit="3" return-type="array"
-					mode="grid" @success="successDetailsPic" @delete="deleteDetailsPic"></uni-file-picker>
+				<uni-file-picker v-model="detailImageValue" id="details" file-mediatype="image" :limit="3"
+					return-type="array" mode="grid" @success="successDetailsPic"
+					@delete="deleteDetailsPic"></uni-file-picker>
 			</view>
 		</view>
 
@@ -105,10 +106,10 @@
 				<view class="tac padding-tb-sm flex1 bg-base" @click="submit">提交</view>
 			</view>
 		</view>
-		
+
 		<!-- 
 		<view style="width: 400rpx; min-height: 300rpx;">
-			<uni-file-picker file-mediatype="image" :limit="6" return-type="array" v-model="goodsInfo.detail_imgs" mode="grid"></uni-file-picker>
+			<uni-file-picker file-mediatype="image" :limit="6" return-type="array" v-model="goods.detail_imgs" mode="grid"></uni-file-picker>
 		</view> -->
 	</view>
 </template>
@@ -119,16 +120,41 @@
 		components: {},
 		data() {
 			return {
-				value: 0,
-				rangeKemu: [
-					{"value": 0,"text": "语文"},
-					{"value": 1,"text": "数学"},
-					{"value": 2,"text": "英语"},
-					{"value": 3,"text": "物理"},
-					{"value": 4,"text": "化学"},
-					{"value": 5,"text": "音乐"},
-					{"value": 6,"text": "美术"},
-					{"value": 7,"text": "其他"},
+				headImageValue: [],
+				detailImageValue: [],
+				value: [],
+				rangeKemu: [{
+						"value": 0,
+						"text": "语文"
+					},
+					{
+						"value": 1,
+						"text": "数学"
+					},
+					{
+						"value": 2,
+						"text": "英语"
+					},
+					{
+						"value": 3,
+						"text": "物理"
+					},
+					{
+						"value": 4,
+						"text": "化学"
+					},
+					{
+						"value": 5,
+						"text": "音乐"
+					},
+					{
+						"value": 6,
+						"text": "美术"
+					},
+					{
+						"value": 7,
+						"text": "其他"
+					},
 				],
 				selectKemu: [],
 				addrDefault: false,
@@ -151,23 +177,22 @@
 					latitude: '',
 				},
 				goods: {
-				    name: '',
-				    cid: '',
-				    price: 150,
-				    stock_num: '',
-				    sort: '',
-				    state: '',
-				    version: 1,
-				    is_delete: 0,
-				    img: '',
-				    imgs: [],
+					name: '',
+					cid: '',
+					price: 15000,
+					stock_num: '',
+					sort: '',
+					state: '',
+					version: 1,
+					is_delete: 0,
+					img: '',
+					imgs: [],
 					tags: [],
-				},
-				goodsInfo: {
-				    detail_imgs: [],
-				    description: '',
+					description: '',
+					detail_imgs: [],
 					desc_mobile: '',
 				},
+				goodsInfo: {},
 				id: 0,
 				type: 'add',
 				detailsTxtTemplate: '<div style=\"max-width:90%; margin: 0 auto;\">${TEXT}</div><br>',
@@ -176,31 +201,58 @@
 		},
 		onLoad(options) {
 			debugger
-			let title = '新增收货人';
+			let title = '新增需求';
 			if (options.type === 'edit') {
-				title = '编辑收货人';
-
-				this.$db[__name].where('create_uid == $cloudEnv_uid').tolist({
-					orderby: 'is_default desc'
-				}).then(res => {
+				title = '编辑需求';
+				this.$db['usemall-goods'].where({
+					_id: options.id
+				}).tolist().then(res => {
 					if (res.code === 200) {
-						let data = res.datas[0]
-						for (let key in this.addrData) {
-							this.addrData[key] = data[key];
+						console.log("res data", res);
+						this.goods = res.datas[0];
+						// 添加类目
+						// let selectCate = [];
+						for (let cate of this.goods.catetories) {
+							for (let item of this.rangeKemu) {
+								if (cate == item.text) {
+									// selectCate.push(item.value);
+									this.selectKemu.push(item.value);
+								}
+							}
 						}
-						this.addrDefault = data.is_default == '是';
-						this.addressName = data.province_name + '-' + data.city_name +
-							'-' + data.area_name;
-						this.addrDataId = data._id;
+						// this.value = selectCate;
+
+						// 添加首页图片
+						let hImagsTmp = [];
+						this.headImageValue = this.goods.imgs;
+						this.detailImageValue = this.goods.detail_imgs
 					}
-					
+
 					this.$api.msg(res.msg);
 				});
-			} else {
-				// #ifdef H5 || MP-360 || MP-QQ || MP-TOUTIAO
-				this.addressName = "请选择地址";
-				// #endif
 			}
+
+			this.$db[__name].where('create_uid == $cloudEnv_uid').tolist({
+				orderby: 'is_default desc'
+			}).then(res => {
+				if (res.code === 200) {
+					let data = res.datas[0]
+					for (let key in this.addrData) {
+						this.addrData[key] = data[key];
+					}
+					this.addrDefault = data.is_default == '是';
+					this.addressName = data.province_name + '-' + data.city_name +
+						'-' + data.area_name;
+					this.addrDataId = data._id;
+				}
+
+				this.$api.msg(res.msg);
+			});
+			// } else {
+			// 	// #ifdef H5 || MP-360 || MP-QQ || MP-TOUTIAO
+			// 	this.addressName = "请选择地址";
+			// 	// #endif
+			// }
 
 			this.type = options.type || 'add';
 			uni.setNavigationBarTitle({
@@ -209,64 +261,65 @@
 		},
 		methods: {
 			priceSliderChange(e) {
-				this.goods.price = e.detail.value;
-			    console.log('value 发生变化：' + e.detail.value)
+				this.goods.price = e.detail.value * 100;
+				console.log('value 发生变化：' + e.detail.value)
 			},
 			changeKemu(e) {
 				this.selectKemu = e.detail.value;
-				console.log('e:',this.selectKemu, e);
+				console.log('e:', this.value, this.selectKemu);
 			},
 			successHeadPic(file) {
-				let headFilesPaths = file.tempFilePaths
-				for (let fp of headFilesPaths) {
-					this.goods.imgs.push(fp);
-				}
-				this.goods.img = this.goods.imgs[0];
-			    console.log('successHeadPic', this.goods);
+				// let headFilesPaths = file.tempFilePaths
+				// for (let fp of headFilesPaths) {
+				// 	this.goods.imgs.push(fp);
+				// }
+				// console.log('successHeadPic bf', this.headImageValue, this.goods);
+				// // this.goods.img = this.goods.imgs[0].url;
+				//    console.log('successHeadPic', this.headImageValue, this.goods);
 			},
 			deleteHeadPic(file) {
-				console.log('hhhhhhhhhhhhh')
-			    console.log('delete', file)
-				let dlFilePath = file.tempFilePath;
-				let index = this.goods.imgs.indexOf(dlFilePath);
-				console.log('deleteHeadPic', index);
-				if (index != -1) {
-					this.goods.imgs.splice(index, 1);
-					this.goods.img = this.goods.imgs[0];
-				}
-			    console.log('deleteHeadPic', this.goods);
+				// console.log('hhhhhhhhhhhhh')
+				//    console.log('delete', file, this.goods);
+				// let dlFilePath = file.tempFilePath;
+				// let index = this.goods.imgs.indexOf(dlFilePath);
+				// console.log('deleteHeadPic', index);
+				// if (index != -1) {
+				// 	this.goods.imgs.splice(index, 1);
+				// 	// this.goods.img = this.goods.imgs[0];
+				// }
+				//    console.log('deleteHeadPic', this.headImageValue, this.goods);
 			},
 			successDetailsPic(file) {
-				let headFilesPaths = file.tempFilePaths
-				for (let fp of headFilesPaths) {
-					this.goodsInfo.detail_imgs.push(fp);
-				}
-			    console.log('successDetailsPic', this.goodsInfo);
+				// let headFilesPaths = file.tempFilePaths
+				// for (let fp of headFilesPaths) {
+				// 	this.goods.detail_imgs.push(fp);
+				// }
+				//    console.log('successDetailsPic', this.detailImageValue, this.goods);
 			},
 			deleteDetailsPic(file) {
-				console.log('hhhhhhhhhhhhh')
-			    console.log('delete', file)
-				let dlFilePath = file.tempFilePath
-				let index = this.goodsInfo.detail_imgs.indexOf(dlFilePath)
-				console.log('deleteDetailsPic', index)
-				if (index != -1) {
-					this.goodsInfo.detail_imgs.splice(index, 1)
-				}
-			    console.log('deleteDetailaPic', this.goodsInfo)
+				// console.log('hhhhhhhhhhhhh')
+				//    console.log('delete', file)
+				// let dlFilePath = file.tempFilePath
+				// let index = this.goods.detail_imgs.indexOf(dlFilePath)
+				// console.log('deleteDetailsPic', index)
+				// if (index != -1) {
+				// 	this.goods.detail_imgs.splice(index, 1)
+				// }
+				//    console.log('deleteDetailaPic', this.detailImageValue,  this.goods)
 			},
-			 // 获取上传状态
-			      select(e) {
-			        console.log('选择文件：', e)
-			      },
-			      // 获取上传进度
-			      progress(e) {
-			        console.log('上传进度：', e)
-			      },
-			
-			      // 上传失败
-			      fail(e) {
-			        console.log('上传失败：', e)
-			      },
+			// 获取上传状态
+			select(e) {
+				console.log('选择文件：', e)
+			},
+			// 获取上传进度
+			progress(e) {
+				console.log('上传进度：', e)
+			},
+
+			// 上传失败
+			fail(e) {
+				console.log('上传失败：', e)
+			},
 			switchChange(e) {
 				this.addrDefault = e.detail.value;
 			},
@@ -346,8 +399,10 @@
 							_this.addrData.province_name = res.provinceName || '';
 							_this.addrData.city_name = res.cityName || '';
 							_this.addrData.area_name = res.adName || '';
-							
-							_this.addrData.address = [_this.addrData.province_name, _this.addrData.city_name, _this.addrData.area_name]
+
+							_this.addrData.address = [_this.addrData.province_name, _this.addrData.city_name,
+									_this.addrData.area_name
+								]
 								.filter(x => x).join('-');
 							_this.addressName = _this.addrData.address;
 
@@ -456,23 +511,29 @@
 					this.$api.msg('请填写详细地址');
 					return;
 				}
-				
+
 				if (!this.goods.name) {
 					this.$api.msg('请填写需求标题');
 					return;
 				}
-				
-				if (!this.goodsInfo.description) {
+
+				if (!this.goods.description) {
 					this.$api.msg('请填写需求详情');
 					return;
 				}
-				
+
 				if (this.selectKemu.length == 0) {
 					this.$api.msg('请选择教学科目');
 					return;
 				}
-				
+
+				// console.log('addrData', this.addrData);
+				// console.log('goods', this.goods);
+				// console.log('goodsInfo', this.goodsInfo);
+
+				// console.log('goodsInfo', this.selectKemu);
 				// goodsTags处理
+				this.goods.tags = [];
 				for (let id of this.selectKemu) {
 					for (let item of this.rangeKemu) {
 						if (id == item.value) {
@@ -480,47 +541,95 @@
 						}
 					}
 				}
-				
-				// 创建详情
-				let detailsTxtTmp = this.detailsTxtTemplate.replace("${TEXT}", this.goodsInfo.description)
-				let detailsPicTmp = '';
-				for (let di of this.goodsInfo.detail_imgs) {
-					detailsPicTmp = detailsPicTmp + this.detailsPicTemplate.replace("${IMGURL}", di)
-				}
-				this.goodsInfo.desc_mobile = '<p>' + detailsTxtTmp + detailsPicTmp + '</p>'
-				
-				console.log('addrData', this.addrData);
-				console.log('goods', this.goods);
-				console.log('goodsInfo', this.goodsInfo);
+
+				console.log('goods', this.headImageValue, this.detailImageValue, this.goods);
 				let realImgs = [];
-				for (let fp of this.goods.imgs) {
-					let imgNote = {
-						url: fp
+				if (this.headImageValue.length > 0) {
+					for (let fp of this.headImageValue) {
+						let imgNote = {
+							url: fp.url
+						};
+						realImgs.push(imgNote);
 					};
-					realImgs.push(imgNote);
+				}
+				this.goods.imgs = realImgs;
+				this.goods.img = realImgs.length > 0 ? realImgs[0].url : "";
+
+				let realDetailImgs = [];
+				for (let fp of this.detailImageValue) {
+					let imgNote = {
+						url: fp.url
+					};
+					realDetailImgs.push(imgNote);
 				};
-				
-				await this.$func.usemall
-					.call('goods/createNewGoods', {
-						consignee: this.addrData.consignee,
-						mobile: this.addrData.mobile,
-						name: this.goods.name,
-						cid: 112,
-						cids: ["60812f4e19a4150001b073b3","608136cad39bb80001c3b51b"],
-						price: this.goods.price,
-						stock_num: 999,
-						sort: 1,
-						state: "销售中",
-						version: 1,
-						is_delete: 0,
-						img: this.goods.img,
-						imgs: realImgs,
-						desc_mobile: this.goodsInfo.desc_mobile,
-						tags: this.goods.tags,
-					})
-					.then(res => {
-				});
-				
+				this.goods.detail_imgs = realDetailImgs;
+
+				// 创建详情
+				let detailsTxtTmp = this.detailsTxtTemplate.replace("${TEXT}", this.goods.description.split("\n").join(
+					"<br>"))
+				let detailsPicTmp = '';
+				if (this.goods.detail_imgs) {
+					for (let di of this.goods.detail_imgs) {
+						detailsPicTmp = detailsPicTmp + this.detailsPicTemplate.replace("${IMGURL}", di.url)
+					}
+					// console.log('goodsInfo 2', this.goods);
+				}
+
+				this.goods.desc_mobile = '<p>' + detailsTxtTmp + detailsPicTmp + '</p>'
+
+				console.log("test test", this.addrData, this.goods);
+
+				if (this.type === 'edit') {
+					await this.$func.usemall
+						.call('goods/updateNewGoods', {
+							_id: this.goods._id,
+							consignee: this.addrData.consignee,
+							mobile: this.addrData.mobile,
+							name: this.goods.name,
+							cid: this.goods.cid,
+							cids: this.goods.cids,
+							price: this.goods.price,
+							stock_num: this.goods.stock_num,
+							sort: this.goods.sort,
+							state: this.goods.state,
+							version: this.goods.version,
+							img: this.goods.img,
+							imgs: this.goods.imgs,
+							desc_mobile: this.goods.desc_mobile,
+							tags: this.goods.tags,
+							description: this.goods.description,
+							detail_imgs: this.goods.detail_imgs,
+							is_delete: 0,
+						})
+						.then(res => {
+							console.log("update request finished");
+						});
+				} else {
+					await this.$func.usemall
+						.call('goods/createNewGoods', {
+							consignee: this.addrData.consignee,
+							mobile: this.addrData.mobile,
+							name: this.goods.name,
+							cid: 112,
+							cids: ["60812f4e19a4150001b073b3", "608136cad39bb80001c3b51b"],
+							price: this.goods.price,
+							stock_num: 999,
+							sort: 1,
+							state: "销售中",
+							version: 1,
+							is_delete: 0,
+							img: this.goods.img,
+							imgs: realImgs,
+							desc_mobile: this.goods.desc_mobile,
+							tags: this.goods.tags,
+							description: this.goods.description,
+							detail_imgs: this.goods.detail_imgs,
+						})
+						.then(res => {
+							console.log("create request finished");
+						});
+				}
+
 				if (this.addrDefault) {
 					// 把默认为是的改成 否
 					await this.$db[__name]
@@ -529,7 +638,7 @@
 							is_default: '否'
 						});
 				}
-				
+
 				if (this.addrDataOpType == 'add') {
 
 					this.$db[__name].add(addrData).then(res => {
@@ -539,8 +648,8 @@
 								uni.navigateBack();
 							}, 100);
 							return;
-						} 
-						
+						}
+
 						this.$api.msg(res.msg);
 					});
 				} else {
@@ -548,7 +657,7 @@
 						this.$api.msg('当前ID异常，编辑失败');
 						return;
 					}
-					
+
 					this.$db[__name].update(this.addrDataId, addrData).then(res => {
 						if (res.code === 200) {
 							this.$api.msg('编辑成功');
@@ -557,7 +666,7 @@
 							}, 100);
 							return;
 						}
-						 
+
 						this.$api.msg(res.msg);
 					});
 				}
@@ -591,12 +700,12 @@
 			color: #333;
 		}
 	}
-	
+
 	.picker {
 		background: #fff;
 		position: relative;
 		height: 200rpx;
-	
+
 		.uni-file-picker {
 			flex-shrink: 1;
 			width: 450rpx;

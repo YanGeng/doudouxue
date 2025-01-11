@@ -81,8 +81,41 @@
 		</view>
 		<view v-else class="padding w-full margin-top">
 			<view class="dflex-b border-radius-big">
-				<view class="tac padding-tb-sm flex1 bg-warn" @click="isStudentFlag">发布课程</view>
+				<view class="tac padding-tb-sm flex1 bg-warn" @click="isStudentFlag">找学生</view>
 			</view>
+		</view>
+		
+		<view class="cart-list padding-sm">
+		<view class="bg-main padding-top padding-lr border-radius margin-top-sm" v-for="(item, index) in goodsInfos"
+			:key="index" @click="selectAddr(item)">
+			<view class="w-full dflex-wrap-w border-line">
+				<view class="fwb margin-bottom-xs desc">
+					<text>{{ item.name }} {{ item.mobile }}</text>
+				</view>
+				<view class="margin-bottom-sm">
+					<text>{{ item.consignee }}</text>
+					<text class="margin-left">{{ item.price/100 }}</text>
+					<text class="margin-left">{{ item.tags.join() }}</text>
+				</view>
+			</view>
+			<view class="dflex-b">
+<!-- 				<view v-if="item.is_default == '是'" class="dflex active">
+					<text class="iconfont iconxuanzhongzhuangtai padding-tb-sm padding-right-sm"></text>
+					<text> 默认地址</text>
+				</view>
+				<view v-else class="dflex ft-dark" @tap.stop="setDefault(item)">
+					<text class="iconfont padding-tb-sm padding-right-sm"></text>
+					<text> 设为默认</text>
+				</view> -->
+				<text>{{ item.description }}</text>
+				<view v-if="source == 0 || source == 1" class="dflex">
+					<view class="padding-tb-sm padding-right-sm" @tap.stop="addAddr('edit', item)"><text
+							class="iconfont iconbianji-01 ft-dark"></text></view>
+					<view class="padding-tb-sm padding-left-sm" @tap.stop="removeAddr(item)"><text
+							class="iconfont iconlajitong-01 ft-dark"></text></view>
+				</view>
+			</view>
+		</view>
 		</view>
 
 		<!-- 严选版权 -->
@@ -92,7 +125,10 @@
 
 <script>
 	const db = uniCloud.database();
-	const _cart = 'usemall-goods-cart'
+	const _cart = 'usemall-goods-cart';
+	const __address_name = 'usemall-member-address';
+	const __goods_info = 'usemall-goods';
+	const __goods_detail = 'usemall-goods-detail';
 	import {
 		mapState
 	} from 'vuex';
@@ -112,6 +148,9 @@
 				// 总价格
 				total: 0,
 				isStudent: true,
+				source: 0,
+				addressDatas: [],
+				goodsInfos: [],
 			};
 		},
 		watch: {
@@ -125,18 +164,55 @@
 		},
 		// 监听页面显示。页面每次出现在屏幕上都触发，包括从下级页面点返回露出当前页面
 		onShow() {
-			this.loadData();
+			console.log("islogin", this.islogin);
+			if (this.islogin) {
+				this.loadData();
+			}
 			this.isStudent = this.user_role == '学生';
 		},
 		// 下拉刷新
 		onPullDownRefresh() {
-			this.loadData(() => {
+			if (this.islogin) {
+				this.loadData(() => {
+					uni.stopPullDownRefresh();
+				});
+			} else {
 				uni.stopPullDownRefresh();
-			});
+			}
 		},
 
 		methods: {
-			create() {},
+			// 添加|编辑 收货人
+			addAddr(type, options) {
+				options = options || {
+					id: 0
+				};
+				uni.navigateTo({
+					url: `/pages/order/createRequest?type=${type}&id=${options._id}`
+				});
+			},
+			removeAddr(options) {
+				let _this = this;
+				uni.showModal({
+					title: '提示',
+					content: '删除需求',
+					success: async function(res) {
+						if (res.confirm) {
+							console.log('用户点击确定');
+							await _this.$func.usemall
+								.call('goods/deleteGoods', {
+									_id: options._id,
+								})
+								.then(res => {
+									console.log("update request finished");
+									_this.loadData();
+								});
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
+			},
 
 			// 判断是学生，还是教员
 			isStudentFlag() {
@@ -145,7 +221,7 @@
 				// console.log("test = " + a)
 				// return a;
 				uni.navigateTo({
-					url: `/pages/order/createRequest?type=edit`,
+					url: `/pages/order/createRequest?type=add`,
 					success(res) {
 						console.log(res);
 					},
@@ -156,6 +232,28 @@
 			},
 			//请求数据
 			async loadData(callback) {
+				// 收货人地址
+				// 收货人列表
+				this.$db[__address_name].where('create_uid == $cloudEnv_uid').tolist({
+					orderby: 'is_default desc'
+				}).then(res => {
+					if (res.code === 200) {
+						this.addressDatas = res.datas;
+						// return;
+					}
+					this.$api.msg(res.msg);
+				});
+				
+				this.$db[__goods_info].where('create_uid == $cloudEnv_uid').tolist({
+					orderby: 'last_modify_time desc'
+				}).then(res => {
+					if (res.code === 200) {
+						this.goodsInfos = res.datas;
+						console.log("this.goodsInfos", this.goodsInfos);
+						// return;
+					}
+					this.$api.msg(res.msg);
+				});
 
 				// 更改为临时表方式查询
 				const goodsTemp = db.collection('usemall-goods').getTemp();
@@ -401,6 +499,19 @@
 			background: $uni-color-primary;
 			box-shadow: 1px 2px 5px rgba(217, 60, 93, 0.72)
 		}
+	}
+	
+	.image-container {
+	  /* 容器样式，可以根据需要调整 */
+	  width: 100%;
+	  max-width: 600px; /* 设置图片容器的最大宽度 */
+	  margin: 0 auto; /* 使容器居中 */
+	}
+	
+	.responsive-image {
+	  width: 100%; /* 图片宽度设置为容器的100% */
+	  height: auto; /* 高度自动调整以保持图片的宽高比 */
+	  display: block; /* 移除图片底部的空白间隙 */
 	}
 
 	/* #ifdef H5 || MP-360 */
