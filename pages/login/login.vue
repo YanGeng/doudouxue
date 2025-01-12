@@ -200,27 +200,40 @@ export default {
 					password: this.password
 				})
 				.then(res => {
+					console.log("login data: ", res);
 					if (res.code == 200) {
 						// 调用 store login
 						_this.login(res.datas);
-
-						_this.$api.alert('登录成功', () => {
-							// #ifndef H5
-							if (_this.$api.pages().length > 1) {
-								// 返回上一页
+						
+						_this.$api.msg('登录成功');
+						// #ifndef H5
+						if (_this.$api.pages().length > 1) {
+							// 返回上一页
+							_this.$api.timerout(() => {
 								uni.navigateBack({});
-								return;
-							}
+							}, 200);
 							
-							_this.$api.tohome();
-							// #endif
+							return;
+						}
+						// #endif
+
+						// _this.$api.alert('登录成功', () => {
+						// 	// #ifndef H5
+						// 	if (_this.$api.pages().length > 1) {
+						// 		// 返回上一页
+						// 		uni.navigateBack({});
+						// 		return;
+						// 	}
 							
-							// #ifdef H5
-							uni.reLaunch({
-							    url: '/pages/tabbar/home'
-							})
-							// #endif
-						});
+						// 	// _this.$api.tohome();
+						// 	// #endif
+							
+						// 	// #ifdef H5
+						// 	// uni.reLaunch({
+						// 	//     url: '/pages/tabbar/home'
+						// 	// })
+						// 	// #endif
+						// });
 						
 						// uni.setStorageSync('identify', "login");
 						// if (uni.getStorageSync('identify') == 'login') {

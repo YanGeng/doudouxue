@@ -10,7 +10,8 @@ const store = new Vuex.Store({
 		member: {},
 		token: '',
 		token_expired: 0,
-		user_role: '学生',
+		// 'student', 'teacher', 'admin'，默认为'student'
+		user_role: 'student',
 
 		__key_member: 'usemall_member',
 		__key_token: 'uni_id_token',
@@ -21,10 +22,10 @@ const store = new Vuex.Store({
 		// 登录成功
 		login(state, res) {
 			// 用户已登录
-			console.log(res)
+			// console.log(res)
 			state.islogin = true;
 			state.user_role = res.user.userInfo.role[0]
-			console.log(state.user_role)
+			// console.log(state.user_role)
 			state.member = res.member;
 			state.token = res.user.token;
 			state.token_expired = res.user.tokenExpired;
@@ -83,7 +84,7 @@ const store = new Vuex.Store({
 			state.member = {};
 			state.token = '';
 			state.token_expired = 0;
-			state.user_role = '学生';
+			state.user_role = 'student';
 
 			uni.removeStorage({
 				key: state.__key_member

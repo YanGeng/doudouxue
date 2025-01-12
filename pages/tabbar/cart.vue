@@ -1,7 +1,7 @@
 <template>
 	<view class="container bg-drak" :class="{ 'margin-bottom-big': !empty }">
 		<!-- 00. 未授权登录 -->
-		<use-empty v-if="!islogin" e-style="round" e-type="unauthorized" tip="当前未授权" btn-tip="去登录" height="70vh"
+		<use-empty v-if="!islogin" e-style="round" e-type="unauthorized" tip="当前未授权" btn-tip="去登录" height="28vh"
 			:auto="false" @goto="tologin"></use-empty>
 		<!-- 00. 空白页 -->
 		<use-empty v-else-if="empty" e-style="round" e-type="cart" tip="购物车数据为空" height="28vh"></use-empty>
@@ -74,18 +74,23 @@
 
 		<!-- 03. 创建需求 -->
 		<!-- <use-hot-goods title-type="round" title="热门推荐"></use-hot-goods> -->
-		<view v-if="isStudent" class="padding w-full margin-top">
+		<view v-if="isAdmin" class="padding w-full margin-top">
+			<view class="dflex-b border-radius-big">
+				<view class="tac padding-tb-sm flex1 bg-warn" @click="isStudentFlag">新建自习室</view>
+			</view>
+		</view>
+		<view v-if="isStudent || isAdmin" class="padding w-full margin-top">
 			<view class="dflex-b border-radius-big">
 				<view class="tac padding-tb-sm flex1 bg-warn" @click="isStudentFlag">找老师</view>
 			</view>
 		</view>
-		<view v-else class="padding w-full margin-top">
+		<view v-if="!isStudent || isAdmin" class="padding w-full margin-top">
 			<view class="dflex-b border-radius-big">
 				<view class="tac padding-tb-sm flex1 bg-warn" @click="isStudentFlag">找学生</view>
 			</view>
 		</view>
 		
-		<view class="cart-list padding-sm">
+		<view v-if="islogin" class="cart-list padding-sm">
 		<view class="bg-main padding-top padding-lr border-radius margin-top-sm" v-for="(item, index) in goodsInfos"
 			:key="index" @click="selectAddr(item)">
 			<view class="w-full dflex-wrap-w border-line">
@@ -107,7 +112,7 @@
 					<text class="iconfont padding-tb-sm padding-right-sm"></text>
 					<text> 设为默认</text>
 				</view> -->
-				<text>{{ item.description }}</text>
+				<text class="clamp-2">{{ item.description }}</text>
 				<view v-if="source == 0 || source == 1" class="dflex">
 					<view class="padding-tb-sm padding-right-sm" @tap.stop="addAddr('edit', item)"><text
 							class="iconfont iconbianji-01 ft-dark"></text></view>
@@ -148,6 +153,7 @@
 				// 总价格
 				total: 0,
 				isStudent: true,
+				isAdmin: false,
 				source: 0,
 				addressDatas: [],
 				goodsInfos: [],
@@ -168,7 +174,9 @@
 			if (this.islogin) {
 				this.loadData();
 			}
-			this.isStudent = this.user_role == '学生';
+			console.log("xxxxxxxxx", this.user_role);
+			this.isStudent = this.user_role == 'member' || this.user_role == '学生' || this.user_role == 'student';
+			this.isAdmin = this.user_role == 'admin'
 		},
 		// 下拉刷新
 		onPullDownRefresh() {
@@ -216,6 +224,11 @@
 
 			// 判断是学生，还是教员
 			isStudentFlag() {
+				if (!this.islogin) {
+					this.$api.tologin()
+					return;
+				}
+				
 				debugger
 				let a = this.user_role == '学生';
 				// console.log("test = " + a)

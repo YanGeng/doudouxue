@@ -4,33 +4,36 @@
 		<!-- 列表标题 -->
 		<use-list-title v-if="hotDatas && hotDatas.length > 0" :title="title" size="32" fwt="600" :type="titleType" color="#333" iconfont="iconremen" @goto="hot"></use-list-title>
 		
-		<!-- <view class="list dflex-b dflex dflex-wrap-w w-full">
+		<view class="list dflex-b dflex dflex-wrap-w w-full">
 			<view v-for="(item, index) in hotDatas" :key="index" class="item border-radius-sm padding-bottom-sm" @click="to_detail(item)">
 				<view class="image-wrapper"><image mode="aspectFill" :lazy-load="true" :src="item.img"></image></view>
-				<text class="title clamp padding-sm">{{ item.name }}</text>
+				<text class="title clamp padding-sm">{{ item.description || item.name }}</text>
 				<view class="padding-left-sm">
 					<text class="price">{{ item.price / 100 }}</text>
 					<text class="m-price">{{ item.market_price / 100 }}</text>
 				</view>
+				<view class="padding-left-sm">
+					<text class="consignee">{{ item.consignee }}</text>
+				</view>
 			</view>
-		</view> -->
+		</view>
 		
-		<view v-for="(item,index) in hotDatas" :key="index" class="flexlist-item">
+		<!-- <view v-for="(item,index) in hotDatas" :key="index" class="flexlist-item">
 			<image @click="to_detail(item)" :src="item.img" mode="aspectFill" class="flexlist-img">
 			</image>
 			<view class="flex-1">
-				<text @click="to_detail(item)" class="flexlist-title">测试</text>
+				<text @click="to_detail(item)" class="flexlist-title clamp-2">{{item.name}}</text>
 				<view @click="to_detail(item)" class="flex mgb-5">
 					<view class="cl2 f12 mgr-5">评价</view>
 					<view class="cl-num f12 mgr-10">9.0</view>
 					<view class="cl2 f12 mgr-5">订单</view>
 					<view class="cl-num f12 mgr-10">23</view>
 				</view>
-				<text @click="to_detail(item)" class="flexlist-desc">
-					{{ subString(item.name) }}
+				<text @click="to_detail(item)" class="flexlist-desc clamp-2">
+					{{ item.description || item.name }}
 				</text>
 			</view>
-		</view>
+		</view> -->
 		
 		<!-- <view class="dflex-s dflex-wrap-w">
 			<view class="item padding-bottom-sm dflex dflex-flow-c"
@@ -133,7 +136,8 @@ export default {
 	
 	.image-wrapper {
 		width: 100%;
-		height: 300rpx;
+		// height: 100%;
+		height: 350rpx;
 		overflow: hidden;
 	
 		image {
@@ -141,6 +145,11 @@ export default {
 			height: 100%;
 			opacity: 1;
 		}
+	}
+	
+	.consignee {
+		color: #c0c0c0;
+		font-size: 24rpx;
 	}
 }
 </style>

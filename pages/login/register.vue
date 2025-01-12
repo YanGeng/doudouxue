@@ -102,7 +102,7 @@
 				is_send: false,
 				code_time: 30,
 				timer: 0,
-				member_type: ['学生', '教员'],
+				member_type: ['student', 'teacher'],
 				member_index: 0,
 			};
 		},

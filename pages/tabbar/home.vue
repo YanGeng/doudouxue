@@ -151,7 +151,7 @@
 			async loadData(callback) {
 
 				await this.$func.usemall.call('app/mp/home', {
-					rows: 4
+					rows: 8
 				}).then(res => {
 					if (res.code === 200) {
 						// 轮播图
