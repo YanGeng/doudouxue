@@ -75,6 +75,20 @@
       "description": "运费模板",
       "trim": "both"
     },
+	 "city_name": {
+	      "bsonType": "string",
+	      "description": "城市",
+	      "trim": "both"
+	    },
+	    "school": {
+	      "bsonType": "string",
+	      "description": "学校",
+	      "trim": "both"
+	    },
+	    "shoukeType": {
+	      "bsonType": "array",
+	      "description": "授课类型集合"
+	    },
     "img": {
       "bsonType": "string",
       "description": "主图",

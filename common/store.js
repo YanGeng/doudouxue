@@ -12,6 +12,7 @@ const store = new Vuex.Store({
 		token_expired: 0,
 		// 'student', 'teacher', 'admin'，默认为'student'
 		user_role: 'student',
+		current_city: '上海市',
 
 		__key_member: 'usemall_member',
 		__key_token: 'uni_id_token',
@@ -19,6 +20,11 @@ const store = new Vuex.Store({
 		__key_user_role: 'user_role',
 	},
 	mutations: {
+		// 更新选择地址
+		updateCity(state, city) {
+			state.current_city = city
+		},
+		
 		// 登录成功
 		login(state, res) {
 			// 用户已登录

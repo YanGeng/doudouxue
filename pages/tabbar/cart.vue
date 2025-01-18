@@ -74,33 +74,44 @@
 
 		<!-- 03. 创建需求 -->
 		<!-- <use-hot-goods title-type="round" title="热门推荐"></use-hot-goods> -->
-		<view v-if="isAdmin" class="padding w-full margin-top">
+		<view v-if="isAdmin" class="padding-xs w-full margin-top">
 			<view class="dflex-b border-radius-big">
-				<view class="tac padding-tb-sm flex1 bg-warn" @click="isStudentFlag">新建自习室</view>
+				<view class="tac padding-tb-sm flex1 bg-warn" @click="createZixishi">新建自习室</view>
+			</view>
+			<view class="dflex-b border-radius-big">
+				<view class="tac padding-tb-sm flex1 bg-warn" @click="findTeacher">找老师</view>
+			</view>
+			<view class="dflex-b border-radius-big">
+				<view class="tac padding-tb-sm flex1 bg-warn" @click="findStudent">找学生</view>
 			</view>
 		</view>
-		<view v-if="isStudent || isAdmin" class="padding w-full margin-top">
+		<view v-if="isStudent" class="padding-xs w-full margin-top">
 			<view class="dflex-b border-radius-big">
-				<view class="tac padding-tb-sm flex1 bg-warn" @click="isStudentFlag">找老师</view>
+				<view class="tac padding-tb-sm flex1 bg-warn" @click="findTeacher">找老师</view>
 			</view>
 		</view>
-		<view v-if="!isStudent || isAdmin" class="padding w-full margin-top">
+		<view v-if="isTeacher" class="padding-xs w-full margin-top">
 			<view class="dflex-b border-radius-big">
-				<view class="tac padding-tb-sm flex1 bg-warn" @click="isStudentFlag">找学生</view>
+				<view class="tac padding-tb-sm flex1 bg-warn" @click="findStudent">找学生</view>
 			</view>
 		</view>
 		
 		<view v-if="islogin" class="cart-list padding-sm">
 		<view class="bg-main padding-top padding-lr border-radius margin-top-sm" v-for="(item, index) in goodsInfos"
 			:key="index" @click="selectAddr(item)">
-			<view class="w-full dflex-wrap-w border-line">
+			<view class="w-full flex-row-alicenter border-line">
+				<view class="left">
+					<image class="border-radius-xs wh-full" mode="aspectFill" :lazy-load="true" :src="item.img"></image>
+				</view>
+				<view class="margin-lr-sm">
 				<view class="fwb margin-bottom-xs desc">
 					<text>{{ item.name }} {{ item.mobile }}</text>
 				</view>
 				<view class="margin-bottom-sm">
 					<text>{{ item.consignee }}</text>
-					<text class="margin-left">{{ item.price/100 }}</text>
+					<text class="margin-left cl-money">{{ item.price/100 }}</text>
 					<text class="margin-left">{{ item.tags.join() }}</text>
+				</view>
 				</view>
 			</view>
 			<view class="dflex-b">
@@ -114,9 +125,9 @@
 				</view> -->
 				<text class="clamp-2">{{ item.description }}</text>
 				<view v-if="source == 0 || source == 1" class="dflex">
-					<view class="padding-tb-sm padding-right-sm" @tap.stop="addAddr('edit', item)"><text
+					<view class="padding-tb-sm padding-right-sm" @tap.stop="editRequest('edit', item)"><text
 							class="iconfont iconbianji-01 ft-dark"></text></view>
-					<view class="padding-tb-sm padding-left-sm" @tap.stop="removeAddr(item)"><text
+					<view class="padding-tb-sm padding-left-sm" @tap.stop="removeRequest(item)"><text
 							class="iconfont iconlajitong-01 ft-dark"></text></view>
 				</view>
 			</view>
@@ -153,6 +164,7 @@
 				// 总价格
 				total: 0,
 				isStudent: true,
+				isTeacher: false,
 				isAdmin: false,
 				source: 0,
 				addressDatas: [],
@@ -176,7 +188,8 @@
 			}
 			console.log("xxxxxxxxx", this.user_role);
 			this.isStudent = this.user_role == 'member' || this.user_role == '学生' || this.user_role == 'student';
-			this.isAdmin = this.user_role == 'admin'
+			this.isTeacher = this.user_role == 'teacher';
+			this.isAdmin = this.user_role == 'admin';
 		},
 		// 下拉刷新
 		onPullDownRefresh() {
@@ -191,15 +204,29 @@
 
 		methods: {
 			// 添加|编辑 收货人
-			addAddr(type, options) {
+			editRequest(type, options) {
+				console.log('editRequest', options)
 				options = options || {
 					id: 0
 				};
-				uni.navigateTo({
-					url: `/pages/order/createRequest?type=${type}&id=${options._id}`
-				});
+				
+				if (options.requestType === 1) {
+					let test = 10002;
+					uni.navigateTo({
+						url: `/pages/order/createFindStudent?type=${type}&id=${options._id}`
+					});
+				} else if (options.requestType === 2) {
+					uni.navigateTo({
+						url: `/pages/order/createFindTeacher?type=${type}&id=${options._id}`
+					});
+				} else {
+					// 暂不考虑自习室
+					uni.navigateTo({
+						url: `/pages/order/createFindStudent?type=${type}&id=${options._id}`
+					});
+				}
 			},
-			removeAddr(options) {
+			removeRequest(options) {
 				let _this = this;
 				uni.showModal({
 					title: '提示',
@@ -221,20 +248,39 @@
 					}
 				});
 			},
-
-			// 判断是学生，还是教员
-			isStudentFlag() {
+			
+			createZixishi() {},
+			
+			findTeacher() {
 				if (!this.islogin) {
 					this.$api.tologin()
 					return;
 				}
 				
-				debugger
-				let a = this.user_role == '学生';
 				// console.log("test = " + a)
 				// return a;
 				uni.navigateTo({
-					url: `/pages/order/createRequest?type=add`,
+					url: `/pages/order/createFindTeacher?type=add`,
+					success(res) {
+						console.log(res);
+					},
+					fail(err) {
+						console.log(err);
+					}
+				})
+			},
+
+			// 判断是学生，还是教员
+			findStudent() {
+				if (!this.islogin) {
+					this.$api.tologin()
+					return;
+				}
+
+				// console.log("test = " + a)
+				// return a;
+				uni.navigateTo({
+					url: `/pages/order/createFindStudent?type=add`,
 					success(res) {
 						console.log(res);
 					},
@@ -525,6 +571,15 @@
 	  width: 100%; /* 图片宽度设置为容器的100% */
 	  height: auto; /* 高度自动调整以保持图片的宽高比 */
 	  display: block; /* 移除图片底部的空白间隙 */
+	}
+	
+	/* 需求列表 */
+	.left {
+		image {
+			width: 120rpx;
+			height: 120rpx;
+			flex-shrink: 0;
+		}
 	}
 
 	/* #ifdef H5 || MP-360 */

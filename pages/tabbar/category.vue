@@ -8,7 +8,7 @@
 		                v-for="(item,index) in scrollTitle" 
 		                :key="index" 
 		                @tap="handleSelected(index)" 
-		                :class="{'on':item.selected}">
+		                :class="{on: item.value === findWho}">
 		                    <view class="container">
 		                        {{item.title}}
 		                    </view>
@@ -22,7 +22,7 @@
 			<view class="h-full left">
 				<scroll-view scroll-y class="h-full">
 					<view v-for="item in fdatas" :key="item._id" class="item dflex-c"
-						:class="{ active: item._id === cid }" @click="fSelect(item)">{{ item.name }}</view>
+						:class="{ active: item._id === cid || item.cid === cid}" @click="fSelect(item)">{{ item.name }}</view>
 				</scroll-view>
 			</view>
 
@@ -41,7 +41,7 @@
 				<!-- 右侧分类对应商品列表 -->
 				<view v-if="mode == 2">
 					<!-- 空白页 -->
-					<use-empty v-if="empty" e-style="round" tip="无商品数据"></use-empty>
+					<use-empty v-if="empty" e-style="round" tip="无商品数据" height="90vh"></use-empty>
 
 					<view v-else class="padding-lr" v-for="(item, index) in goodsDatas" :key="index"
 						@click="togoods(item)">
@@ -51,10 +51,10 @@
 								<image mode="aspectFill" :lazy-load="true" :src="item.img"></image>
 							</view>
 							<view class="margin-left-sm pos-r">
-								<text class="clamp-2">{{ item.name }} {{ item.name_pw }}</text>
-								<view class="pos-a price-box w-full">
+								<text class="clamp-2">{{ item.name }} {{ item.description }}</text>
+								<view class="dflex-b pos-a price-box w-full">
 									<text class="price">{{ item.price / 100 }}</text>
-									<text class="m-price">{{ item.market_price / 100 }}</text>
+									<text class="cl-muted">{{ item.school }}</text>
 								</view>
 							</view>
 						</view>
@@ -84,7 +84,7 @@
 			return {
 				items: ['选项1', '选项2', '选项3'],
 				// 1分类列表 2商品列表
-				mode: 1,
+				mode: 2,
 				// 兼容支付宝 height 显示 bug
 				scrollHeight: '100%',
 
@@ -94,6 +94,7 @@
 				searchAuto: !0,
 				searchTip: '请输入搜索关键字',
 
+				findWho: 1,
 				// 当前选中分类ID
 				cid: 0,
 				// 一级数据
@@ -117,15 +118,15 @@
 				navHeight: 0,
 				scrollTitle: [
 					{
-				        title: '学生',
-				        selected: true,
+				        title: '找学生',
+				        value: 1,
 				    },
 				    {
-				        title: '教师',
-				        selected: false,
+				        title: '找教师',
+				        value: 2,
 				    }
 				],
-				requestType: '学生',
+				// requestType: '学生',
 			};
 		},
 		watch: {
@@ -147,7 +148,7 @@
 			// #endif
 
 			// 获取存储的模式
-			this.mode = uni.getStorageSync('category.mode') || 1;
+			// this.mode = uni.getStorageSync('category.mode') || 1;
 
 			this.loadData(() => {
 				if (this.mode == 2) {
@@ -156,31 +157,48 @@
 				}
 			});
 		},
+		// onShow() {
+		// 	// 获取存储的模式
+		// 	this.mode = uni.getStorageSync('category.mode') || 1;
+			
+		// 	this.loadData(() => {
+		// 		if (this.mode == 2) {
+		// 			// 加载商品数据
+		// 			this.loadGoodsDatas()
+		// 		}
+		// 	});
+		// },
 		// 下拉刷新
 		onPullDownRefresh() {
 			this.loadData(() => {
 				uni.stopPullDownRefresh();
 			});
 		},
+		onReachBottom() {
+			console.log("reach bottom");
+		},
 		methods: {
 			handleSelected(index) {
-			    this.scrollTitle[index].selected = true
-			    for (let i = 0; i < this.scrollTitle.length; i++) {
-			        if (i != index) {
-			            this.scrollTitle[i].selected = false
-			        }
-			    }
+			    // this.scrollTitle[index].selected = true
+			    // for (let i = 0; i < this.scrollTitle.length; i++) {
+			    //     if (i != index) {
+			    //         this.scrollTitle[i].selected = false
+			    //     }
+			    // }
 				if (index == 0) {
-					this.requestType = '学生';
+					this.findWho = 1;
+					// this.requestType = '学生';
 				} else if (index == 1) {
-					this.requestType = '教师';
+					this.findWho = 2;
+					// this.requestType = '教师';
 				}
 				
-				console.log("index is: ", index, this.requestType);
+				console.log("index is: ", index, this.findWho);
 			},
 			async loadData(callback) {
-				this.$db[_goodscategory].where({ state: '启用' }).tolist().then(res => {
+				this.$db[_goodscategory].where({ state: '启用' }).tolist({rows:50}).then(res => {
 					if (res.code === 200) {
+						// console.log("res: ", res);
 						this.fdatas = [];
 						this.sdatas = [];
 
@@ -195,9 +213,9 @@
 						});
 
 						if (this.fdatas.length > 0) {
-							this.cid = this.fdatas[0]._id;
+							this.cid = this.fdatas[1].cid || this.fdatas[1]._id;
 						}
-
+						
 						if (typeof callback === 'function') {
 							// 数据加载完成回调函数
 							callback();
@@ -211,11 +229,20 @@
 					return;
 				}
 				// 根据当前 cid 加载商品数据列表
+				let whereStr = '';
+				if (this.cid.length > 5) {
+					whereStr = `'${this.cid}' in cids`;
+				} else {
+					whereStr = `${this.cid} in cids`;
+				}
 				this.reqdata.cid = this.cid;
+				// console.log("this.reqdata: ", this.reqdata);
 				this.$db[_goods]
 					.where(`state == "销售中"`)
-					.where(`'${this.reqdata.cid}' in cids`).tolist(this.reqdata).then(res => {
+					.where(whereStr).tolist(this.reqdata).then(res => {
+					// .where({cids: this.db.command.contains(${this.reqdata.cid}), state: "销售中"}).tolist(this.reqdata).then(res => {
 						if (res.code === 200) {
+							console.log("this.res: ", res);
 							this.goodsDatas = res.datas;
 							if (this.goodsDatas.length >= this.reqdata.rows) {
 								if (this.reqdata.page == 1) this.hasmore = !0;
@@ -232,16 +259,20 @@
 			},
 			// 一级分类
 			fSelect(item) {
-				this.cid = item._id;
+				this.cid = item.cid || item._id;
+				console.log("this.cid: ", this.cid);
 				this.loadGoodsDatas();
 			},
 			// 切换模式 1分类模式 2商品模式
 			changeMode() {
-				this.mode = this.mode == 1 ? 2 : 1;
-				uni.setStorage({
-					key: 'category.mode',
-					data: this.mode
-				})
+				// 注释模式代码
+				// this.mode = this.mode == 1 ? 2 : 1;
+				// uni.setStorage({
+				// 	key: 'category.mode',
+				// 	data: this.mode
+				// })
+				// 修改为更换 找学生 赵老师
+				this.findWho = this.findWho === 2 ? 1 : 2;
 
 				this.loadGoodsDatas();
 			},
@@ -257,7 +288,9 @@
 					cid: item._id
 				});
 			},
-			onScroll() {},
+			onScroll() {
+				// console.log("on scroll");
+			},
 		},
 		mounted() {
 			// #ifdef H5 || MP-360

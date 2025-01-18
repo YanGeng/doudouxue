@@ -53,6 +53,11 @@ module.exports = class GoodsController extends Controller {
 			tags,
 			description,
 			detail_imgs,
+			school,
+			shoukeType,
+			city_name,
+			requestType,
+			addressId,
 			// 商品详情信息 usemall-goods-detail
 			desc_mobile,
 			// 商品sku信息 usemall-goods-sku
@@ -84,13 +89,18 @@ module.exports = class GoodsController extends Controller {
 			img: img,
 			imgs: imgs,
 			tags: tags,
-			catetories: tags,
+			catetories: catetories,
 			state: state,
 			sort: sort,
 			hot: hot,
 			stock_num: stock_num,
 			description: description,
-			detail_imgs: detail_imgs
+			detail_imgs: detail_imgs,
+			school: school,
+			shoukeType: shoukeType,
+			city_name: city_name,
+			requestType: requestType,
+			addressId: addressId,
 		});
 
 		this.db.collection('usemall-goods-detail').doc(_id).update({
@@ -102,6 +112,20 @@ module.exports = class GoodsController extends Controller {
 			create_time: create_time,
 			last_modify_uid: uid,
 			last_modify_time: new_last_modify_time
+		}).then(res => {
+			if (res && res.updated <= 0) {
+				// this.db.collection('usemall-goods-detail').add({
+				// 	_id: _id,
+				// 	goods_id: _id,
+				// 	version: 1,
+				// 	is_delete: 0,
+				// 	create_uid: uid,
+				// 	desc_mobile: desc_mobile,
+				// 	create_time: create_time,
+				// 	last_modify_uid: uid,
+				// 	last_modify_time: new_last_modify_time
+				// });
+			}
 		});
 
 		let response = {
@@ -133,8 +157,14 @@ module.exports = class GoodsController extends Controller {
 			tags,
 			description,
 			detail_imgs,
+			school,
+			shoukeType,
+			city_name,
+			requestType,
+			catetories,
 			// 商品详情信息 usemall-goods-detail
 			desc_mobile,
+			addressId,
 			// 商品sku信息 usemall-goods-sku
 		} = this.ctx.data;
 
@@ -193,48 +223,48 @@ module.exports = class GoodsController extends Controller {
 			"https://mp-0fe42d5b-82e4-482d-8ad1-81bb97905319.cdn.bspapp.com/default_pic/other_3.webp",
 			"https://mp-0fe42d5b-82e4-482d-8ad1-81bb97905319.cdn.bspapp.com/default_pic/other_4.webp"
 		];
-		console.log("tags", tags);
+
 		let imgTmp = img;
 		let imgsTmp = imgs;
-		if (tags && tags.length > 0 && (!imgs || imgs.length <= 0)) {
-			for (let tag of tags) {
-				if (tag == '语文') {
+		if (cids && cids.length > 0 && (!imgs || imgs.length <= 0)) {
+			for (let tag of cids) {
+				if (tag == 10002) {
 					imgTmp = !imgTmp || imgTmp == "" ? yuwen[Math.floor(Math.random() * 10) % 4] : imgTmp;
 					let imgNote = {
 						url: yuwen[Math.floor(Math.random() * 10) % 4]
 					};
 					imgsTmp.push(imgNote);
-				} else if (tag == '数学') {
+				} else if (tag == 10003) {
 					imgTmp = !imgTmp || imgTmp == "" ? shuxue[Math.floor(Math.random() * 10) % 4] : imgTmp;
 					let imgNote = {
 						url: shuxue[Math.floor(Math.random() * 10) % 4]
 					};
 					imgsTmp.push(imgNote);
-				} else if (tag == '英语') {
+				} else if (tag == 10004) {
 					imgTmp = !imgTmp || imgTmp == "" ? yingyu[Math.floor(Math.random() * 10) % 4] : imgTmp;
 					let imgNote = {
 						url: yingyu[Math.floor(Math.random() * 10) % 4]
 					};
 					imgsTmp.push(imgNote);
-				} else if (tag == '物理') {
+				} else if (tag == 10005) {
 					imgTmp = !imgTmp || imgTmp == "" ? wuli[Math.floor(Math.random() * 10) % 4] : imgTmp;
 					let imgNote = {
 						url: wuli[Math.floor(Math.random() * 10) % 4]
 					};
 					imgsTmp.push(imgNote);
-				} else if (tag == '化学') {
+				} else if (tag == 10006) {
 					imgTmp = !imgTmp || imgTmp == "" ? huaxue[Math.floor(Math.random() * 10) % 4] : imgTmp;
 					let imgNote = {
 						url: huaxue[Math.floor(Math.random() * 10) % 4]
 					};
 					imgsTmp.push(imgNote);
-				} else if (tag == '音乐') {
+				} else if (tag == 10007) {
 					imgTmp = !imgTmp || imgTmp == "" ? yinyue[Math.floor(Math.random() * 10) % 4] : imgTmp;
 					let imgNote = {
 						url: yinyue[Math.floor(Math.random() * 10) % 4]
 					};
 					imgsTmp.push(imgNote);
-				} else if (tag == '美术') {
+				} else if (tag == 10008) {
 					imgTmp = !imgTmp || imgTmp == "" ? meishu[Math.floor(Math.random() * 10) % 4] : imgTmp;
 					let imgNote = {
 						url: meishu[Math.floor(Math.random() * 10) % 4]
@@ -264,7 +294,6 @@ module.exports = class GoodsController extends Controller {
 
 		let create_time = new Date().getTime();
 		// let tagsTmp = tags;
-		let catetories = JSON.parse(JSON.stringify(tags));
 		// tags.push("极速退款");
 		let newPrice = price;
 		this.db.collection('usemall-goods').add({
@@ -290,7 +319,12 @@ module.exports = class GoodsController extends Controller {
 			hot: 1,
 			stock_num: stock_num,
 			description: description,
-			detail_imgs: detail_imgs
+			detail_imgs: detail_imgs,
+			school: school,
+			shoukeType: shoukeType,
+			city_name: city_name,
+			requestType: requestType,
+			addressId: addressId,
 		});
 
 		this.db.collection('usemall-goods-detail').add({
@@ -528,7 +562,7 @@ module.exports = class GoodsController extends Controller {
 		if (keyword) whereObj.name = new RegExp(keyword);
 		if (limited == 1) whereObj.limited = 1;
 		if (hot == 1) whereObj.hot = 1;
-		if (cid) whereObj.cids = cid;
+		if (cid) whereObj.cids = isFinite(cid) ? parseInt(cid, 10) : cid;
 
 		const goods = await this.db.collection('usemall-goods')
 			.where(whereObj)

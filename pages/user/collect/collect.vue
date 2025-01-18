@@ -9,7 +9,7 @@
 					<image :src="item.img" mode="aspectFill"></image>
 				</view>
 				<view class="margin-left-sm pos-r w-full">
-					<text class="clamp-2" @click="togoods(item)">{{ item.name }} {{ item.name_pw }}</text>
+					<text class="clamp-2" @click="togoods(item)">{{ item.name[0] }} {{ item.name_pw }}</text>
 					<view class="pos-a dflex-b price-box w-full">
 						<text class="price padding-tb-sm" @click="togoods(item)">{{ item.price / 100 }}</text>
 						<view class="dflex-c ft-dark">
@@ -124,6 +124,7 @@
 							res.result.data.forEach(x => {
 								_historyDatas.push(x);
 							});
+							console.log('_historyDatas', _historyDatas);
 							this.datas = _historyDatas;
 							if (this.datas.length === 0) {
 								this.empty = true;

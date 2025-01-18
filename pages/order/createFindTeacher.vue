@@ -2,8 +2,8 @@
 	<view class="content bg-drak ft-main">
 		<view class="gap"></view>
 		<view class="row dflex border-line padding-lr">
-			<text class="tit">收货人</text>
-			<input class="input" type="text" v-model="addrData.consignee" placeholder="请输入收货人姓名"
+			<text class="tit">昵称</text>
+			<input class="input" type="text" v-model="addrData.consignee" placeholder="请输入您的昵称"
 				placeholder-class="placeholder" />
 		</view>
 		<view class="row dflex border-line padding-lr">
@@ -14,6 +14,13 @@
 		<view class="row dflex border-line padding-lr">
 			<text class="tit">标题</text>
 			<input class="input" type="text" v-model="goods.name" placeholder="请输入标题" placeholder-class="placeholder" />
+		</view>
+		<view class="row dflex border-line padding-lr">
+			<text class="tit">授课方式</text>
+			<view class="dflex-e flex1">
+				<uni-data-checkbox :multiple="true" v-model="selectShoukeType" :localdata="rangeShoukeType"
+					@change="changeShoukeType"></uni-data-checkbox>
+			</view>
 		</view>
 
 		<view class="row dflex border-line padding-lr">
@@ -41,7 +48,7 @@
 
 		<view class="uni-textarea dflex border-line padding-lr">
 			<view>
-				<textarea class="input" type="text" v-model="goods.description" placeholder="请输入详情介绍"
+				<textarea class="input" type="text" v-model="goods.description" placeholder="如:要求老师性别;上课时间;价格详情等"
 					placeholder-class="placeholder" auto-height />
 			</view>
 		</view>
@@ -115,6 +122,9 @@
 </template>
 
 <script>
+import { provide } from "vue";
+import { rangeShoukeType, rangeKemu } from './order.js'
+
 	const __name = 'usemall-member-address';
 	export default {
 		components: {},
@@ -123,46 +133,17 @@
 				headImageValue: [],
 				detailImageValue: [],
 				value: [],
-				rangeKemu: [{
-						"value": 0,
-						"text": "语文"
-					},
-					{
-						"value": 1,
-						"text": "数学"
-					},
-					{
-						"value": 2,
-						"text": "英语"
-					},
-					{
-						"value": 3,
-						"text": "物理"
-					},
-					{
-						"value": 4,
-						"text": "化学"
-					},
-					{
-						"value": 5,
-						"text": "音乐"
-					},
-					{
-						"value": 6,
-						"text": "美术"
-					},
-					{
-						"value": 7,
-						"text": "其他"
-					},
-				],
+				rangeShoukeType: rangeShoukeType,
+				rangeKemu: rangeKemu,
 				selectKemu: [],
+				selectShoukeType: [],
 				addrDefault: false,
 				// addressName: '请选择地址 | 地图选择',
 				addressName: '请选择地址',
 				addrDataId: '',
 				addrDataOpType: 'edit',
 				addrData: {
+					_id: '',
 					consignee: '',
 					mobile: '',
 					address: '',
@@ -174,11 +155,12 @@
 					addr_source: '录入',
 					remark: '家',
 					longitude: '',
-					latitude: '',
+					latitude: ''
 				},
 				goods: {
 					name: '',
 					cid: '',
+					cids: [],
 					price: 15000,
 					stock_num: '',
 					sort: '',
@@ -191,6 +173,12 @@
 					description: '',
 					detail_imgs: [],
 					desc_mobile: '',
+					school: '',
+					shoukeType: [],
+					city_name: '',
+					requestType: 2,
+					catetories: [],
+					addressId: '',
 				},
 				goodsInfo: {},
 				id: 0,
@@ -208,46 +196,64 @@
 					_id: options.id
 				}).tolist().then(res => {
 					if (res.code === 200) {
-						console.log("res data", res);
+						console.log("load data", res, this.selectKemu, this.selectShoukeType);
 						this.goods = res.datas[0];
 						// 添加类目
 						// let selectCate = [];
-						for (let cate of this.goods.catetories) {
+						if (this.goods.cids) {
+						for (let cate of this.goods.cids) {
 							for (let item of this.rangeKemu) {
-								if (cate == item.text) {
+								if (cate === item.text || cate === item.cid) {
 									// selectCate.push(item.value);
 									this.selectKemu.push(item.value);
 								}
 							}
 						}
+						}
+						
+						// console.log('selectKemu', this.selectKemu);
+						
+						if (this.goods.shoukeType) {
+						for (let cate of this.goods.shoukeType) {
+							for (let item of this.rangeShoukeType) {
+								if (cate == item.text) {
+									// selectCate.push(item.value);
+									this.selectShoukeType.push(item.value);
+								}
+							}
+						}
+						}
 						// this.value = selectCate;
 
 						// 添加首页图片
-						let hImagsTmp = [];
 						this.headImageValue = this.goods.imgs;
-						this.detailImageValue = this.goods.detail_imgs
+						this.detailImageValue = this.goods.detail_imgs;
 					}
+					
+					// 获取地址信息
+					let whereStr = 'create_uid == $cloudEnv_uid';
+					if (this.goods.addressId) {
+						whereStr = '_id == "' + this.goods.addressId + '"';
+					}
+					this.$db[__name].where(whereStr).tolist({
+						orderby: 'is_default desc'
+					}).then(res => {
+						if (res.code === 200) {
+							let data = res.datas[0]
+							for (let key in this.addrData) {
+								this.addrData[key] = data[key];
+							}
+							this.addrDefault = data.is_default == '是';
+							this.addressName = data.province_name + '-' + data.city_name +
+								'-' + data.area_name;
+							this.addrDataId = data._id;
+						}
+					});
 
 					this.$api.msg(res.msg);
 				});
 			}
-
-			this.$db[__name].where('create_uid == $cloudEnv_uid').tolist({
-				orderby: 'is_default desc'
-			}).then(res => {
-				if (res.code === 200) {
-					let data = res.datas[0]
-					for (let key in this.addrData) {
-						this.addrData[key] = data[key];
-					}
-					this.addrDefault = data.is_default == '是';
-					this.addressName = data.province_name + '-' + data.city_name +
-						'-' + data.area_name;
-					this.addrDataId = data._id;
-				}
-
-				this.$api.msg(res.msg);
-			});
+			
 			// } else {
 			// 	// #ifdef H5 || MP-360 || MP-QQ || MP-TOUTIAO
 			// 	this.addressName = "请选择地址";
@@ -260,13 +266,25 @@
 			});
 		},
 		methods: {
+			createId () {
+				return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1) 
+					+ (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)
+					+ (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1) 
+					+ (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)
+					+ (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1) 
+					+ (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+			},
 			priceSliderChange(e) {
 				this.goods.price = e.detail.value * 100;
-				console.log('value 发生变化：' + e.detail.value)
+				// console.log('value 发生变化：' + e.detail.value)
 			},
 			changeKemu(e) {
 				this.selectKemu = e.detail.value;
-				console.log('e:', this.value, this.selectKemu);
+				// console.log('e:', this.value, this.selectKemu);
+			},
+			changeShoukeType(e) {
+				this.selectShoukeType = e.detail.value;
+				// console.log('e:', this.value, this.selectShoukeType);
 			},
 			successHeadPic(file) {
 				// let headFilesPaths = file.tempFilePaths
@@ -491,7 +509,7 @@
 
 				let addrData = this.addrData;
 				if (!addrData.consignee) {
-					this.$api.msg('请填写收货人');
+					this.$api.msg('请填写昵称');
 					return;
 				}
 				if (!/(^1[3|4|5|7|8|9][0-9]{9}$)/.test(addrData.mobile)) {
@@ -503,10 +521,13 @@
 					this.$api.msg('请选择地址');
 					return;
 				}
-				if (!addrData.addr_detail) {
-					this.$api.msg('请填写详细地址');
-					return;
+				if (this.type === 'add' || !addrData._id) {
+					addrData._id = this.createId();
 				}
+				// if (!addrData.addr_detail) {
+				// 	this.$api.msg('请填写详细地址');
+				// 	return;
+				// }
 				if (!addrData.addr_detail) {
 					this.$api.msg('请填写详细地址');
 					return;
@@ -534,15 +555,42 @@
 				// console.log('goodsInfo', this.selectKemu);
 				// goodsTags处理
 				this.goods.tags = [];
+				if (this.goods.school) {
+					this.goods.tags.push(this.goods.school);
+				}
+				
+				this.goods.cids = []
 				for (let id of this.selectKemu) {
 					for (let item of this.rangeKemu) {
 						if (id == item.value) {
 							this.goods.tags.push(item.text);
+							this.goods.cids.push(item.cid);
 						}
 					}
 				}
+				
+				if (this.goods.cids.length > 0) {
+					this.goods.cid = this.goods.cids[0];
+				}
+				
+				// console.log("shouketype", this.selectShoukeType, this.goods.shoukeType)
+				this.goods.shoukeType = [];
+				for (let id of this.selectShoukeType) {
+					for (let item of this.rangeShoukeType) {
+						if (id == item.value) {
+							this.goods.tags.push(item.text);
+							this.goods.shoukeType.push(item.text);
+						}
+					}
+				}
+				
+				if (this.addrData.city_name == '市辖区') {
+					this.goods.city_name = this.addrData.province_name;
+				} else {
+					this.goods.city_name = this.addrData.city_name;
+				}
 
-				console.log('goods', this.headImageValue, this.detailImageValue, this.goods);
+				// console.log('goods', this.headImageValue, this.detailImageValue, this.goods);
 				let realImgs = [];
 				if (this.headImageValue.length > 0) {
 					for (let fp of this.headImageValue) {
@@ -577,7 +625,7 @@
 
 				this.goods.desc_mobile = '<p>' + detailsTxtTmp + detailsPicTmp + '</p>'
 
-				console.log("test test", this.addrData, this.goods);
+				// console.log("test test", this.addrData, this.goods);
 
 				if (this.type === 'edit') {
 					await this.$func.usemall
@@ -600,6 +648,12 @@
 							description: this.goods.description,
 							detail_imgs: this.goods.detail_imgs,
 							is_delete: 0,
+							school: this.goods.school,
+							shoukeType: this.goods.shoukeType,
+							city_name: this.goods.city_name,
+							requestType: 2,
+							catetories: this.goods.catetories,
+							addressId: this.addrData._id,
 						})
 						.then(res => {
 							console.log("update request finished");
@@ -610,8 +664,8 @@
 							consignee: this.addrData.consignee,
 							mobile: this.addrData.mobile,
 							name: this.goods.name,
-							cid: 112,
-							cids: ["60812f4e19a4150001b073b3", "608136cad39bb80001c3b51b"],
+							cid: this.goods.cid,
+							cids: this.goods.cids,
 							price: this.goods.price,
 							stock_num: 999,
 							sort: 1,
@@ -624,6 +678,12 @@
 							tags: this.goods.tags,
 							description: this.goods.description,
 							detail_imgs: this.goods.detail_imgs,
+							school: this.goods.school,
+							shoukeType: this.goods.shoukeType,
+							city_name: this.goods.city_name,
+							requestType: 2,
+							catetories: this.goods.catetories,
+							addressId: this.addrData._id,
 						})
 						.then(res => {
 							console.log("create request finished");
@@ -639,14 +699,16 @@
 						});
 				}
 
-				if (this.addrDataOpType == 'add') {
-
+				// console.log('addrDataOpType', addrData);
+				if (this.type == 'add') {
 					this.$db[__name].add(addrData).then(res => {
 						if (res.code === 200) {
 							this.$api.msg('添加成功');
 							this.$api.timerout(() => {
 								uni.navigateBack();
 							}, 100);
+							
+							// console.log('address', res);
 							return;
 						}
 
@@ -657,13 +719,15 @@
 						this.$api.msg('当前ID异常，编辑失败');
 						return;
 					}
-
+					
+					delete addrData._id;
 					this.$db[__name].update(this.addrDataId, addrData).then(res => {
 						if (res.code === 200) {
 							this.$api.msg('编辑成功');
 							this.$api.timerout(() => {
 								uni.navigateBack();
 							}, 100);
+							// console.log('address', res);
 							return;
 						}
 

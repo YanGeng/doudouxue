@@ -125,6 +125,7 @@
 				this.reqdata[key] = decodeURIComponent(options[key]);
 			}
 
+			console.log('this.reqdata', this.reqdata, options);
 			this.loadData();
 		},
 		methods: {
@@ -217,10 +218,10 @@
 				} else if (this.filterIndex == 2) {
 					// 价格排序
 					this.reqdata.sidx = 'price';
-					if (this.priceOrder == 1) {
+					if (this.priceOrder == 2) {
 						// 降序
 						this.reqdata.sord = 'desc';
-					} else if (this.priceOrder == 2) {
+					} else if (this.priceOrder == 1) {
 						// 升序
 						this.reqdata.sord = 'asc';
 					}

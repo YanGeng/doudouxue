@@ -137,7 +137,7 @@ export default {
 	.image-wrapper {
 		width: 100%;
 		// height: 100%;
-		height: 350rpx;
+		height: 300rpx;
 		overflow: hidden;
 	
 		image {

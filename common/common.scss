@@ -183,6 +183,11 @@ view[class*='border-radius']{ overflow: hidden;}
 		margin-bottom: 6rpx;
 	}
 	
+	.flex-row-alicenter{
+	 	display: flex!important;
+	 	flex-direction: row!important;
+		align-items: center;
+	 }
 	.flex{
 	 	display: flex!important;
 	 	flex-direction: row!important;

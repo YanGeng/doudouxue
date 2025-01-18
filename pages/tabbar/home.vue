@@ -1,7 +1,7 @@
 <template>
 	<view class="box-sizing-b w-full">
 		<!-- 01. 头部组件 -->
-		<use-header :search-tip="searchTip" :search-auto="searchAuto" @search="search"></use-header>
+		<use-header :search-tip="searchTip" :search-auto="searchAuto" :current-city="current_city" @search="search"></use-header>
 
 		<!-- 02. 轮播区 -->
 		<view class="swiper-area pos-r" v-if="swiperDatas && swiperDatas.length > 0">
@@ -43,7 +43,7 @@
 		<view class="gap"></view>
 
 		<!-- 05. 热门推荐 -->
-		<use-hot-goods :datas="goodsHotDatas" autoload="none" title="教师推荐"></use-hot-goods>
+		<use-hot-goods :datas="goodsHotDatas" autoload="none" title="为您推荐"></use-hot-goods>
 
 		<!-- 置顶 -->
 		<use-totop ref="usetop" :style="{ marginBottom: navHeight + 'px' }"></use-totop>
@@ -61,7 +61,7 @@
 
 	export default {
 		computed: {
-			...mapState(['islogin', 'member', 'user_role'])
+			...mapState(['islogin', 'member', 'user_role', 'current_city'])
 		},
 		data() {
 			return {
@@ -131,7 +131,7 @@
 			}
 
 			return {
-				title: '豆学自习室',
+				title: '豆豆学',
 				path: `/pages/tabbar/home?mid=${mid}`,
 				// imageUrl: 'https://mall-os-api.use-cloud.com/files/upload/image/20200408/200408115587860242.jpg',
 				success: function(res) {

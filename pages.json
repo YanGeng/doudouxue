@@ -2,7 +2,7 @@
 	"pages": [{
 			"path": "pages/tabbar/home",
 			"style": {
-				"navigationBarTitleText": "豆学自习室",
+				"navigationBarTitleText": "豆豆学",
 				"enablePullDownRefresh": true
 			}
 		}, {
@@ -203,7 +203,21 @@
 				"enablePullDownRefresh": false
 			}
 		}, {
-			"path" : "pages/order/createRequest",
+			"path" : "pages/order/createFindStudent",
+			"style" : 
+			{
+				"navigationBarTitleText" : "创建需求",
+				"enablePullDownRefresh" : false
+			}
+		}, {
+			"path" : "pages/user/address/citys",
+			"style" : 
+			{
+				"navigationBarTitleText" : "选择城市"
+			}
+		},
+		{
+			"path" : "pages/order/createFindTeacher",
 			"style" : 
 			{
 				"navigationBarTitleText" : "创建需求",
@@ -213,7 +227,7 @@
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "豆学自习室",
+		// "navigationBarTitleText": "豆豆学",
 		"navigationBarBackgroundColor": "#fff",
 		"backgroundColor": "#fff",
 
@@ -237,8 +251,8 @@
 			{
 				"pagePath": "pages/tabbar/category",
 				"iconPath": "static/images/tabbar/category.png",
-				"selectedIconPath": "static/images/tabbar/category-active.png",
-				"text": "分类"
+				"selectedIconPath": "static/images/tabbar/category-active.png"
+				// "text": "分类"
 			},
 			// {
 			// 	"pagePath": "pages/tabbar/shopping",
