@@ -10,49 +10,21 @@
 			<text class="tit">手机号</text>
 			<input class="input" type="number" v-model="addrData.mobile" placeholder="请输入手机号码"
 				placeholder-class="placeholder" />
-		</view><view class="row dflex border-line padding-lr">
-			<text class="tit">学校</text>
-			<input class="input" type="text" v-model="goods.school" placeholder="请输入您的毕业院校"
-				placeholder-class="placeholder" />
 		</view>
 		<view class="row dflex border-line padding-lr">
-			<text class="tit">标题</text>
-			<input class="input" type="text" v-model="goods.name" placeholder="请输入标题" placeholder-class="placeholder" />
-		</view>
-		<view class="row dflex border-line padding-lr">
-			<text class="tit">授课方式</text>
-			<view class="dflex-e flex1">
-				<uni-data-checkbox :multiple="true" v-model="selectShoukeType" :localdata="rangeShoukeType"
-					@change="changeShoukeType"></uni-data-checkbox>
-			</view>
+			<text class="tit">自习室名称</text>
+			<input class="input" type="text" v-model="goods.name" placeholder="请输入自习室名称" placeholder-class="placeholder" />
 		</view>
 
 		<view class="row dflex border-line padding-lr">
-			<text class="tit">教学科目</text>
-		</view>
-		<view class="row dflex border-line padding-lr">
-			<view class="dflex-e flex1">
-				<uni-data-checkbox :multiple="true" v-model="selectKemu" :localdata="rangeKemu"
-					@change="changeKemu"></uni-data-checkbox>
-			</view>
-		</view>
-
-		<view class="row dflex border-line padding-lr">
-			<text class="tit">价格（￥）</text>
-		</view>
-		<view>
-			<slider :value="goods.price/100" @change="priceSliderChange" min="50" max="500" step="10" show-value />
-		</view>
-
-		<view class="row dflex border-line padding-lr">
-			<text class="tit">详情</text>
+			<text class="tit">自习室介绍</text>
 		</view>
 
 		<br>
 
 		<view class="uni-textarea dflex border-line padding-lr">
 			<view>
-				<textarea class="input" type="text" v-model="goods.description" placeholder="请简要介绍您的优势"
+				<textarea class="input" type="text" v-model="goods.description" placeholder="可简要介绍自习室的情况"
 					placeholder-class="placeholder" auto-height maxlength="1000"/>
 			</view>
 		</view>
@@ -82,21 +54,7 @@
 					@delete="deleteDetailsPic"></uni-file-picker>
 			</view>
 		</view>
-		
-		<view v-if="user_role == 'admin'" class="padding-bottom-lg">
-		<view class="row dflex border-line padding-lr">
-			<text class="tit">链接</text>
-		</view>
-		
-		<br>
-		
-		<view class="uni-textarea dflex border-line padding-lr">
-			<view>
-				<textarea class="input" type="text" v-model="goods.link" placeholder="填写链接,如咸鱼链接"
-					placeholder-class="placeholder" auto-height maxlength="1000"/>
-			</view>
-		</view>
-		</view>
+	
 
 		<view class="row dflex border-line padding-left">
 			<text class="tit">所在地区</text>
@@ -185,7 +143,7 @@ import {
 					name: '',
 					cid: '',
 					cids: [],
-					price: 10000,
+					price: '',
 					stock_num: '',
 					sort: '',
 					state: '',
@@ -201,7 +159,7 @@ import {
 					shoukeType: [],
 					city_name: '',
 					area_name: '',
-					requestType: 1,
+					requestType: 0,
 					catetories: [],
 					addressId: '',
 					link: ''
@@ -268,7 +226,6 @@ import {
 					}).then(res => {
 						if (res.code === 200) {
 							let data = res.datas[0]
-							console.log('this.data', data);
 							for (let key in this.addrData) {
 								this.addrData[key] = data[key];
 							}
@@ -278,8 +235,6 @@ import {
 							this.addrDataId = data._id;
 						}
 					});
-					
-					console.log('this.addrData', this.addrData);
 
 					this.$api.msg(res.msg);
 				});
@@ -574,10 +529,10 @@ import {
 					return;
 				}
 
-				if (this.selectKemu.length == 0) {
-					this.$api.msg('请选择教学科目');
-					return;
-				}
+				// if (this.selectKemu.length == 0) {
+				// 	this.$api.msg('请选择教学科目');
+				// 	return;
+				// }
 
 				// console.log('addrData', this.addrData);
 				// console.log('goods', this.goods);
@@ -586,11 +541,13 @@ import {
 				// console.log('goodsInfo', this.selectKemu);
 				// goodsTags处理
 				this.goods.tags = [];
+				this.goods.tags.push(addrData.province_name + addrData.city_name + addrData.area_name + addrData.addr_detail);
 				if (this.goods.school) {
 					this.goods.tags.push(this.goods.school);
 				}
 				
 				this.goods.cids = []
+				this.goods.cids.push(10001);
 				for (let id of this.selectKemu) {
 					for (let item of this.rangeKemu) {
 						if (id == item.value) {
@@ -685,7 +642,7 @@ import {
 							shoukeType: this.goods.shoukeType,
 							city_name: this.goods.city_name,
 							area_name: this.goods.area_name,
-							requestType: 1,
+							requestType: 0,
 							// catetories: this.goods.catetories,
 							addressId: this.addrData._id,
 							link: this.goods.link,
@@ -717,7 +674,7 @@ import {
 							shoukeType: this.goods.shoukeType,
 							city_name: this.goods.city_name,
 							area_name: this.goods.area_name,
-							requestType: 1,
+							requestType: 0,
 							// catetories: this.goods.catetories,
 							addressId: this.addrData._id,
 							link: this.goods.link,

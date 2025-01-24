@@ -6,16 +6,21 @@ module.exports = class MpController extends Controller {
 	
 	// 首页
 	async home () {
-		let { rows } = this.ctx.data;
+		let { rows, page, requestType} = this.ctx.data;
 		rows = rows || 8;
+		// 当前用户是学生，设置requestType = 1
+		// 当前用户是老师，设置requestType = 2
+		requestType = requestType || 1;
 		
 		let response = { carousel: [], category: [], limited: [], hot: [] };
 		let start = new Date().getTime();
 		
 		const carousel = this.db.collection('usemall-app-carousel').where({ state: '启用' }).orderBy('sort', 'asc').get();
 		const category = this.db.collection('usemall-app-category').where({ state: '启用' }).orderBy('sort', 'asc').limit(8).get();
-		const limited = this.db.collection('usemall-goods').where({ state: '销售中', limited: 1 }).orderBy('sort', 'asc').limit(rows).get();
-		const hot = this.db.collection('usemall-goods').where({ state: '销售中', hot: 1 }).orderBy('sort', 'asc').limit(rows).get();
+		const limited = this.db.collection('usemall-goods').where({ state: '销售中', requestType: 0 }).orderBy('sort', 'asc').limit(rows).get();
+		// 原始逻辑注释掉
+		// const hot = this.db.collection('usemall-goods').where({ state: '销售中', hot: 1 }).orderBy('sort', 'asc').limit(rows).get();
+		const hot = this.db.collection('usemall-goods').where({ state: '销售中', requestType: requestType }).orderBy('sort', 'asc').limit(rows).get();
 		
 		const datas = await Promise.all([carousel, category, limited, hot]);
 		

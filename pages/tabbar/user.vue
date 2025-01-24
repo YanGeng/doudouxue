@@ -2,21 +2,22 @@
 	<view class="user-area">
 		<view class="header-area padding-lr-sm" :class="(is_mp && !is_alipay) ? 'padding-top-big' : 'padding-top'">
 			<view class="dflex-b">
-				<view class="member-area padding-top-sm margin-bottom dflex pos-r" @click="to('/pages/user/setting/personal')">
+				<!-- <view class="member-area padding-top-sm margin-bottom dflex pos-r" @click="to('/pages/user/setting/personal')"> -->
+				<view class="member-area padding-top-sm margin-bottom dflex pos-r">
 					<view>
-						<image class="headimg border-radius-c" :src="member.member_headimg || '/static/images/user/default.png'"></image>
+						<image class="headimg border-radius-c" :src="member.member_headimg || '/static/images/user/default4.jpg'"></image>
 					</view>
 					<view class="margin-left-sm">
 						<view class="info-box">
-							<text class="fs-lg">{{ member.member_name || member.member_nickname || '用云' }}</text>
+							<text class="fs-lg">{{ member.member_name || member.member_nickname || '严选' }}</text>
 						</view>
 						<view v-if="member.member_city"><text class="fs-xxs">{{ member.member_city }}</text></view>
 					</view>
 				</view>
-				<view class="border-radius-big bg-base dflex-c padding-lr" @click="to('/pages/user/integral/sign')">
+				<!-- <view class="border-radius-big bg-base dflex-c padding-lr" @click="to('/pages/user/integral/sign')">
 					<view class="iconfont fs-xl iconqiandao margin-right-xs"></view>
 					<view>签到</view>
-				</view>
+				</view> -->
 			</view>
 
 			<view class="border-radius">
@@ -27,7 +28,7 @@
 					</view>
 				</view>
 
-				<view class="stats-area dflex-c bg-main">
+				<!-- <view class="stats-area dflex-c bg-main">
 					<view class="item dflex dflex-flow-c" @click="toOrder('/pages/user/order/order', '全部')">
 						<text class="num">{{ member.member_monetary / 100 || 0 }}</text>
 						<text>累计消费</text>
@@ -37,13 +38,13 @@
 						<text class="num">{{ member.member_coupon_cnt || 6 }}</text>
 						<text>优惠券</text>
 					</view>
-				</view>
+				</view> -->
 			</view>
 		</view>
 
 		<view class="container-area padding-lr-sm padding-bottom-sm">
 			<!-- 我的订单 -->
-			<view class="border-radius margin-top-sm bg-main">
+			<!-- <view class="border-radius margin-top-sm bg-main">
 				<use-list-title title="我的订单" iconfont="icondingdan" color="#ff6a6c" fwt="600" tip="查看全部订单"
 					@goto="toOrder('/pages/user/order/order', '全部')"></use-list-title>
 
@@ -89,7 +90,7 @@
 						<text>售后/退款</text>
 					</view>
 				</view>
-			</view>
+			</view> -->
 
 			<view class="border-radius margin-top-sm bg-main">
 				<!-- 我的足迹 -->
@@ -173,6 +174,8 @@
 				this.$api.msg('账号未登录');
 				return;
 			}
+			
+			console.log('this member', this.member);
 
 			this.loadData();
 		},

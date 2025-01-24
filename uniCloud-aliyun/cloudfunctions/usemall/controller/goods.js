@@ -56,8 +56,10 @@ module.exports = class GoodsController extends Controller {
 			school,
 			shoukeType,
 			city_name,
+			area_name,
 			requestType,
 			addressId,
+			link,
 			// 商品详情信息 usemall-goods-detail
 			desc_mobile,
 			// 商品sku信息 usemall-goods-sku
@@ -99,8 +101,10 @@ module.exports = class GoodsController extends Controller {
 			school: school,
 			shoukeType: shoukeType,
 			city_name: city_name,
+			area_name: area_name,
 			requestType: requestType,
 			addressId: addressId,
+			link: link,
 		});
 
 		this.db.collection('usemall-goods-detail').doc(_id).update({
@@ -160,8 +164,10 @@ module.exports = class GoodsController extends Controller {
 			school,
 			shoukeType,
 			city_name,
+			area_name,
 			requestType,
 			catetories,
+			link,
 			// 商品详情信息 usemall-goods-detail
 			desc_mobile,
 			addressId,
@@ -323,8 +329,10 @@ module.exports = class GoodsController extends Controller {
 			school: school,
 			shoukeType: shoukeType,
 			city_name: city_name,
+			area_name: area_name,
 			requestType: requestType,
 			addressId: addressId,
+			link: link,
 		});
 
 		this.db.collection('usemall-goods-detail').add({
@@ -501,7 +509,8 @@ module.exports = class GoodsController extends Controller {
 			sid,
 			keyword,
 			limited,
-			hot
+			hot,
+			requestType,
 		} = req;
 
 		if (keyword) keyword = keyword.trim();
@@ -563,6 +572,7 @@ module.exports = class GoodsController extends Controller {
 		if (limited == 1) whereObj.limited = 1;
 		if (hot == 1) whereObj.hot = 1;
 		if (cid) whereObj.cids = isFinite(cid) ? parseInt(cid, 10) : cid;
+		if (requestType) whereObj.requestType = isFinite(requestType) ? parseInt(requestType, 10) : requestType;
 
 		const goods = await this.db.collection('usemall-goods')
 			.where(whereObj)

@@ -21,7 +21,7 @@
 		}, {
 			"path": "pages/tabbar/cart",
 			"style": {
-				"navigationBarTitleText": "购物车",
+				"navigationBarTitleText": "关注栏",
 				"enablePullDownRefresh": true
 			}
 		}, {
@@ -223,6 +223,14 @@
 				"navigationBarTitleText" : "创建需求",
 				"enablePullDownRefresh" : false
 			}
+		},
+		{
+			"path" : "pages/order/createZixishi",
+			"style" : 
+			{
+				"navigationBarTitleText" : "新建自习室",
+				"enablePullDownRefresh" : false
+			}
 		}
 	],
 	"globalStyle": {
@@ -251,8 +259,8 @@
 			{
 				"pagePath": "pages/tabbar/category",
 				"iconPath": "static/images/tabbar/category.png",
-				"selectedIconPath": "static/images/tabbar/category-active.png"
-				// "text": "分类"
+				"selectedIconPath": "static/images/tabbar/category-active.png",
+				"text": "分类"
 			},
 			// {
 			// 	"pagePath": "pages/tabbar/shopping",
@@ -264,7 +272,7 @@
 				"pagePath": "pages/tabbar/cart",
 				"iconPath": "static/images/tabbar/cart.png",
 				"selectedIconPath": "static/images/tabbar/cart-active.png",
-				"text": "购物车"
+				"text": "关注"
 			},
 			{
 				"pagePath": "pages/tabbar/user",

@@ -6,14 +6,16 @@
 		
 		<view class="list dflex-b dflex dflex-wrap-w w-full">
 			<view v-for="(item, index) in hotDatas" :key="index" class="item border-radius-sm padding-bottom-sm" @click="to_detail(item)">
-				<view class="image-wrapper"><image mode="aspectFill" :lazy-load="true" :src="item.img"></image></view>
-				<text class="title clamp padding-sm">{{ item.description || item.name }}</text>
-				<view class="padding-left-sm">
-					<text class="price">{{ item.price / 100 }}</text>
-					<text class="m-price">{{ item.market_price / 100 }}</text>
+				<view class="image-wrapper border-radius"><image mode="aspectFill" :lazy-load="true" :src="item.img"></image></view>
+				<text class="title clamp padding-sm">{{item.name }} {{ item.description.split('\n').slice(0,5).join('\n') }}</text>
+				<view class="padding-lr-sm dflex-b">
+					<text class="price_sm">{{ item.price / 100 }}</text>
+					<text class="text_cs">{{ item.shoukeType ? item.shoukeType.join() : '' }}</text>
+					<!-- <text class="m-price">{{ item.market_price / 100 }}</text> -->
 				</view>
-				<view class="padding-left-sm">
+				<view class="padding-lr-sm padding-top-xs dflex-b">
 					<text class="consignee">{{ item.consignee }}</text>
+					<text class="consignee">{{ item.school || item.area_name }}</text>
 				</view>
 			</view>
 		</view>
@@ -44,7 +46,7 @@
 		</view> -->
 		
 		<!-- 用云版权 -->
-		<use-copyright></use-copyright>
+		<!-- <use-copyright></use-copyright> -->
 	</view>
 </template>
 
@@ -148,8 +150,17 @@ export default {
 	}
 	
 	.consignee {
-		color: #c0c0c0;
+		color: #878787;
 		font-size: 24rpx;
 	}
+	
+	.text_cs {
+		color: #1f1f1f;
+		font-size: 24rpx;
+	}
+	
+	.price_sm{font-size: 24rpx; color: #ff6a6c; line-height: 1; font-weight: 580;}
+	.price_sm::before{ content: '￥'; font-size: 24rpx; }
+	.price_sm::after{ content: attr(data-decimal); font-size: 24rpx; }
 }
 </style>

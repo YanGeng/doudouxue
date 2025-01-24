@@ -35,12 +35,17 @@
 					<view class="item bg-main border-radius-sm padding-bottom-sm" v-for="(item, index) in goodsDatas"
 						:key="index" @click="togoods(item)">
 						<view class="image-wrapper">
-							<image mode="aspectFill" :lazy-load="true" :src="item.img"></image>
+							<image class="border-radius" mode="aspectFill" :lazy-load="true" :src="item.img"></image>
 						</view>
-						<text class="title clamp padding-sm">{{ item.name }}</text>
-						<view class="padding-left-sm dflex-b">
-							<text class="price">{{ item.price / 100 }}</text>
-							<text class="ft-dark margin-right-sm fs-xs">已售 {{item.sale_cnt }}</text>
+						<text class="title clamp padding-sm">{{ item.name }} {{ item.description ? item.description.split('\n').slice(0,5).join('\n') : '' }}</text>
+						<view v-if="!(item.requestType === 0)" class="padding-lr-sm dflex-b">
+							<text class="price_sm">{{ item.price / 100 }}</text>
+							<text class="text_cs">{{ item.shoukeType ? item.shoukeType.join() : '' }}</text>
+							<!-- <text class="ft-dark margin-right-sm fs-xs">已售 {{item.sale_cnt }}</text> -->
+						</view>
+						<view class="padding-lr-sm padding-top-xs dflex-b">
+							<text class="consignee">{{ item.consignee }}</text>
+							<text class="consignee">{{ item.school || item.area_name }}</text>
 						</view>
 					</view>
 				</view>
@@ -59,9 +64,14 @@
 </template>
 
 <script>
+	import { mapState } from 'vuex';
 	export default {
+		computed: {
+			...mapState(['islogin', 'member', 'user_role', 'current_city'])
+		},
 		data() {
 			return {
+				limited: false,
 				empty: false,
 				headerPosition: "fixed",
 				// 0综合排序 1销量优先 2价格排序
@@ -77,7 +87,8 @@
 					page: 1,
 					rows: 8,
 					sidx: 'sort',
-					sord: 'asc'
+					sord: 'asc',
+					requestType: 1
 				},
 				scrollTop: 0,
 			};
@@ -88,6 +99,16 @@
 				let empty = e.length === 0;
 				if (this.empty !== empty) {
 					this.empty = empty;
+				}
+			},
+			user_role(e) {
+				console.log('user_role: ', e);
+				if (!limited) {
+					if (e === 'teacher') {
+						this.reqdata.requestType = 2;
+					} else {
+						this.reqdata.requestType = 1;
+					}
 				}
 			}
 		},
@@ -110,6 +131,19 @@
 			this.loadData();
 		},
 		onLoad(options) {
+			console.log('options: ', options, this.user_role);
+			if (this.user_role === 'teacher') {
+				this.reqdata.requestType = 2;
+			} else {
+				this.reqdata.requestType = 1;
+			}
+			
+			// limited为自习室入口进入，不区分学生还是老师
+			if (options.limited) {
+				this.limited = true;
+				delete this.reqdata.requestType;
+			}
+			
 			let title = '搜索列表';
 			if (options && options.hot) {
 				title = '热门推荐';
@@ -125,7 +159,7 @@
 				this.reqdata[key] = decodeURIComponent(options[key]);
 			}
 
-			console.log('this.reqdata', this.reqdata, options);
+			console.log('this.reqdata', this.reqdata, options, this.user_role);
 			this.loadData();
 		},
 		methods: {
@@ -325,4 +359,18 @@
 			}
 		}
 	}
+	
+	.consignee {
+		color: #878787;
+		font-size: 24rpx;
+	}
+	
+	.text_cs {
+		color: #1f1f1f;
+		font-size: 24rpx;
+	}
+	
+	.price_sm{font-size: 24rpx; color: #ff6a6c; line-height: 1; font-weight: 580;}
+	.price_sm::before{ content: '￥'; font-size: 24rpx; }
+	.price_sm::after{ content: attr(data-decimal); font-size: 24rpx; }
 </style>

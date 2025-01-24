@@ -49,7 +49,7 @@
 		<view class="uni-textarea dflex border-line padding-lr">
 			<view>
 				<textarea class="input" type="text" v-model="goods.description" placeholder="如:要求老师性别;上课时间;价格详情等"
-					placeholder-class="placeholder" auto-height />
+					placeholder-class="placeholder" auto-height maxlength="1000"/>
 			</view>
 		</view>
 
@@ -77,6 +77,21 @@
 					return-type="array" mode="grid" @success="successDetailsPic"
 					@delete="deleteDetailsPic"></uni-file-picker>
 			</view>
+		</view>
+		
+		<view v-if="user_role == 'admin'" class="padding-bottom-lg">
+		<view class="row dflex border-line padding-lr">
+			<text class="tit">链接</text>
+		</view>
+		
+		<br>
+		
+		<view class="uni-textarea dflex border-line padding-lr">
+			<view>
+				<textarea class="input" type="text" v-model="goods.link" placeholder="填写链接,如咸鱼链接"
+					placeholder-class="placeholder" auto-height maxlength="1000"/>
+			</view>
+		</view>
 		</view>
 
 		<view class="row dflex border-line padding-left">
@@ -124,9 +139,14 @@
 <script>
 import { provide } from "vue";
 import { rangeShoukeType, rangeKemu } from './order.js'
-
+import {
+		mapState
+} from 'vuex';
 	const __name = 'usemall-member-address';
 	export default {
+		computed: {
+			...mapState(['islogin', 'user_role'])
+		},
 		components: {},
 		data() {
 			return {
@@ -161,7 +181,7 @@ import { rangeShoukeType, rangeKemu } from './order.js'
 					name: '',
 					cid: '',
 					cids: [],
-					price: 15000,
+					price: 10000,
 					stock_num: '',
 					sort: '',
 					state: '',
@@ -176,9 +196,11 @@ import { rangeShoukeType, rangeKemu } from './order.js'
 					school: '',
 					shoukeType: [],
 					city_name: '',
+					area_name: '',
 					requestType: 2,
 					catetories: [],
 					addressId: '',
+					link: ''
 				},
 				goodsInfo: {},
 				id: 0,
@@ -528,10 +550,10 @@ import { rangeShoukeType, rangeKemu } from './order.js'
 				// 	this.$api.msg('请填写详细地址');
 				// 	return;
 				// }
-				if (!addrData.addr_detail) {
-					this.$api.msg('请填写详细地址');
-					return;
-				}
+				// if (!addrData.addr_detail) {
+				// 	this.$api.msg('请填写详细地址');
+				// 	return;
+				// }
 
 				if (!this.goods.name) {
 					this.$api.msg('请填写需求标题');
@@ -589,6 +611,8 @@ import { rangeShoukeType, rangeKemu } from './order.js'
 				} else {
 					this.goods.city_name = this.addrData.city_name;
 				}
+				
+				this.goods.area_name = this.addrData.area_name;
 
 				// console.log('goods', this.headImageValue, this.detailImageValue, this.goods);
 				let realImgs = [];
@@ -625,7 +649,7 @@ import { rangeShoukeType, rangeKemu } from './order.js'
 
 				this.goods.desc_mobile = '<p>' + detailsTxtTmp + detailsPicTmp + '</p>'
 
-				// console.log("test test", this.addrData, this.goods);
+				console.log("test test", this.addrData, this.goods);
 
 				if (this.type === 'edit') {
 					await this.$func.usemall
@@ -651,9 +675,11 @@ import { rangeShoukeType, rangeKemu } from './order.js'
 							school: this.goods.school,
 							shoukeType: this.goods.shoukeType,
 							city_name: this.goods.city_name,
+							area_name: this.goods.area_name,
 							requestType: 2,
 							catetories: this.goods.catetories,
 							addressId: this.addrData._id,
+							link: this.goods.link,
 						})
 						.then(res => {
 							console.log("update request finished");
@@ -681,9 +707,11 @@ import { rangeShoukeType, rangeKemu } from './order.js'
 							school: this.goods.school,
 							shoukeType: this.goods.shoukeType,
 							city_name: this.goods.city_name,
+							area_name: this.goods.area_name,
 							requestType: 2,
 							catetories: this.goods.catetories,
 							addressId: this.addrData._id,
+							link: this.goods.link,
 						})
 						.then(res => {
 							console.log("create request finished");

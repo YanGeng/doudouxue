@@ -11,7 +11,7 @@
 
 		<!-- 02. 商品数据区 -->
 		<view class="goods-area bg-main padding">
-			<view class="price-box dflex-b">
+			<view v-if="!isZixishi" class="price-box dflex-b">
 				<view>
 					<text class="price fwb fs-big">{{ goods.price / 100 || '' }}</text>
 					<text class="m-price" v-if="goods.market_price > 0">{{ goods.market_price / 100 || '' }}</text>
@@ -108,11 +108,11 @@
 		<view v-if="skuDatas.length > 0" class="gap"></view>
 
 		<!-- 04.01 优惠券 -->
-		<use-list-title title="优惠" tip="领取优惠券" color="#ff6a6c" iconfont="iconyouhui" @goto="couponShow = true"></use-list-title>
+		<!-- <use-list-title title="优惠" tip="领取优惠券" color="#ff6a6c" iconfont="iconyouhui" @goto="couponShow = true"></use-list-title> -->
 		<!-- 04.01 优惠券弹出层 -->
-		<use-popup mode="bottom" v-model="couponShow" @open="couponOpen">
+		<!-- <use-popup mode="bottom" v-model="couponShow" @open="couponOpen"> -->
 			<!-- 优惠券区 -->
-			<scroll-view v-if="couponDatas && couponDatas.length">
+			<!-- <scroll-view v-if="couponDatas && couponDatas.length">
 				<view class="coupon-area padding bg-drak">
 					<view class="coupon-item bg-main pos-r fs-xs" v-for="(item, index) in couponDatas" :key="index">
 						<view class="content pos-r padding dflex-b">
@@ -138,7 +138,7 @@
 			</scroll-view>
 			
 			<view class="coupon-area dflex-c">此功能未实现</view>
-		</use-popup>
+		</use-popup> -->
 
 		<!-- 04.02 服务标签 -->
 		<view class="bg-main padding-lr padding-top padding-bottom-xs pos-r" @click="tagShow = true">
@@ -228,7 +228,7 @@
 				<text>收藏</text>
 			</view>
 			<view class="flex1 btn-container dflex-b border-radius-big">
-				<view class="tac padding-tb-sm flex1 bg-warn" v-if="goods.stock_num > 0" @click="tocart(goods)">加入购物车</view>
+				<view class="tac padding-tb-sm flex1 bg-warn" v-if="goods.stock_num > 0" @click="tocart(goods)">加入关注栏</view>
 				<!-- <view class="tac padding-tb-sm flex1 bg-base" v-if="goods.stock_num > 0" @click="tobuy(goods)">立即购买</view> -->
 				<view class="tac padding-tb-sm flex1 bg-base" v-if="goods.stock_num > 0" @click="sendMsg(goods)">发送短信</view>
 				<view class="tac padding-tb-sm flex1 bg-disabled" v-else>已售磐</view>
@@ -294,7 +294,8 @@ export default {
 			// 收藏
 			favorite: false,
 
-			scrollTop: 0
+			scrollTop: 0,
+			isZixishi: false,
 		};
 	},
 	watch: {
@@ -433,6 +434,7 @@ export default {
 
 						// 收藏状态
 						this.favorite = this.goods.collected === 1;
+						this.isZixishi = this.goods.cid === 10001;
 						return;
 					}
 					this.$api.msg(res.msg);

@@ -46,7 +46,7 @@ const rangeKemu = [{
 	{
 		"value": 7,
 		"text": "其他",
-		"cid": 10009
+		"cid": 10000
 	},
 ];
 

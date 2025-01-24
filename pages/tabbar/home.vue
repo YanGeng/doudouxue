@@ -33,9 +33,9 @@
 				<view class="dflex padding-bottom">
 					<view class="item margin-right-sm" v-for="(item, index) in goodsLimitDatas" :key="index"
 						@click="togoods(item)">
-						<image class="border-radius-xs" mode="aspectFill" :lazy-load="true" :src="item.img"></image>
+						<image class="border-radius" mode="aspectFill" :lazy-load="true" :src="item.img"></image>
 						<text class="title clamp padding-bottom-xs">{{ item.name }}</text>
-						<text class="price">{{ item.price / 100 }}</text><text class="m-price">{{ item.market_price / 100 }}</text>
+						<!-- <text class="price">{{ item.price / 100 }}</text><text class="m-price">{{ item.market_price / 100 }}</text> -->
 					</view>
 				</view>
 			</scroll-view>
@@ -44,6 +44,8 @@
 
 		<!-- 05. 热门推荐 -->
 		<use-hot-goods :datas="goodsHotDatas" autoload="none" title="为您推荐"></use-hot-goods>
+		<!-- 上拉加载更多 -->
+		<use-loadmore :type="loadmoreType"></use-loadmore>
 
 		<!-- 置顶 -->
 		<use-totop ref="usetop" :style="{ marginBottom: navHeight + 'px' }"></use-totop>
@@ -65,6 +67,7 @@
 		},
 		data() {
 			return {
+				empty: false,
 				// 头部参数
 				searchAuto: !0,
 				searchTip: '请输入搜索关键字',
@@ -80,11 +83,37 @@
 
 				scrollTop: 0,
 				navHeight: 0,
+				// 加载更多状态
+				loadmoreType: 'more',
+				// 请求数据
+				reqdata: {
+					page: 1,
+					rows: 8,
+					sidx: 'last_modify_time',
+					sord: 'desc',
+					requestType: 1
+				},
 			};
+		},
+		watch: {
+			user_role(e) {
+				if (e === 'teacher') {
+					this.reqdata.requestType = 2;
+				} else {
+					this.reqdata.requestType = 1;
+				}
+			}
 		},
 		// 监听页面加载
 		onLoad() {
 			console.log("is login: " + this.islogin)
+			if (this.user_role === 'teacher') {
+				this.reqdata.requestType = 2;
+			} else {
+				this.reqdata.requestType = 1;
+			}
+			
+			this.loadData();
 			// 设置不同登录状态，不同tabbar的方法
 			// if (this.islogin) {
 			// 	uni.setTabBarItem({
@@ -110,13 +139,17 @@
 		},
 		// 监听页面显示。页面每次出现在屏幕上都触发，包括从下级页面点返回露出当前页面
 		onShow() {
-			console.log("is login: " + this.islogin)
-			console.log("is login: " + this.user_role)
-			this.loadData();
+			console.log("is login: ", this.reqdata)
+			console.log("is login: ", this.user_role)
+			// this.loadData();
+		},
+		//加载更多
+		onReachBottom() {
+			this.loadMoreData();
 		},
 		// 监听用户下拉刷新
 		onPullDownRefresh() {
-			this.loadData(() => {
+			this.loadData("refresh", () => {
 				uni.stopPullDownRefresh();
 			});
 		},
@@ -147,12 +180,100 @@
 
 
 		methods: {
+			// 增量调用加载商品
+			async loadMoreData(type = 'add') {
+				if (this.loadmoreType === 'loading') {
+					// 防止重复加载
+					return;
+				}
+				
+				if (type == 'refresh') {
+					// 从首页开始加载
+					this.reqdata.page = 1;
+				}
+				
+				// 没有更多直接返回 
+				if (type === 'add') {
+					if (this.loadmoreType === 'nomore') {
+						return;
+					}
+					// 加载中
+					this.loadmoreType = 'loading';
+				} else {
+					// 更多
+					this.loadmoreType = 'more'
+				}
+				
+				this.$func.usemall.call('goods/list', this.reqdata).then(res => {
+					if (res.code === 200) {
+						if (res.datas && res.datas.goods.length > 0) {
+							if (type == 'refresh') {
+								this.goodsHotDatas = [];
+							}
+							let _datas = [];
+							res.datas.goods.forEach((row) => {
+								if(row.state === '销售中'){
+									_datas.push(row);
+								}
+							});
+							// res.datas.goods.forEach((row) => {
+							// 	if(res.res.datas.goods.state === '销售中')
+							// });
+							this.goodsHotDatas = [...this.goodsHotDatas, ..._datas];
+				
+							if (res.datas.goods.length >= this.reqdata.rows) {
+								this.reqdata.page++;
+								this.loadmoreType = 'more'
+							} else {
+								this.loadmoreType = 'nomore'
+							}
+						} else {
+							this.loadmoreType = 'nomore'
+						}
+					}
+				
+					if (this.goodsHotDatas.length === 0) {
+						this.empty = true;
+					}
+				
+					if (type == 'refresh') {
+						uni.stopPullDownRefresh();
+					}
+				})
+			},
 			// 加载数据
-			async loadData(callback) {
+			async loadData(type = 'add', callback) {
+				if (this.loadmoreType === 'loading') {
+					if (typeof callback === 'function') {
+						// 数据加载完成回调函数
+						callback();
+					}
+					// 防止重复加载
+					return;
+				}
+								
+				if (type == 'refresh') {
+					// 从首页开始加载
+					this.reqdata.page = 1;
+				}
+				
+				// 没有更多直接返回
+				if (type === 'add') {
+					if (this.loadmoreType === 'nomore') {
+						if (typeof callback === 'function') {
+							// 数据加载完成回调函数
+							callback();
+						}
+						return;
+					}
+					// 加载中
+					this.loadmoreType = 'loading';
+				} else {
+					// 更多
+					this.loadmoreType = 'more'
+				}
 
-				await this.$func.usemall.call('app/mp/home', {
-					rows: 8
-				}).then(res => {
+				await this.$func.usemall.call('app/mp/home', this.reqdata).then(res => {
 					if (res.code === 200) {
 						// 轮播图
 						this.swiperDatas = res.datas.carousel || [];
@@ -164,14 +285,19 @@
 						this.goodsLimitDatas = res.datas.limited || [];
 						// 热门推荐
 						this.goodsHotDatas = res.datas.hot || [];
-
-						if (typeof callback === 'function') {
-							// 数据加载完成回调函数
-							callback();
+						if (this.goodsHotDatas.length >= this.reqdata.rows) {
+							this.reqdata.page++;
+							this.loadmoreType = 'more'
+						} else {
+							this.loadmoreType = 'nomore'
 						}
 					}
 				});
-
+				
+				if (typeof callback === 'function') {
+					// 数据加载完成回调函数
+					callback();
+				}
 			},
 			// 搜索回调函数
 			search() {
@@ -179,7 +305,7 @@
 			},
 			// 跳转页面
 			topage(item) {
-				// console.log('分类点击', item);
+				console.log('分类点击', item);
 				if (item && item.type == '网页') {
 					uni.navigateTo({
 						url: `/pages/content/web?url=${item.url}`
@@ -205,7 +331,8 @@
 			limit() {
 				// 跳转商品列表 - 限时精选类目
 				this.$api.togoodslist({
-					limited: 1
+					requestType: 0
+					// limited: 1
 				});
 			},
 		},

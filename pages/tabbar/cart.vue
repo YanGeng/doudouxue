@@ -65,10 +65,11 @@
 					<view class="clear-btn pos-a tac ft-white" :class="{ show: allChecked }" @click="clearCart">清空
 					</view>
 				</view>
-				<view class="total-box flex1 tar padding-right-lg">
+				<!-- 结算先注释，暂不支持 -->
+				<!-- <view class="total-box flex1 tar padding-right-lg">
 					<text class="price">{{total || 0}}</text>
 				</view>
-				<button type="primary" class="payment no-border border-radius-lg fs" @click="createOrder">去结算</button>
+				<button type="primary" class="payment no-border border-radius-lg fs" @click="createOrder">去结算</button> -->
 			</view>
 		</view>
 
@@ -109,7 +110,7 @@
 				</view>
 				<view class="margin-bottom-sm">
 					<text>{{ item.consignee }}</text>
-					<text class="margin-left cl-money">{{ item.price/100 }}</text>
+					<text v-if="!(item.requestType === 0)" class="margin-left cl-money">{{ item.price/100 }}</text>
 					<text class="margin-left">{{ item.tags.join() }}</text>
 				</view>
 				</view>
@@ -169,6 +170,8 @@
 				source: 0,
 				addressDatas: [],
 				goodsInfos: [],
+				check1: false,
+				check2: false,
 			};
 		},
 		watch: {
@@ -178,10 +181,15 @@
 				if (this.empty !== empty) {
 					this.empty = empty;
 				}
+				console.log("cartDatas", e);
+			},
+			user_role(e) {
+				this.isStudent = this.user_role == 'member' || this.user_role == '学生' || this.user_role == 'student';
+				this.isTeacher = this.user_role == 'teacher';
+				this.isAdmin = this.user_role == 'admin';
 			}
 		},
-		// 监听页面显示。页面每次出现在屏幕上都触发，包括从下级页面点返回露出当前页面
-		onShow() {
+		onLoad() {
 			console.log("islogin", this.islogin);
 			if (this.islogin) {
 				this.loadData();
@@ -190,6 +198,17 @@
 			this.isStudent = this.user_role == 'member' || this.user_role == '学生' || this.user_role == 'student';
 			this.isTeacher = this.user_role == 'teacher';
 			this.isAdmin = this.user_role == 'admin';
+		},
+		// 监听页面显示。页面每次出现在屏幕上都触发，包括从下级页面点返回露出当前页面
+		onShow() {
+			// console.log("islogin", this.islogin);
+			// if (this.islogin) {
+			// 	this.loadData();
+			// }
+			// console.log("xxxxxxxxx", this.user_role);
+			// this.isStudent = this.user_role == 'member' || this.user_role == '学生' || this.user_role == 'student';
+			// this.isTeacher = this.user_role == 'teacher';
+			// this.isAdmin = this.user_role == 'admin';
 		},
 		// 下拉刷新
 		onPullDownRefresh() {
@@ -249,7 +268,24 @@
 				});
 			},
 			
-			createZixishi() {},
+			createZixishi() {
+				if (!this.islogin) {
+					this.$api.tologin()
+					return;
+				}
+				
+				// console.log("test = " + a)
+				// return a;
+				uni.navigateTo({
+					url: `/pages/order/createZixishi?type=add`,
+					success(res) {
+						console.log(res);
+					},
+					fail(err) {
+						console.log(err);
+					}
+				})
+			},
 			
 			findTeacher() {
 				if (!this.islogin) {
@@ -304,7 +340,8 @@
 				});
 				
 				this.$db[__goods_info].where('create_uid == $cloudEnv_uid').tolist({
-					orderby: 'last_modify_time desc'
+					orderby: 'last_modify_time desc',
+					rows: 50
 				}).then(res => {
 					if (res.code === 200) {
 						this.goodsInfos = res.datas;
@@ -332,6 +369,7 @@
 								x.goods = x.goods[0];
 								x.goods_id = x.goods_id[0];
 								x.goods_sku = x.goods_sku[0] || {};
+								x.checked = false;
 
 								if (x.goods && x.goods_id) _cartDatas.push(x);
 							});
@@ -361,8 +399,10 @@
 
 			// 选中状态处理
 			check(type, index) {
+				console.log('check: ', type, index);
 				if (type === 'item') {
 					this.cartDatas[index].checked = !this.cartDatas[index].checked;
+					console.log('check this.cartDatas: ', this.cartDatas);
 				} else {
 					const checked = !this.allChecked
 					this.cartDatas.forEach(item => {
@@ -370,6 +410,9 @@
 					})
 					this.allChecked = checked;
 				}
+				
+				this.check1 = !this.check1;
+				this.check2 = !this.check1;
 
 				this.calcTotal();
 			},
