@@ -24,6 +24,17 @@
 			</view>
 		</view>
 		<view class="gap"></view>
+		
+		<!-- <uni-section title="文字滚动" subTitle="使用 scrollable 属性使通告滚动,此时 single 属性将失效,始终单行显示" type="line"> -->
+			<!-- <uni-notice-bar scrollable showIcon
+				:text="currentNotice" /> -->
+		<!-- </uni-section> -->
+		<view class="dflex margin-lr">
+			<uni-icons class="notice_left" type="sound" size="22" />
+			<xzw-notice :list="currentNotice" direction="row" speed="slow" :showIcon="false" @goMore="goMore"></xzw-notice>
+			<!-- <xzw-notice :list="currentNotice" :showIcon="true" direction="row" speed="slow" theme="defult" @goMore="goMore"/> -->
+		</view>
+		<view class="gap"></view>
 
 		<!-- 04. 限时精选 -->
 		<use-list-title title="精选自习室" size="32" fwt="600" color="#333" iconfont="icondaishouhuo-" @goto="limit">
@@ -63,7 +74,20 @@
 
 	export default {
 		computed: {
-			...mapState(['islogin', 'member', 'user_role', 'current_city'])
+			...mapState(['islogin', 'member', 'user_role', 'current_city']),
+			currentNotice() {
+				let noticeTmp = [];
+				this.latestItems.forEach((row) => {
+					if(row.consignee != ''){
+						let newRow = {
+							title: '恭喜“' + row.consignee + '”成功发布需求！'
+						}
+						noticeTmp.push(newRow);
+					}
+				});
+				console.log('notice is xxxx: ', noticeTmp);
+			    return noticeTmp;
+			}
 		},
 		data() {
 			return {
@@ -91,10 +115,46 @@
 					rows: 8,
 					sidx: 'last_modify_time',
 					sord: 'desc',
-					requestType: 1
+					requestType: 1,
+					currentCity: '',
+					otherCity: false
 				},
+				latestItems: [{ id: 1, title: '公告1' }, { id: 2, title: '公告2' }],
 			};
 		},
+		// beforeCreate() {
+		//     console.log('组件初始化,未完全创建阶段 this:', this);
+		//   },
+		//   created() {
+		//     console.log('组件创建后，但还未挂载');
+		//     // this.init();
+		//   },
+		//   beforeMount() {
+		//     console.log('渲染后待挂载');
+		//     // this.init();
+		//   },
+		//   mounted: function () {
+		//     console.log('组件挂载到页面OK,可用 vm.$el 访问');
+		//     // this.init();
+		//   },
+		//   updated() {
+		//     console.log('再次渲染后');
+		//   },
+		//   activated() {
+		//     console.log('当前组件被激活：显示');
+		//   },
+		//   deactivated() {
+		//     console.log('当前组件隐藏');
+		//   },
+		//   beforeDestroy() {
+		//     console.log('销毁前');
+		//   },
+		//   destroy() {
+		//     console.log('销毁后');
+		//   },
+		//   attached() {
+		//     console.log('attached');
+		//   },
 		watch: {
 			user_role(e) {
 				if (e === 'teacher') {
@@ -102,18 +162,25 @@
 				} else {
 					this.reqdata.requestType = 1;
 				}
+			},
+			current_city(e) {
+				this.reqdata.currentCity = e;
+				console.log('current_city', this.reqdata)
+				this.loadData("refresh");
 			}
 		},
 		// 监听页面加载
 		onLoad() {
 			console.log("is login: " + this.islogin)
+			console.log("user_role: " + this.user_role)
+			console.log("current_city: " + this.current_city)
 			if (this.user_role === 'teacher') {
 				this.reqdata.requestType = 2;
 			} else {
 				this.reqdata.requestType = 1;
 			}
 			
-			this.loadData();
+			this.loadData("refresh");
 			// 设置不同登录状态，不同tabbar的方法
 			// if (this.islogin) {
 			// 	uni.setTabBarItem({
@@ -141,10 +208,11 @@
 		onShow() {
 			console.log("is login: ", this.reqdata)
 			console.log("is login: ", this.user_role)
-			// this.loadData();
+			this.getLastedItems();
 		},
 		//加载更多
 		onReachBottom() {
+			console.log("onReachBottom");
 			this.loadMoreData();
 		},
 		// 监听用户下拉刷新
@@ -180,6 +248,60 @@
 
 
 		methods: {
+			// 获取最新常见需求的人
+			async getLastedItems() {
+				let redata = {
+					sidx: 'last_modify_time',
+					sord: 'desc',
+					page: 1,
+					rows: 100,
+				};
+				this.$func.usemall.call('goods/list', redata).then(res => {
+					if (res.code === 200) {
+						if (res.datas && res.datas.goods.length > 0) {
+							this.latestItems = res.datas.goods;
+						}
+					}
+				});
+			},
+			goMore() {
+				if (!this.islogin) {
+					this.$api.tologin()
+					return;
+				}
+				
+				if (this.user_role == 'member' || this.user_role == '学生' || this.user_role == 'student') {
+					uni.navigateTo({
+						url: `/pages/order/createFindTeacher?type=add`,
+						success(res) {
+							console.log(res);
+						},
+						fail(err) {
+							console.log(err);
+						}
+					})
+				} else if (this.user_role == 'teacher') {
+					uni.navigateTo({
+						url: `/pages/order/createFindStudent?type=add`,
+						success(res) {
+							console.log(res);
+						},
+						fail(err) {
+							console.log(err);
+						}
+					})
+				} else {
+					uni.navigateTo({
+						url: `/pages/order/createFindStudent?type=add`,
+						success(res) {
+							console.log(res);
+						},
+						fail(err) {
+							console.log(err);
+						}
+					})
+				}
+			},
 			// 增量调用加载商品
 			async loadMoreData(type = 'add') {
 				if (this.loadmoreType === 'loading') {
@@ -190,6 +312,7 @@
 				if (type == 'refresh') {
 					// 从首页开始加载
 					this.reqdata.page = 1;
+					this.reqdata.otherCity = false;
 				}
 				
 				// 没有更多直接返回 
@@ -203,6 +326,7 @@
 					// 更多
 					this.loadmoreType = 'more'
 				}
+				console.log("goodsHotDatas 3333", this.reqdata);
 				
 				this.$func.usemall.call('goods/list', this.reqdata).then(res => {
 					if (res.code === 200) {
@@ -223,12 +347,28 @@
 				
 							if (res.datas.goods.length >= this.reqdata.rows) {
 								this.reqdata.page++;
-								this.loadmoreType = 'more'
+								this.loadmoreType = 'more';
 							} else {
-								this.loadmoreType = 'nomore'
+								// otherCity == true, 说明已经查询过非当前城市数据
+								if (this.reqdata.otherCity) {
+									this.loadmoreType = 'nomore';
+								} else {
+									// otherCity == false, 说明当前城市没有数据，但其他城市可能还有
+									this.reqdata.otherCity = true;
+									this.reqdata.page = 1;
+									this.loadmoreType = 'more';
+								}
 							}
 						} else {
-							this.loadmoreType = 'nomore'
+							// otherCity == true, 说明已经查询过非当前城市数据
+							if (this.reqdata.otherCity) {
+								this.loadmoreType = 'nomore';
+							} else {
+								// otherCity == false, 说明当前城市没有数据，但其他城市可能还有
+								this.reqdata.otherCity = true;
+								this.reqdata.page = 1;
+								this.loadmoreType = 'more';
+							}
 						}
 					}
 				
@@ -255,6 +395,7 @@
 				if (type == 'refresh') {
 					// 从首页开始加载
 					this.reqdata.page = 1;
+					this.reqdata.otherCity = false;
 				}
 				
 				// 没有更多直接返回
@@ -272,6 +413,9 @@
 					// 更多
 					this.loadmoreType = 'more'
 				}
+				
+				this.reqdata.currentCity = this.current_city;
+				console.log("goodsHotDatas 0000", this.reqdata);
 
 				await this.$func.usemall.call('app/mp/home', this.reqdata).then(res => {
 					if (res.code === 200) {
@@ -285,11 +429,17 @@
 						this.goodsLimitDatas = res.datas.limited || [];
 						// 热门推荐
 						this.goodsHotDatas = res.datas.hot || [];
+						console.log("goodsHotDatas", res.datas);
 						if (this.goodsHotDatas.length >= this.reqdata.rows) {
 							this.reqdata.page++;
-							this.loadmoreType = 'more'
+							this.loadmoreType = 'more';
+							console.log("goodsHotDatas 1111", this.reqdata);
 						} else {
-							this.loadmoreType = 'nomore'
+							// this.loadmoreType = 'nomore';
+							this.reqdata.otherCity = true;
+							this.reqdata.page = 1
+							console.log("goodsHotDatas 2222", this.reqdata);
+							this.loadMoreData("add");
 						}
 					}
 				});

@@ -231,6 +231,20 @@
 				"navigationBarTitleText" : "新建自习室",
 				"enablePullDownRefresh" : false
 			}
+		},
+		{
+			"path" : "pages/user/privacy/privacy",
+			"style" : 
+			{
+				"navigationBarTitleText" : ""
+			}
+		},
+		{
+			"path" : "pages/user/privacy/service",
+			"style" : 
+			{
+				"navigationBarTitleText" : ""
+			}
 		}
 	],
 	"globalStyle": {

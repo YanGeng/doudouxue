@@ -78,7 +78,11 @@
 <script>
 	const _goods = 'usemall-goods'
 	const _goodscategory = 'usemall-goods-category'
+	import { mapState } from 'vuex';
 	export default {
+		computed: {
+			...mapState(['islogin', 'member', 'user_role', 'current_city'])
+		},
 		data() {
 			return {
 				items: ['选项1', '选项2', '选项3'],
@@ -133,10 +137,18 @@
 					sidx: 'last_modify_time',
 					sord: 'desc',
 					requestType: 1,
+					currentCity: '',
+					otherCity: false
 				},
 				findType: 1,
 				isRefreshing: false,
 			};
+		},
+		activated() {
+		  console.log('当前组件被激活：显示');
+		},
+		deactivated() {
+		  console.log('当前组件隐藏');
 		},
 		watch: {
 			goodsDatas(e) {
@@ -145,6 +157,9 @@
 				if (this.empty !== empty) {
 					this.empty = empty;
 				}
+			},
+			current_city(e) {
+				this.loadGoodsDatas('refresh');
 			}
 		},
 		onPageScroll(e) {
@@ -162,11 +177,12 @@
 			this.loadData(() => {
 				if (this.mode == 2) {
 					// 加载商品数据
-					this.loadGoodsDatas()
+					this.loadGoodsDatas('refresh')
 				}
 			});
 		},
 		onShow() {
+			console.log('current_city: ', this.current_city);
 			// 获取存储的模式
 			// this.mode = uni.getStorageSync('category.mode') || 1;
 			
@@ -272,6 +288,7 @@
 				if (type == 'refresh') {
 					// 从首页开始加载
 					this.reqdata.page = 1;
+					this.reqdata.otherCity = false;
 				}
 				
 				// 没有更多直接返回
@@ -303,6 +320,9 @@
 				} else {
 					this.reqdata.requestType = this.findType;
 				}
+				
+				this.reqdata.currentCity = this.current_city;
+				console.log("this.reqdata: ", this.reqdata);
 				// console.log("this.reqdata: ", this.reqdata);
 				// this.$db[_goods]
 				// 	.where(`state == "销售中"`)
@@ -312,15 +332,26 @@
 							if (type == 'refresh') {
 								this.goodsDatas = [];
 							}
-							console.log("this.res: ", res);
+							
 							let newData = res.datas.goods;
 							this.goodsDatas = [...this.goodsDatas, ...newData];
+							console.log("this.goodsDatas 1: ", this.goodsDatas);
 							if (res.datas.goods.length >= this.reqdata.rows) {
 								// if (this.reqdata.page == 1) this.hasmore = !0;
 								this.reqdata.page++;
 								this.loadmoreType = 'more'
 							} else {
-								this.loadmoreType = 'nomore'
+								// otherCity == true, 说明已经查询过非当前城市数据
+								if (this.reqdata.otherCity) {
+									this.loadmoreType = 'nomore';
+								} else {
+									// otherCity == false, 说明当前城市没有数据，但其他城市可能还有
+									this.reqdata.otherCity = true;
+									this.reqdata.page = 1;
+									this.loadmoreType = 'more';
+									this.loadGoodsDatas();
+									console.log("this.goodsDatas 2: ", this.goodsDatas);
+								}
 							}
 							
 							this.empty = this.goodsDatas.length === 0;

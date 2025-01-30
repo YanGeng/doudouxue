@@ -88,7 +88,9 @@
 					rows: 8,
 					sidx: 'sort',
 					sord: 'asc',
-					requestType: 1
+					requestType: 1,
+					currentCity: '',
+					otherCity: false
 				},
 				scrollTop: 0,
 			};
@@ -160,7 +162,7 @@
 			}
 
 			console.log('this.reqdata', this.reqdata, options, this.user_role);
-			this.loadData();
+			this.loadData('refresh');
 		},
 		methods: {
 			// 加载商品，下拉刷新|上拉加载
@@ -174,6 +176,7 @@
 				if (loading == 1 || type == 'refresh') {
 					// 从首页开始加载
 					this.reqdata.page = 1;
+					this.reqdata.otherCity = false;
 				}
 
 				// 没有更多直接返回 
@@ -187,6 +190,9 @@
 					// 更多
 					this.loadmoreType = 'more'
 				}
+				
+				this.reqdata.currentCity = this.current_city;
+				console.log('this.reqdata', this.reqdata, this.user_role);
 				this.$func.usemall.call('goods/list', this.reqdata).then(res => {
 					if (res.code === 200) {
 						if (res.datas && res.datas.goods.length > 0) {
@@ -204,14 +210,33 @@
 							// });
 							this.goodsDatas = [...this.goodsDatas, ..._datas];
 
+							console.log('data length',res.datas.goods.length, this.reqdata.rows);
 							if (res.datas.goods.length >= this.reqdata.rows) {
 								this.reqdata.page++;
 								this.loadmoreType = 'more'
 							} else {
-								this.loadmoreType = 'nomore'
+								// otherCity == true, 说明已经查询过非当前城市数据
+								if (this.reqdata.otherCity) {
+									this.loadmoreType = 'nomore';
+								} else {
+									// otherCity == false, 说明当前城市没有数据，但其他城市可能还有
+									this.reqdata.otherCity = true;
+									this.reqdata.page = 1;
+									this.loadmoreType = 'more';
+									this.loadData();
+								}
 							}
 						} else {
-							this.loadmoreType = 'nomore'
+							// otherCity == true, 说明已经查询过非当前城市数据
+							if (this.reqdata.otherCity) {
+								this.loadmoreType = 'nomore';
+							} else {
+								// otherCity == false, 说明当前城市没有数据，但其他城市可能还有
+								this.reqdata.otherCity = true;
+								this.reqdata.page = 1;
+								this.loadmoreType = 'more';
+								this.loadData();
+							}
 						}
 					}
 

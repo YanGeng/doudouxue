@@ -456,19 +456,19 @@
 			top: 0;
 			z-index: 999;
 			display: flex;
-			width: vww(20);
+			width: vww(50);
 			height: 100%;
 			text-align: center;
 
 			.city-indexs {
-				width: vww(20);
+				width: vww(50);
 				text-align: center;
 				vertical-align: middle;
 				align-self: center;
 
 				.city-indexs-text {
 					// margin-bottom: vww(10);
-					width: vww(20);
+					width: vww(50);
 					padding: vww(5) 0;
 					font-size: 12px;
 					color: #4d8cfd;

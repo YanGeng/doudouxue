@@ -2,6 +2,10 @@
 var cityData = [
 	[{
 		"label": "市辖区",
+		"value": "3101"
+	}],
+	[{
+		"label": "市辖区",
 		"value": "1101"
 	}],
 	[{
@@ -294,10 +298,6 @@ var cityData = [
 			"value": "2327"
 		}
 	],
-	[{
-		"label": "市辖区",
-		"value": "3101"
-	}],
 	[{
 			"label": "南京市",
 			"value": "3201"

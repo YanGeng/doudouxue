@@ -72,21 +72,21 @@ export default {
 			this.formatName = 'cityName'
 			//修改当前城市
 			this.activeCity = {
-				cityName: '上海',
+				cityName: '上海市',
 				cityCode: 310100
 			}
 			//修改热门城市
 			this.hotCity = [
 				{
-					cityName: '北京',
+					cityName: '北京市',
 					cityCode: 110102
 				},
 				{
-					cityName: '上海',
+					cityName: '上海市',
 					cityCode: 310100
 				},
 				{
-					cityName: '南京',
+					cityName: '南京市',
 					cityCode: 110100
 				}
 			]

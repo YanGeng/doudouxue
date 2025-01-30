@@ -18,11 +18,16 @@ const store = new Vuex.Store({
 		__key_token: 'uni_id_token',
 		__key_token_expired: 'uni_id_token_expired',
 		__key_user_role: 'user_role',
+		__key_current_city: 'current_city',
 	},
 	mutations: {
 		// 更新选择地址
 		updateCity(state, city) {
-			state.current_city = city
+			state.current_city = city;
+			uni.setStorage({
+				key: state.__key_current_city,
+				data: state.current_city
+			})
 		},
 		
 		// 登录成功
@@ -78,6 +83,7 @@ const store = new Vuex.Store({
 			state.token = uni.getStorageSync(state.__key_token);
 			state.token_expired = uni.getStorageSync(state.__key_token_expired);
 			state.user_role =  uni.getStorageSync(state.__key_user_role);
+			state.current_city = uni.getStorageSync(state.__key_current_city);
 			
 			if (state.token_expired > new Date().getTime()) {
 				state.islogin = true;

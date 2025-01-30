@@ -511,6 +511,8 @@ module.exports = class GoodsController extends Controller {
 			limited,
 			hot,
 			requestType,
+			currentCity,
+			otherCity,
 		} = req;
 
 		if (keyword) keyword = keyword.trim();
@@ -573,6 +575,13 @@ module.exports = class GoodsController extends Controller {
 		if (hot == 1) whereObj.hot = 1;
 		if (cid) whereObj.cids = isFinite(cid) ? parseInt(cid, 10) : cid;
 		if (requestType) whereObj.requestType = isFinite(requestType) ? parseInt(requestType, 10) : requestType;
+		if (otherCity) {
+			if (currentCity) whereObj.city_name = this.db.command.neq(currentCity);
+		} else {
+			if (currentCity) whereObj.city_name = currentCity;
+		}
+		// currentCity,
+		// otherCity,
 
 		const goods = await this.db.collection('usemall-goods')
 			.where(whereObj)

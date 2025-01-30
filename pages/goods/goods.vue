@@ -164,6 +164,14 @@
 				</view>
 			</view>
 		</use-popup>
+		
+		<view class="bg-main padding-lr padding-top padding-bottom-xs pos-r" @click="tagShow = true">
+			<view class="dflex dflex-wrap-w">
+				<view class="iconfont icondizhi- fwb fs-xs ft-base margin-right-xs"></view>
+				<text class="fs-xs">{{ goods.city_name }}-{{ goods.area_name }}</text>
+			</view>
+			<!-- <view class="icon-detail pos-a"><view class="iconfont iconxiangqing ft-dark fs-sm"></view></view> -->
+		</view>
 
 		<!-- 05. 评价区 -->
 		<view class="evaluate-area" v-if="evaluateDatas.length > 0">
@@ -600,7 +608,7 @@ export default {
 		    plus.messaging.TYPE_SMS;
 		    var msg = plus.messaging.createMessage(plus.messaging.TYPE_SMS);
 		    msg.to = [item.mobile];
-		    msg.body = item.consignee + "，你好！我是学生家长，我在“豆豆学”平台上，看到你的家教信息：“" + item.name + "”。想进一步跟你交流一下，看到请回复，感谢！（豆学家教https://mp-0fe42d5b-82e4-482d-8ad1-81bb97905319.cdn.bspapp.com/apk/douxue.apk）";
+		    msg.body = item.consignee + "，你好！我在“豆豆学”平台上，看到你的家教信息：“" + item.name + "”。想进一步跟你交流一下，看到请回复，感谢！（豆学家教https://mp-0fe42d5b-82e4-482d-8ad1-81bb97905319.cdn.bspapp.com/apk/douxue.apk）";
 		    plus.messaging.sendMessage(msg);
 		    // #endif
 		    //#ifdef H5

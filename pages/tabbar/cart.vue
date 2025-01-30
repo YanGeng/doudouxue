@@ -99,7 +99,7 @@
 		
 		<view v-if="islogin" class="cart-list padding-sm">
 		<view class="bg-main padding-top padding-lr border-radius margin-top-sm" v-for="(item, index) in goodsInfos"
-			:key="index" @click="selectAddr(item)">
+			:key="index" @click="clickItem(item)">
 			<view class="w-full flex-row-alicenter border-line">
 				<view class="left">
 					<image class="border-radius-xs wh-full" mode="aspectFill" :lazy-load="true" :src="item.img"></image>
@@ -222,6 +222,13 @@
 		},
 
 		methods: {
+			// 跳转商品详情
+			clickItem(item) {
+				console.log('item', item)
+				this.$api.togoods({
+					id: item._id
+				});
+			},
 			// 添加|编辑 收货人
 			editRequest(type, options) {
 				console.log('editRequest', options)
@@ -238,10 +245,10 @@
 					uni.navigateTo({
 						url: `/pages/order/createFindTeacher?type=${type}&id=${options._id}`
 					});
-				} else {
+				} else if (options.requestType === 0) {
 					// 暂不考虑自习室
 					uni.navigateTo({
-						url: `/pages/order/createFindStudent?type=${type}&id=${options._id}`
+						url: `/pages/order/createZixishi?type=${type}&id=${options._id}`
 					});
 				}
 			},
@@ -329,15 +336,15 @@
 			async loadData(callback) {
 				// 收货人地址
 				// 收货人列表
-				this.$db[__address_name].where('create_uid == $cloudEnv_uid').tolist({
-					orderby: 'is_default desc'
-				}).then(res => {
-					if (res.code === 200) {
-						this.addressDatas = res.datas;
-						// return;
-					}
-					this.$api.msg(res.msg);
-				});
+				// this.$db[__address_name].where('create_uid == $cloudEnv_uid').tolist({
+				// 	orderby: 'is_default desc'
+				// }).then(res => {
+				// 	if (res.code === 200) {
+				// 		this.addressDatas = res.datas;
+				// 		// return;
+				// 	}
+				// 	this.$api.msg(res.msg);
+				// });
 				
 				this.$db[__goods_info].where('create_uid == $cloudEnv_uid').tolist({
 					orderby: 'last_modify_time desc',

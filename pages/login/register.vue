@@ -3,7 +3,7 @@
 
 		<view class="padding-xl dflex-c dflex-flow-c">
 			<view class="portrait-box margin-bottom">
-				<image class="headimg border-radius-c" :src="(member && member.member_headimg) || '/static/images/user/default.png'"></image>
+				<image class="headimg border-radius-c" :src="(member && member.member_headimg) || '/static/images/user/default4.jpg'"></image>
 			</view>
 
 			<view class="w-full dflex padding-bottom-sm">
@@ -80,6 +80,17 @@
 					<view class="tac padding-tb-sm flex1 bg-base fs" @click="register">注册</view>
 				</view>
 			</view>
+			<view class="w-full dflex-c margin-top-xl">
+				<checkbox-group @change="checkboxChange">
+					<label>
+						<checkbox value="true"/>
+					</label>
+				</checkbox-group>
+				<text>我已阅读并同意</text>
+				<view><navigator url="/pages/user/privacy/service">《服务协议》</navigator></view>
+				<text>和</text>
+				<view><navigator url="/pages/user/privacy/privacy">《隐私政策》</navigator></view>
+			</view>
 		</view>
 
 		<!-- 用云版权 -->
@@ -118,6 +129,8 @@
 					},
 				],
 				selectMemberRole: 0,
+				// privacyCb: false,
+				isAgreed: false,
 			};
 		},
 		computed: {
@@ -142,6 +155,15 @@
 			});
 		},
 		methods: {
+			checkboxChange(e) {
+				if (e.detail.value.includes('true')) {
+					this.isAgreed = true;
+				} else {
+					this.isAgreed = false;
+				}
+				console.log('选中的值为：', e.detail.value, this.isAgreed);
+			},
+				
 			changeMemberRole(e) {
 				this.selectMemberRole = e.detail.value;
 				console.log('e:', this.value, this.selectMemberRole);
@@ -213,6 +235,12 @@
 			},
 			register() {
 				let _this = this;
+				
+				console.log('privacyCb', this.privacyCb, this.isAgreed);
+				if (!_this.isAgreed) {
+					this.$api.msg('为更好保障您的合法权益，请阅读并同意以下协议《服务协议》《隐私政策》');
+					return;
+				}
 				
 				if (_this.is_register) return;
 
@@ -310,5 +338,14 @@
 			height: 130rpx;
 			border: 5rpx solid #fff;
 		}
+	}
+	
+	.custom-checkbox {
+		width: 10upx;
+		height: 10upx;
+		/* 修改边框样式 */
+		// border: 2px solid #007aff;
+		/* 修改圆角 */
+		// border-radius: 5px;
 	}
 </style>

@@ -1,9 +1,9 @@
 export default [{
             'cityCode': '110100',
-            'cityName': '北京'
+            'cityName': '北京市'
         }, {
             'cityCode': '120100',
-            'cityName': '天津'
+            'cityName': '天津市'
         }, {
             'cityCode': '130100',
             'cityName': '石家庄市'
@@ -705,7 +705,7 @@ export default [{
             'cityName': '省直辖县级行政区划'
         }, {
             'cityCode': '500100',
-            'cityName': '重庆'
+            'cityName': '重庆市'
         }, {
             'cityCode': '510100',
             'cityName': '成都市'

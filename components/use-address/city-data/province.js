@@ -1,5 +1,10 @@
 /* eslint-disable */
-var provinceData = [{
+var provinceData = [
+  {
+    "label": "上海市",
+    "value": "31"
+  },
+  {
     "label": "北京市",
     "value": "11"
   },
@@ -30,10 +35,6 @@ var provinceData = [{
   {
     "label": "黑龙江省",
     "value": "23"
-  },
-  {
-    "label": "上海市",
-    "value": "31"
   },
   {
     "label": "江苏省",

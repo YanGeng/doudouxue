@@ -2,7 +2,7 @@
 	<view class="container">
 		<view class="dflex-c pos-r margin-bottom margin-top">
 			<view class="portrait-box">
-				<image class="border-radius-c" :src="member.member_headimg || '/static/images/user/default.png'">
+				<image class="border-radius-c" :src="member.member_headimg || '/static/images/user/default4.jpg'">
 				</image>
 			</view>
 			<view class="margin-left-sm">
