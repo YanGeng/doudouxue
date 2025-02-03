@@ -25,6 +25,12 @@
 				"enablePullDownRefresh": true
 			}
 		}, {
+			"path": "pages/tabbar/message",
+			"style": {
+				"navigationBarTitleText": "消息",
+				"enablePullDownRefresh": false
+			}
+		}, {
 			"path": "pages/tabbar/user",
 			"style": {
 				"navigationBarTitleText": "我的",
@@ -245,6 +251,20 @@
 			{
 				"navigationBarTitleText" : ""
 			}
+		},
+		{
+			"path" : "uni_modules/uni-im-web-load/pages/index/index",
+			"style" : 
+			{
+				"navigationBarTitleText" : ""
+			}
+		},
+		{
+			"path" : "pages/chat/contactList",
+			"style" : 
+			{
+				"navigationBarTitleText" : ""
+			}
 		}
 	],
 	"globalStyle": {
@@ -287,6 +307,12 @@
 				"iconPath": "static/images/tabbar/cart.png",
 				"selectedIconPath": "static/images/tabbar/cart-active.png",
 				"text": "关注"
+			},
+			{
+				"pagePath": "pages/tabbar/message",
+				"iconPath": "static/images/tabbar/message.png",
+				"selectedIconPath": "static/images/tabbar/message-active4.png",
+				"text": "消息"
 			},
 			{
 				"pagePath": "pages/tabbar/user",

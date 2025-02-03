@@ -35,10 +35,10 @@
 						<view class="padding-right-xs padding-right-xs">已售</view>
 						<text>{{ goods.sale_cnt || '0' }}</text>
 					</view>
-					<view class="dflex">
+					<!-- <view class="dflex">
 						<view class="padding-right-xs padding-right-xs">库存</view>
 						<text>{{ goods.stock_num || '0' }}</text>
-					</view>
+					</view> -->
 				</view>
 			</view>
 			<text class="title fs">{{ goods.name || '' }} {{ goods.name_pw || '' }}</text>
@@ -222,14 +222,14 @@
 				<text>首页</text>
 			</view>
 
-			<!-- #ifndef MP-ALIPAY || H5 || MP-360 -->
-			<button class="btn no-border dflex" open-type="contact">
-				<view class="btn-area dflex-c dflex-flow-c">
+		
+			<!-- <button class="btn no-border dflex" open-type="contact"> -->
+				<view class="btn-area dflex-c dflex-flow-c" @click="sendIm">
 					<text class="iconfont iconkefu-01"></text>
-					<text>客服</text>
+					<text>消息</text>
 				</view>
-			</button>
-			<!-- #endif -->
+			<!-- </button> -->
+			 
 
 			<view class="btn-area dflex dflex-flow-c" :class="{ active: favorite }" @click="tofavorite">
 				<text class="iconfont" :class="favorite ? 'iconshoucang-' : 'iconshoucang-01'"></text>
@@ -261,6 +261,10 @@ import lPainter from '@/uni_modules/lime-painter/components/lime-painter/';
 import uposter from '@/common/poster.js';
 
 import { mapState } from 'vuex';
+
+const uniImCo = uniCloud.importObject('uni-im-co', {
+  customUI: true
+});
 
 export default {
 	components: { lPainter },
@@ -561,6 +565,28 @@ export default {
 		tohome() {
 			this.$api.tohome();
 		},
+		async sendIm() {
+			uni.$emit('refreshIm', true);
+
+			console.log('sendIm', this.goods);
+			uni.navigateTo({
+				url: `/pages/chat/contactList?touid=${this.goods.create_uid}`
+			});
+			// uni.switchTab({
+			// 	url: '/pages/tabbar/message'
+			// });
+
+			// const {
+			// 	appId: appid
+			// } = uni.getAppBaseInfo()
+			
+			// await uniImCo.sendMsg({
+			// 	appId: appid,
+  			// 	to_uid: this.goods.create_uid,
+  			// 	type:"text",
+  			// 	body:"您好！"
+			// });
+		},
 		// 收藏
 		tofavorite() {
 			if (!this.loginCheck()) return;
@@ -585,6 +611,8 @@ export default {
 		// 加入购物车
 		tocart(params) {
 			if (!this.loginCheck()) return;
+
+			uni.$emit('addCart', true);
 			
 			this.$func.usemall
 				.call('goods/addcart', {

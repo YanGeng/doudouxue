@@ -211,9 +211,9 @@ import {
 		},
 		onLoad(options) {
 			debugger
-			let title = '新增需求';
+			let title = '找老师';
 			if (options.type === 'edit') {
-				title = '编辑需求';
+				title = '编辑-找老师';
 				this.$db['usemall-goods'].where({
 					_id: options.id
 				}).tolist().then(res => {

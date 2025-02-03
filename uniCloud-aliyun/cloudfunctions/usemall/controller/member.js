@@ -31,26 +31,42 @@ module.exports = class MemberController extends Controller {
 		// }
 		
 		var member_type_list = new Array(member_type)
+
+		let nickNameTmp = user.nickName;
+		if (!user.nickName) {
+			if (username.length == 11) {
+				nickNameTmp = '豆学-' + res.username.substr(7, 4);
+			} else {
+				nickNameTmp = username;
+			}
+		}
+
+		// 头像设置默认值
+		if (!user.avatarUrl) {
+			user.avatarUrl = 'https://mp-0fe42d5b-82e4-482d-8ad1-81bb97905319.cdn.bspapp.com/default_pic/user_default_pic/default4.webp';
+		}
 		
 		const res = await uidObj.register({
 			username,
 			password,
-			role: member_type_list
+			role: member_type_list,
+			nickname: nickNameTmp,
+			avatar: user.avatarUrl
 		});
 		
 		if (res.code == 0) {
 			let citys = [user.country, user.province, user.city];
-			let nickname = user.nickName;
-			if (res.username.length == 11) {
-				nickname = '严选-' + res.username.substr(7, 4);
-			}
+			// let nickname = user.nickName;
+			// if (res.username.length == 11) {
+			// 	nickname = '严选-' + res.username.substr(7, 4);
+			// }
 			
 			let member = {
 				member_name: res.username || user.nickName,
 				member_password: res.password || '',
 				member_mobile: res.username,
 				member_access_token: res.token,
-				member_nickname: nickname,
+				member_nickname: nickNameTmp,
 				member_gender: user.gender || 0,
 				member_headimg: user.avatarUrl || '',
 				member_weixin_headimg: user.avatarUrl || '',

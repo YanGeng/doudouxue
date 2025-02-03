@@ -1,9 +1,8 @@
 <template>
 	<view class="container bg-main pos-r">
-
 		<view class="padding-xl dflex-c dflex-flow-c">
-			<view class="portrait-box margin-bottom">
-				<image class="headimg border-radius-c" :src="(member && member.member_headimg) || '/static/images/user/default4.jpg'"></image>
+			<view class="portrait-box margin-bottom" @click="changeHeadPic">
+				<image class="headimg border-radius-c" :src="headImageLocalPath || (member && member.member_headimg) || '/static/images/user/default4.webp'"></image>
 			</view>
 
 			<view class="w-full dflex padding-bottom-sm">
@@ -11,6 +10,15 @@
 				<view class="flex1 dflex">
 					<input class="border-line padding-sm flex1" type="number" data-key="mobile" maxlength="11"
 						:value="mobile" @input="inputChange" placeholder="请输入手机号" />
+					<view v-if="0 == 1" class="padding-tb-sm ft-dark">获取</view>
+				</view>
+			</view>
+
+			<view class="w-full dflex padding-bottom-sm">
+				<view class="iconfont iconfenxiaohuiyuan-01 margin-right"></view>
+				<view class="flex1 dflex">
+					<input class="border-line padding-sm flex1" type="text" data-key="nick_name" maxlength="20"
+						:value="nick_name" @input="inputChange" placeholder="请输入您的昵称" />
 					<view v-if="0 == 1" class="padding-tb-sm ft-dark">获取</view>
 				</view>
 			</view>
@@ -112,6 +120,7 @@
 				mobile: '',
 				password: '',
 				code: '',
+				nick_name: '',
 
 				is_register: false,
 				is_send: false,
@@ -131,6 +140,8 @@
 				selectMemberRole: 0,
 				// privacyCb: false,
 				isAgreed: false,
+				headImageUrl: '',
+				headImageLocalPath: ''
 			};
 		},
 		computed: {
@@ -155,6 +166,131 @@
 			});
 		},
 		methods: {
+			async convertToWebP(filePath) {
+				console.log('00000000000000000', filePath);
+      return new Promise((resolve, reject) => {
+        // 获取图片信息
+        uni.getImageInfo({
+          src: filePath,
+          success: (res) => {
+			console.log('00000000000000000', res);
+            const canvas = uni.createCanvasContext('webpCanvas');
+            canvas.drawImage(filePath, 0, 0, res.width, res.height);
+            canvas.draw(false, () => {
+				// 添加延迟，确保 canvas 绘制完成
+				setTimeout(() => {
+					console.log('2222222222222222222');
+                // 将 canvas 内容转换为 WebP 格式的临时文件
+                uni.canvasToTempFilePath({
+                  canvasId: 'webpCanvas',
+                  fileType: 'jpg',
+                  success: (tempRes) => {
+					console.log('11111111111111111111');
+                    resolve(tempRes.tempFilePath);
+                  },
+                  fail: (err) => {
+					console.log('11111111111111111111');
+                    reject(err);
+                  }
+                });
+              }, 5000); // 延迟 300 毫秒
+            //   // 将 canvas 内容转换为 WebP 格式的临时文件
+            //   uni.canvasToTempFilePath({
+            //     canvasId: 'webpCanvas',
+            //     fileType: 'webp',
+            //     success: (tempRes) => {
+            //       resolve(tempRes.tempFilePath);
+            //     },
+            //     fail: (err) => {
+            //       reject(err);
+            //     }
+            //   });
+            });
+          },
+          fail: (err) => {
+            reject(err);
+          }
+        });
+      });
+    },
+    async blobToTempFilePath(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onload = () => {
+          const dataURL = reader.result;
+          const filePath = `data:image/webp;base64,${dataURL.split(',')[1]}`;
+          resolve(filePath);
+        };
+        reader.onerror = () => {
+          reject(new Error('Blob 转换为临时文件路径失败'));
+        };
+      });
+    },
+			changeHeadPic() {
+				// 调用uni-app提供的选择图片API
+				uni.chooseImage({
+        			count: 1, // 只允许选择一张图片
+        			success: (res) => {
+          			// 选择成功后的回调
+          				this.headImageLocalPath = res.tempFilePaths[0]; // 获取选中的图片路径
+						// this.uploadImage(filePath); // 调用上传图片的方法
+						console.log('this.headImageLocalPath', res);
+        			},
+        			fail: (err) => {
+          				// 选择失败的回调
+          				console.error('选择图片失败:', err);
+        			}
+      			})
+			},
+			async uploadImage(filePath) {
+				let fileName = ''
+				let lastSeparatorIndex = filePath.lastIndexOf("/");
+				if (lastSeparatorIndex !== -1) {
+    				fileName = filePath.substring(lastSeparatorIndex + 1);
+    				console.log("File Name xxx:", fileName);
+					// let lastIndex = fileName.lastIndexOf(".");
+					// fileName = fileName.substring(0, lastIndex);
+    				// console.log("File Name:", fileName, lastIndex);
+				} else {
+    				console.error("Invalid file path");
+				}
+
+				if (fileName) {
+					fileName = '/user_head_pic/' + Date.now() + '_' + fileName; // + '.webp';
+				}
+				console.log("uploadImage xxxx:", fileName, filePath);
+				// 将图片转换为 WebP 格式
+				// const webpFilePath = await this.convertToWebP(filePath);
+
+				// let aaa = await uni.compressImage({
+          		// 	src: filePath,
+          		// 	quality: 50 // 压缩质量，范围 0 - 100，数值越小压缩越严重
+        		// });
+
+				// console.log("uploadImage zzzzz:", fileName, aaa[1]);
+				// let tmppath = aaa[1].tempFilePath;
+
+				// 将 Blob 转换为临时文件路径
+				// const webpTempFilePath = await this.blobToTempFilePath(webpBlob);
+				// console.log("uploadImage yyyy:", fileName, tmppath, aaa);
+      			// 调用uni-app提供的上传文件API
+      			let {
+              		fileID
+            	} = await uniCloud.uploadFile({
+        			// url: this.uploadUrl, // 你的服务器上传接口地址
+        			filePath: filePath,
+        			cloudPath: fileName, // 文件对应的key，后端可能需要根据这个key来接收文件
+					cloudPathAsRealPath: true,
+					fileType: 'image'
+      			});
+
+				console.log('fileID', fileID);
+
+				if (fileID) {
+					this.headImageUrl = fileID;
+				}
+    		},
 			checkboxChange(e) {
 				if (e.detail.value.includes('true')) {
 					this.isAgreed = true;
@@ -233,8 +369,12 @@
 				// 登录页
 				uni.navigateBack({});
 			},
-			register() {
+			async register() {
 				let _this = this;
+
+				if (_this.headImageLocalPath) {
+					await _this.uploadImage(_this.headImageLocalPath);
+				}
 				
 				console.log('privacyCb', this.privacyCb, this.isAgreed);
 				if (!_this.isAgreed) {
@@ -253,6 +393,11 @@
 					return;
 				}
 
+				if (!this.nick_name) {
+					this.$api.msg('请输入昵称');
+					return;
+				}
+
 				if (!this.password) {
 					this.$api.msg('请输入密码');
 					return;
@@ -265,6 +410,11 @@
 				// 	this.$api.msg('请输入验证码');
 				// 	return;
 				// }
+
+				if (_this.headImageLocalPath) {
+					await _this.uploadImage(_this.headImageLocalPath);
+				}
+				console.log("finish upload file: ", _this.headImageUrl, _this.headImageLocalPath);
 				
 				// #ifdef H5 || MP-360 || APP-PLUS
 				uni.getUserProfile = (x) => {
@@ -279,6 +429,11 @@
 					lang: 'zh_CN',
 					success: res => {
 						// console.log('getUserProfile', res);
+						res.userInfo.nickName = this.nick_name;
+						if (!res.userInfo.avatarUrl) {
+							res.userInfo.avatarUrl = this.headImageUrl;
+						}
+						console.log("res.userInfo xxxxxxxxxxxxxx: ", res);
 						this.is_register = true;
 						this.$func.usemall.call('member/register', {
 							username: this.mobile,
@@ -324,6 +479,10 @@
 	page {
 		background: #f4f4f4;
 	}
+
+	// canvas {
+  	// 	display: none;
+	// }
 
 	.container {
 		padding-top: 5vh;
