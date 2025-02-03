@@ -182,6 +182,7 @@
 			
 			this.getLastedItems();
 			this.loadData("refresh");
+			this.getLastedItems();
 			// 设置不同登录状态，不同tabbar的方法
 			// if (this.islogin) {
 			// 	uni.setTabBarItem({
@@ -209,7 +210,6 @@
 		onShow() {
 			console.log("is login: ", this.reqdata)
 			console.log("is login: ", this.user_role)
-			console.log('home.vue:', this.current_city, this.location_city, uni.getStorageSync('location_city'));
 			// show时不刷新信息
 			// this.getLastedItems();
 		},

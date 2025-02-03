@@ -5,11 +5,11 @@
 				<!-- <view class="member-area padding-top-sm margin-bottom dflex pos-r" @click="to('/pages/user/setting/personal')"> -->
 				<view class="member-area padding-top-sm margin-bottom dflex pos-r">
 					<view>
-						<image class="headimg border-radius-c" :src="member.member_headimg || '/static/images/user/default4.jpg'"></image>
+						<image class="headimg border-radius-c" :src="member.member_headimg || '/static/images/user/default4.webp'"></image>
 					</view>
 					<view class="margin-left-sm">
 						<view class="info-box">
-							<text class="fs-lg">{{ member.member_name || member.member_nickname || '严选' }}</text>
+							<text class="fs-lg">{{ member.member_nickname || member.member_name || '严选' }}</text>
 						</view>
 						<view v-if="member.member_city"><text class="fs-xxs">{{ member.member_city }}</text></view>
 					</view>
@@ -109,8 +109,8 @@
 					@goto="to('/pages/user/collect/collect')"></use-list-title>
 				<!-- <use-list-title title="分销中心" iconfont="iconyixiaoshou" color="#ffab6c" fwt="600" tip="分享赚钱"
 					@goto="to('/pages/user/distribution/distribution')"></use-list-title> -->
-				<use-list-title title="收货人" iconfont="icondizhi-" color="#5a9ded" fwt="600"
-					@goto="to('/pages/user/address/address')"></use-list-title>
+				<!-- <use-list-title title="收货人" iconfont="icondizhi-" color="#5a9ded" fwt="600"
+					@goto="to('/pages/user/address/address')"></use-list-title> -->
 				<use-list-title title="设置" iconfont="iconshezhi-" color="#58bc8a" fwt="600"
 					@goto="to('/pages/user/setting/setting')"></use-list-title>
 			</view>

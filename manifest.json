@@ -144,6 +144,9 @@
         "router" : {
             "mode" : "hash",
             "base" : "/health/"
+        },
+        "unipush" : {
+            "enable" : true
         }
     },
     "mp-qq" : {

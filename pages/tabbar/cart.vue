@@ -79,19 +79,29 @@
 			<view class="dflex-b border-radius-big">
 				<view class="tac padding-tb-sm flex1 bg-warn" @click="createZixishi">新建自习室</view>
 			</view>
+			<view class="gap"></view>
 			<view class="dflex-b border-radius-big">
 				<view class="tac padding-tb-sm flex1 bg-warn" @click="findTeacher">找老师</view>
 			</view>
+			<view class="gap"></view>
 			<view class="dflex-b border-radius-big">
 				<view class="tac padding-tb-sm flex1 bg-warn" @click="findStudent">找学生</view>
 			</view>
 		</view>
 		<view v-if="isStudent" class="padding-xs w-full margin-top">
 			<view class="dflex-b border-radius-big">
+				<view class="tac padding-tb-sm flex1 bg-warn" @click="createZixishi">新建自习室</view>
+			</view>
+			<view class="gap"></view>
+			<view class="dflex-b border-radius-big">
 				<view class="tac padding-tb-sm flex1 bg-warn" @click="findTeacher">找老师</view>
 			</view>
 		</view>
 		<view v-if="isTeacher" class="padding-xs w-full margin-top">
+			<view class="dflex-b border-radius-big">
+				<view class="tac padding-tb-sm flex1 bg-warn" @click="createZixishi">新建自习室</view>
+			</view>
+			<view class="gap"></view>
 			<view class="dflex-b border-radius-big">
 				<view class="tac padding-tb-sm flex1 bg-warn" @click="findStudent">找学生</view>
 			</view>
@@ -151,7 +161,7 @@
 	} from 'vuex';
 	export default {
 		computed: {
-			...mapState(['islogin', 'user_role', 'token', 'location_city'])
+			...mapState(['islogin', 'user_role', 'token', 'token'])
 		},
 		data() {
 			return {
@@ -172,6 +182,7 @@
 				goodsInfos: [],
 				check1: false,
 				check2: false,
+				addCart: false,
 			};
 		},
 		watch: {
@@ -187,6 +198,11 @@
 				this.isStudent = this.user_role == 'member' || this.user_role == '学生' || this.user_role == 'student';
 				this.isTeacher = this.user_role == 'teacher';
 				this.isAdmin = this.user_role == 'admin';
+			},
+			token(newVal, oldVal) {
+				if (this.islogin) {
+					this.loadData();
+				}
 			}
 		},
 		onLoad() {
@@ -198,7 +214,15 @@
 			this.isStudent = this.user_role == 'member' || this.user_role == '学生' || this.user_role == 'student';
 			this.isTeacher = this.user_role == 'teacher';
 			this.isAdmin = this.user_role == 'admin';
+
+			uni.$on('addCart',(action)=>{  
+                this.addCart = action;  
+            }) 
 		},
+		onUnload() {
+            // 页面卸载时移除监听器，避免内存泄漏
+            uni.$off('addCart');
+        },
 		// 监听页面显示。页面每次出现在屏幕上都触发，包括从下级页面点返回露出当前页面
 		onShow() {
 			console.log("islogin", this.islogin);
@@ -206,7 +230,12 @@
 				this.loadData();
 				this.addCart = false;
 			}
-			console.log("cat vue xxxxxxxxx", this.location_city, uni.getStorageSync('location_city'));
+			// console.log("xxxxxxxxx", this.user_role);
+			console.log("islogin", this.islogin);
+			if (this.islogin && this.addCart) {
+				this.loadData();
+				this.addCart = false;
+			}
 			// this.isStudent = this.user_role == 'member' || this.user_role == '学生' || this.user_role == 'student';
 			// this.isTeacher = this.user_role == 'teacher';
 			// this.isAdmin = this.user_role == 'admin';
