@@ -29,7 +29,7 @@
 			<!-- <uni-notice-bar scrollable showIcon
 				:text="currentNotice" /> -->
 		<!-- </uni-section> -->
-		<view class="dflex margin-lr">
+		<view class="dflex margin-lr" v-if="latestItems && latestItems.length > 0">
 			<uni-icons class="notice_left" type="sound" size="22" />
 			<xzw-notice :list="currentNotice" direction="row" speed="slow" :showIcon="false" @goMore="goMore"></xzw-notice>
 			<!-- <xzw-notice :list="currentNotice" :showIcon="true" direction="row" speed="slow" theme="defult" @goMore="goMore"/> -->
@@ -119,7 +119,7 @@
 					currentCity: '',
 					otherCity: false
 				},
-				latestItems: [{ id: 1, title: '公告1' }, { id: 2, title: '公告2' }],
+				latestItems: [],
 			};
 		},
 		// beforeCreate() {
@@ -185,7 +185,6 @@
 			
 			this.getLastedItems();
 			this.loadData("refresh");
-			this.getLastedItems();
 			// 设置不同登录状态，不同tabbar的方法
 			// if (this.islogin) {
 			// 	uni.setTabBarItem({

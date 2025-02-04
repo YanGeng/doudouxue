@@ -26,12 +26,15 @@
                 console.log('backButtonPress change:', newVal, oldVal);
             },
 			token(newVal, oldVal) {
-				console.log('uni_id_token change:', newVal, oldVal);
+				console.log('uni_id_token change ssssssssss:', newVal, oldVal);
 				if (newVal != oldVal) {
 					// this.param.uni_id_token = newVal;
 					// this.url = `${this.imWebUrl + this.path}?login=${encodeURIComponent(JSON.stringify(this.param))}`;
-                    this.addWvEventListener();
-                    wv.reload();
+                    // this.addWvEventListener();
+                    setTimeout(() => {
+                        this.addWvEventListener();
+                        wv.reload();
+                    }, 150);
 				}
 				
 				console.log('current url:', this.url);
@@ -120,9 +123,9 @@
                 setTimeout(() => {
                     this.showWebview = true;
                     this.addWvEventListener();
-                }, 10);
+                    this.refresh = false;
+                }, 20);
 
-                this.refresh = false;
             }
 
             console.log('refreshIm_after_after', this.refresh, this.refeshFlag);
