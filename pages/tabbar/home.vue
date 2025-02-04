@@ -74,7 +74,7 @@
 
 	export default {
 		computed: {
-			...mapState(['islogin', 'member', 'user_role', 'current_city', 'token', 'location_city']),
+			...mapState(['islogin', 'member', 'user_role', 'current_city', 'token']),
 			currentNotice() {
 				let noticeTmp = [];
 				this.latestItems.forEach((row) => {
@@ -166,6 +166,9 @@
 			current_city(e) {
 				this.reqdata.currentCity = e;
 				console.log('current_city', this.reqdata)
+				this.loadData("refresh");
+			},
+			token(newVal, oldVal) {
 				this.loadData("refresh");
 			}
 		},

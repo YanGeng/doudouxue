@@ -34,7 +34,7 @@ module.exports = class MpController extends Controller {
 		// } else {
 		// 	hot = this.db.collection('usemall-goods').where({ state: '销售中', requestType: requestType, city_name: city_name }).orderBy('sort', 'asc').limit(rows).get();
 		// }
-		const hot = this.db.collection('usemall-goods').where({ state: '销售中', requestType: requestType, city_name: currentCity }).orderBy('sort', 'asc').limit(rows).get();
+		const hot = this.db.collection('usemall-goods').where({ state: '销售中', requestType: requestType, city_name: currentCity }).orderBy('last_modify_time', 'desc').limit(rows).get();
 		
 		const datas = await Promise.all([carousel, category, hot]);
 		

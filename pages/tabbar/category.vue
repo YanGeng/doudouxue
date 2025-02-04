@@ -167,6 +167,14 @@
 			this.$refs.usetop.change(e.scrollTop);
 		},
 		onLoad() {
+			if (this.user_role === 'student') {
+				// 初始化为：找老师
+				this.findType = 1;
+			} else {
+				// 初始化为：找学生
+				this.findType = 2;
+			}
+
 			// #ifdef MP-ALIPAY
 			this.scrollHeight = (this.$env.windowHeight - this.$env.sis.titleBarHeight) + 'px';
 			// #endif

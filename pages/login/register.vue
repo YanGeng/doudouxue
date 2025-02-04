@@ -393,10 +393,10 @@
 					return;
 				}
 
-				if (!this.nick_name) {
-					this.$api.msg('请输入昵称');
-					return;
-				}
+				// if (!this.nick_name) {
+				// 	this.$api.msg('请输入昵称');
+				// 	return;
+				// }
 
 				if (!this.password) {
 					this.$api.msg('请输入密码');

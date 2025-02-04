@@ -34,8 +34,15 @@ module.exports = class MemberController extends Controller {
 
 		let nickNameTmp = user.nickName;
 		if (!user.nickName) {
+			let randPrefix = '-' + (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
 			if (username.length == 11) {
-				nickNameTmp = '豆学-' + res.username.substr(7, 4);
+				if (member_type == 'teacher') {
+					nickNameTmp = '老师-' + username.substr(7, 4) + randPrefix;
+				} else if (member_type == 'student') {
+					nickNameTmp = '学生-' + username.substr(7, 4) + randPrefix;
+				} else {
+					nickNameTmp = '豆学-' + username.substr(7, 4) + randPrefix;
+				}
 			} else {
 				nickNameTmp = username;
 			}

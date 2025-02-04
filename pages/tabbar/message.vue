@@ -143,6 +143,10 @@
             uni.$off('refreshIm');
         },
 		methods: {
+            // 跳转登录页
+			tologin() {
+				this.$api.tologin();
+			},
             addWvEventListener() {
                 // #ifdef APP-PLUS
                 var self = this;

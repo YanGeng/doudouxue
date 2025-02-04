@@ -86,8 +86,8 @@
 				reqdata: {
 					page: 1,
 					rows: 8,
-					sidx: 'sort',
-					sord: 'asc',
+					sidx: 'last_modify_time',
+					sord: 'desc',
 					requestType: 1,
 					currentCity: '',
 					otherCity: false
