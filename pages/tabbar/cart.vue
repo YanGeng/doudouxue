@@ -161,7 +161,7 @@
 	} from 'vuex';
 	export default {
 		computed: {
-			...mapState(['islogin', 'user_role', 'token', 'token'])
+			...mapState(['islogin', 'user_role', 'token'])
 		},
 		data() {
 			return {

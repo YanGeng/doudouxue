@@ -125,7 +125,6 @@
                     this.addWvEventListener();
                     this.refresh = false;
                 }, 20);
-
             }
 
             console.log('refreshIm_after_after', this.refresh, this.refeshFlag);
@@ -150,6 +149,7 @@
 			tologin() {
 				this.$api.tologin();
 			},
+
             addWvEventListener() {
                 // #ifdef APP-PLUS
                 var self = this;

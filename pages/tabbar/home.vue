@@ -185,6 +185,7 @@
 			
 			this.getLastedItems();
 			this.loadData("refresh");
+			this.getLastedItems();
 			// 设置不同登录状态，不同tabbar的方法
 			// if (this.islogin) {
 			// 	uni.setTabBarItem({
