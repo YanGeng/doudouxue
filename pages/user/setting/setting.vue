@@ -3,7 +3,7 @@
 		<use-list-title title="个人资料" iconfont=" " @goto="to"></use-list-title>
 		<view class="gap"></view>
 		
-		<use-list-title v-if="aboutData && aboutData._id" title="关于用云" iconfont=" " @goto="toabout"></use-list-title>
+		<use-list-title v-if="aboutData && aboutData._id" title="关于豆豆学" iconfont=" " @goto="toabout"></use-list-title>
 		<view v-if="aboutData && aboutData._id" class="gap"></view>
 		
 		<!-- #ifdef MP-ALIPAY -->
@@ -68,21 +68,21 @@
 			},
 			// 关于用云
 			toabout() {
-				if (this.aboutData.type == '网页') {
-					uni.navigateTo({
-						url: `/pages/content/web?url=${this.aboutData.url}`
-					});
-				} else if (this.aboutData.type == '内容') {
-					uni.setStorage({
-						key: '__rich_text',
-						data: this.aboutData.content,
-						success() {
-							uni.navigateTo({
-								url: '/pages/content/rich-text'
-							})	
-						}
-					})
-				} 
+				// if (this.aboutData.type == '网页') {
+				// 	uni.navigateTo({
+				// 		url: `/pages/content/web?url=${this.aboutData.url}`
+				// 	});
+				// } else if (this.aboutData.type == '内容') {
+				// 	uni.setStorage({
+				// 		key: '__rich_text',
+				// 		data: this.aboutData.content,
+				// 		success() {
+				// 			uni.navigateTo({
+				// 				url: '/pages/content/rich-text'
+				// 			})	
+				// 		}
+				// 	})
+				// } 
 			},
 			tofeedback(){
 				// this.$api.msg('打开右上角-反馈功能');

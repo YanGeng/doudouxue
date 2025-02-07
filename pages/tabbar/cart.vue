@@ -151,7 +151,7 @@
 	} from 'vuex';
 	export default {
 		computed: {
-			...mapState(['islogin', 'user_role'])
+			...mapState(['islogin', 'user_role', 'token', 'location_city'])
 		},
 		data() {
 			return {
@@ -201,11 +201,12 @@
 		},
 		// 监听页面显示。页面每次出现在屏幕上都触发，包括从下级页面点返回露出当前页面
 		onShow() {
-			// console.log("islogin", this.islogin);
-			// if (this.islogin) {
-			// 	this.loadData();
-			// }
-			// console.log("xxxxxxxxx", this.user_role);
+			console.log("islogin", this.islogin);
+			if (this.islogin && this.addCart) {
+				this.loadData();
+				this.addCart = false;
+			}
+			console.log("cat vue xxxxxxxxx", this.location_city, uni.getStorageSync('location_city'));
 			// this.isStudent = this.user_role == 'member' || this.user_role == '学生' || this.user_role == 'student';
 			// this.isTeacher = this.user_role == 'teacher';
 			// this.isAdmin = this.user_role == 'admin';

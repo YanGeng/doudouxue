@@ -74,7 +74,7 @@
 
 	export default {
 		computed: {
-			...mapState(['islogin', 'member', 'user_role', 'current_city']),
+			...mapState(['islogin', 'member', 'user_role', 'current_city', 'token', 'location_city']),
 			currentNotice() {
 				let noticeTmp = [];
 				this.latestItems.forEach((row) => {
@@ -180,6 +180,7 @@
 				this.reqdata.requestType = 1;
 			}
 			
+			this.getLastedItems();
 			this.loadData("refresh");
 			// 设置不同登录状态，不同tabbar的方法
 			// if (this.islogin) {
@@ -208,7 +209,9 @@
 		onShow() {
 			console.log("is login: ", this.reqdata)
 			console.log("is login: ", this.user_role)
-			this.getLastedItems();
+			console.log('home.vue:', this.current_city, this.location_city, uni.getStorageSync('location_city'));
+			// show时不刷新信息
+			// this.getLastedItems();
 		},
 		//加载更多
 		onReachBottom() {

@@ -73,17 +73,21 @@
 				</view>
 				<!-- #endif -->
 			</view>
+			<view class="dflex dflex-wrap-w margin-right" @click="getLocation">
+				<view class="iconfont icondizhi- fwb fs-xs ft-base" style="margin-right: 5rpx;"></view>
+				<text class="fs-xxs cl3">获取定位</text>
+			</view>
 		</view>
 		<view class="row dflex border-line padding-lr">
 			<text class="tit">详细地址</text>
 			<input class="input" type="text" v-model="addrData.addr_detail" placeholder="请输入详细地址"
 				placeholder-class="placeholder" />
 		</view>
-		<view class="gap"></view>
+		<!-- <view class="gap"></view>
 		<view class="row dflex-b padding-lr">
 			<text class="tit">设为默认</text>
 			<switch :checked="addrDefault" color="#FF6A6C" @change="switchChange" />
-		</view>
+		</view> -->
 
 		<view class="padding w-full margin-top">
 			<view class="dflex-b border-radius-big">
@@ -112,6 +116,7 @@ import {
 		components: {},
 		data() {
 			return {
+				key: '0322dc54e25fb3c5945ca6efc7efe9f4',
 				headImageValue: [],
 				detailImageValue: [],
 				value: [],
@@ -728,6 +733,69 @@ import {
 						this.$api.msg(res.msg);
 					});
 				}
+			},
+			getLocation() {
+				uni.getLocation({
+					type: 'wgs84',
+					// type: 'gcj02',
+					success: (res) => {
+						this.location = {
+							...res
+						};
+						console.log('当前位置：' + JSON.stringify(this.location));
+						const url =
+							`https://api.tianditu.gov.cn/geocoder?postStr={"lon":${this.location.longitude},"lat":${this.location.latitude},"ver":1}&type=geocode&tk=${this.key}`;
+						uni.request({
+							url,
+							method: 'GET',
+							success: (res) => {
+								console.log('当前地址：' + JSON.stringify(res.data));
+								if (res.data.status == 0) {
+									// 提取地址信息
+									let addressComponent = res.data.result.addressComponent
+									console.log('当前地址：' + JSON.stringify(res.data));
+									let _this = this;
+
+									_this.addrData.province_name = addressComponent.province || '';
+									_this.addrData.city_name = addressComponent.city || '市辖区';
+									_this.addrData.area_name = addressComponent.county || '';
+
+									_this.addrData.address = _this.addrData.province_name + '-' + _this.addrData.city_name + '-' + _this.addrData.area_name;
+									_this.addressName = _this.addrData.address;
+									_this.addrData.addr_detail = addressComponent.address;
+									_this.addrDataOpType = 'add';
+								} else {
+									console.error('逆地理编码失败:', res.data.msg);
+								}
+							},
+							fail: (err) => {
+								console.error('请求失败:', err);
+							}
+						});
+					},
+					fail: (err) => {
+						console.error(err);
+						// 这里可以处理权限被拒绝的情况
+						if (err.errMsg === 'getLocation:fail auth deny') {
+							// 引导用户打开权限设置
+							uni.showModal({
+								title: '提示',
+								content: '需要获取您的位置信息，请到设置中打开相关权限',
+								success: function(res) {
+									if (res.confirm) {
+										// 打开设置页面
+										uni.openSetting({
+											success: function(res) {
+												console.log(res.authSetting);
+												// res.authSetting = { "scope.userLocation": true } 表示已获得权限
+											},
+										});
+									}
+								},
+							});
+						}
+					},
+				});
 			}
 		}
 	};

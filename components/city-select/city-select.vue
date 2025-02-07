@@ -3,11 +3,16 @@
 	<view class="city-select">
 		<scroll-view scroll-y="true" class="city-select-main" id="city-select-main" :scroll-into-view="toView">
 			<!-- 预留搜索-->
-			<view class="city-serach" v-if="isSearch"><input @input="keyInput" :placeholder="placeholder" class="city-serach-input" /></view>
+			<view class="city-serach" v-if="isSearch"><input @input="keyInput" :placeholder="placeholder"
+					class="city-serach-input" /></view>
 			<!-- 当前定位城市 -->
 			<view class="hot-title" v-if="activeCity && !serachCity">当前定位城市</view>
-			<view class="hot-city" v-if="activeCity && !serachCity">
-				<view class="hot-item" @click="cityTrigger(activeCity)">{{ activeCity[formatName] }}</view>
+			<view class="hot-city dflex-s" v-if="activeCity && !serachCity">
+				<view class="activate-item" @click="cityTrigger(activeCity)">{{ activateLoc || activeCity[formatName] }}</view>
+				<view class="refresh dflex cl3" @click="getLocation">
+					<view class="margin-right-xs">刷新定位</view>
+					<view class="iconfont iconxuanzhuan custom-icon-size"></view>
+				</view>
 			</view>
 			<!-- 热门城市 -->
 			<view class="hot-title" v-if="hotCity.length > 0 && !serachCity">热门城市</view>
@@ -19,8 +24,12 @@
 			<!-- 城市列表(搜索前) -->
 			<view class="citys" v-if="!serachCity">
 				<view v-for="(city, index) in sortItems" :key="index" v-show="city.isCity" class="citys-row">
-					<view class="citys-item-letter" :id="'city-letter-' + (city.name === '#' ? '0' : city.name)">{{ city.name }}</view>
-					<view class="citys-item" v-for="(item, inx) in city.citys" :key="inx" @click="cityTrigger(item)">{{ item.cityName }}</view>
+					<view class="citys-item-letter" :id="'city-letter-' + (city.name === '#' ? '0' : city.name)">
+						{{ city.name }}
+					</view>
+					<view class="citys-item" v-for="(item, inx) in city.citys" :key="inx" @click="cityTrigger(item)">
+						{{ item.cityName }}
+					</view>
 				</view>
 			</view>
 			<!-- 城市列表(搜索后)  -->
@@ -34,14 +43,16 @@
 		<view class="city-indexs-view" v-if="!serachCity">
 			<!-- #ifndef MP-WEIXIN -->
 			<view class="city-indexs" id="index-bar">
-				<view v-for="(cityIns, index) in handleCity" class="city-indexs-text" v-show="cityIns.isCity" :key="index" @click="cityindex(cityIns.forName)">
+				<view v-for="(cityIns, index) in handleCity" class="city-indexs-text" v-show="cityIns.isCity"
+					:key="index" @click="cityindex(cityIns.forName)">
 					{{ cityIns.name }}
 				</view>
 			</view>
 			<!-- #endif -->
 			<!-- #ifdef MP-WEIXIN -->
 			<view class="city-indexs" @touchstart="tStart" @touchend="tEnd" @touchmove.stop="tMove" id="index-bar">
-				<view v-for="(cityIns, index) in handleCity" class="city-indexs-text" v-show="cityIns.isCity" :key="index" @click="cityindex(cityIns.forName)">
+				<view v-for="(cityIns, index) in handleCity" class="city-indexs-text" v-show="cityIns.isCity"
+					:key="index" @click="cityindex(cityIns.forName)">
 					{{ cityIns.name }}
 				</view>
 			</view>
@@ -103,7 +114,10 @@
 				activeCityIndex: '', // 当前所在的城市索引
 				handleCity: [], // 处理后的城市数据
 				serachCity: '', // 搜索的城市
-				cityData: []
+				cityData: [],
+				key: '0322dc54e25fb3c5945ca6efc7efe9f4',
+				location: {},
+				activateLoc: ''
 			};
 		},
 		computed: {
@@ -144,6 +158,9 @@
 		created() {
 			// 初始化城市数据
 			this.cityData = this.obtainCitys;
+			this.activateLoc = this.activeCity.cityName;
+			this.activeCity.cityName = this.activeCity.cityName.split("-")[0];
+			console.log("city-select vue 初始化值：", this.activateLoc, this.activeCity);
 			this.initializationCity();
 			this.buildCityindexs();
 		},
@@ -239,7 +256,8 @@
 			 */
 			initializationCity() {
 				this.handleCity = [];
-				const cityLetterArr = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
+				const cityLetterArr = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
+					'R',
 					'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '#'
 				];
 				for (let index = 0; index < cityLetterArr.length; index++) {
@@ -247,7 +265,8 @@
 						name: cityLetterArr[index],
 						isCity: false, // 用于区分是否含有当前字母开头的城市
 						citys: [], // 存放城市首字母含是此字母的数组
-						forName: 'city-letter-' + (cityLetterArr[index] == '#' ? '0' : cityLetterArr[index]) //label的绑定
+						forName: 'city-letter-' + (cityLetterArr[index] == '#' ? '0' : cityLetterArr[
+							index]) //label的绑定
 					});
 				}
 			},
@@ -306,8 +325,71 @@
 			 */
 			cityTrigger(item) {
 				// 传值到父组件
-				this.$emit('cityClick', item.oldData ? item.oldData : item);
-			}
+				console.log('cityTrigger:' + JSON.stringify(item));
+				let newItem = item.oldData ? item.oldData : item;
+				// let acity = { cityName : this.activateLoc }
+				// newItem.activateCity = acity;
+				console.log('cityTrigger:' + JSON.stringify(newItem));
+				this.$emit('cityClick', newItem);
+			},
+			getLocation() {
+				uni.getLocation({
+					type: 'wgs84',
+					// type: 'gcj02',
+					success: (res) => {
+						this.location = {
+							...res
+						};
+						console.log('当前位置：' + JSON.stringify(this.location));
+						const url =
+							`https://api.tianditu.gov.cn/geocoder?postStr={"lon":${this.location.longitude},"lat":${this.location.latitude},"ver":1}&type=geocode&tk=${this.key}`;
+						uni.request({
+							url,
+							method: 'GET',
+							success: (res) => {
+								console.log('当前地址：' + JSON.stringify(res.data));
+								if (res.data.status == 0) {
+									// 提取地址信息
+									let addressComponent = res.data.result.addressComponent
+									console.log('当前地址：' + JSON.stringify(res.data));
+									this.address = res.data.result.formatted_address;
+									this.activeCity.cityName = addressComponent.city ? addressComponent.city : addressComponent.province;
+									this.activateLoc = this.activeCity.cityName + '-' + addressComponent.county;
+									let activateLocItem = { cityName : this.activateLoc }
+									this.$emit('activateLoc', activateLocItem);
+								} else {
+									console.error('逆地理编码失败:', res.data.msg);
+								}
+							},
+							fail: (err) => {
+								console.error('请求失败:', err);
+							}
+						});
+					},
+					fail: (err) => {
+						console.error(err);
+						// 这里可以处理权限被拒绝的情况
+						if (err.errMsg === 'getLocation:fail auth deny') {
+							// 引导用户打开权限设置
+							uni.showModal({
+								title: '提示',
+								content: '需要获取您的位置信息，请到设置中打开相关权限',
+								success: function(res) {
+									if (res.confirm) {
+										// 打开设置页面
+										uni.openSetting({
+											success: function(res) {
+												console.log(res.authSetting);
+												// res.authSetting = { "scope.userLocation": true } 表示已获得权限
+											},
+										});
+									}
+								},
+							});
+						}
+					},
+				});
+			},
 		}
 	};
 </script>
@@ -387,6 +469,64 @@
 			padding-right: vww(20);
 			overflow: hidden;
 			width: 100vw;
+
+			.refresh {
+				float: left;
+				padding: 0 vww(5);
+				margin-left: vww(12);
+				margin-right: vww(16);
+				margin-bottom: vww(6);
+				// // overflow: hidden;
+				width: vww(100);
+				height: vww(31);
+				font-size: 14px;
+				text-align: center;
+
+				display: -webkit-box;
+				// -webkit-box-orient: vertical;
+				-webkit-line-clamp: 1;
+
+				line-height: vww(31);
+				// color: #4a4a4a;
+				// background: #fff;
+				// border: 1px solid #ebebf0;
+
+				&:nth-child(3n) {
+					margin-right: 0;
+				}
+
+				.custom-icon-size {
+					/* 调整图标的大小 */
+					font-size: 13px;
+				}
+			}
+
+			.activate-item {
+				float: left;
+				padding: 0 vww(5);
+				margin-right: vww(16);
+				margin-bottom: vww(6);
+				overflow: hidden;
+				// width: vww(100);
+				padding-left: 40rpx;
+				padding-right: 40rpx;
+				height: vww(31);
+				font-size: 14px;
+				text-align: center;
+
+				display: -webkit-box;
+				-webkit-box-orient: vertical;
+				-webkit-line-clamp: 1;
+
+				line-height: vww(31);
+				color: #4a4a4a;
+				background: #fff;
+				border: 1px solid #ebebf0;
+
+				&:nth-child(3n) {
+					margin-right: 0;
+				}
+			}
 
 			.hot-item {
 				float: left;

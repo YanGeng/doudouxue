@@ -3,7 +3,7 @@
 		<view class="use-header dflex padding-lr w-full bg-main" :class="fixed ? 'fixed' : ''">
 			<!-- 头部组件 -->
 			<view class="address" @click="selectCity">
-				<text>{{ currentCity }}</text> 
+				<text>{{ currentCity || '上海市' }}</text> 
 			<view class="local-iconfont iconjiantou padding-lr-xs" @click="selectCity"></view>
 			</view>
 			<view class="use-search dflex-b border-radius-lg padding-lr w-full" @click="search">

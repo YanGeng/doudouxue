@@ -13,20 +13,31 @@ const store = new Vuex.Store({
 		// 'student', 'teacher', 'admin'，默认为'student'
 		user_role: 'student',
 		current_city: '上海市',
+		location_city: {},
 
 		__key_member: 'usemall_member',
 		__key_token: 'uni_id_token',
 		__key_token_expired: 'uni_id_token_expired',
 		__key_user_role: 'user_role',
 		__key_current_city: 'current_city',
+		__key_location_city: 'location_city',
 	},
 	mutations: {
 		// 更新选择地址
-		updateCity(state, city) {
+		updateCurrentCity(state, city) {
 			state.current_city = city;
 			uni.setStorage({
 				key: state.__key_current_city,
 				data: state.current_city
+			})
+		},
+
+		// 更新定位地址
+		updateLocationCity(state, city) {
+			state.location_city = city;
+			uni.setStorage({
+				key: state.__key_location_city,
+				data: state.location_city
 			})
 		},
 		
@@ -84,6 +95,7 @@ const store = new Vuex.Store({
 			state.token_expired = uni.getStorageSync(state.__key_token_expired);
 			state.user_role =  uni.getStorageSync(state.__key_user_role);
 			state.current_city = uni.getStorageSync(state.__key_current_city);
+			state.location_city = uni.getStorageSync(state.__key_location_city);
 			
 			if (state.token_expired > new Date().getTime()) {
 				state.islogin = true;

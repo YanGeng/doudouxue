@@ -2,7 +2,7 @@
 
 let config = {
 	debug: !0,
-	version: '1.0.9.240315',
+	version: '1.0.0.240705',
 	
 	route: {
 		home: '/pages/tabbar/home',
