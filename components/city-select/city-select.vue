@@ -7,8 +7,8 @@
 					class="city-serach-input" /></view>
 			<!-- 当前定位城市 -->
 			<view class="hot-title" v-if="activeCity && !serachCity">当前定位城市</view>
-			<view class="hot-city dflex-s" v-if="activeCity && !serachCity">
-				<view class="activate-item" @click="cityTrigger(activeCity)">{{ activateLoc || activeCity[formatName] }}</view>
+			<view class="hot-city dflex-b" v-if="activeCity && !serachCity">
+				<view class="activate-item" @click="cityTrigger(activeCity)">{{ activateLoc }}</view>
 				<view class="refresh dflex cl3" @click="getLocation">
 					<view class="margin-right-xs">刷新定位</view>
 					<view class="iconfont iconxuanzhuan custom-icon-size"></view>
@@ -333,6 +333,8 @@
 				this.$emit('cityClick', newItem);
 			},
 			getLocation() {
+				let tmp = this.activateLoc;
+				this.activateLoc = '';
 				uni.getLocation({
 					type: 'wgs84',
 					// type: 'gcj02',
@@ -362,6 +364,7 @@
 								}
 							},
 							fail: (err) => {
+								this.activateLoc = tmp;
 								console.error('请求失败:', err);
 							}
 						});
@@ -508,8 +511,8 @@
 				margin-bottom: vww(6);
 				overflow: hidden;
 				// width: vww(100);
-				padding-left: 40rpx;
-				padding-right: 40rpx;
+				padding-left: 35rpx;
+				padding-right: 35rpx;
 				height: vww(31);
 				font-size: 14px;
 				text-align: center;
