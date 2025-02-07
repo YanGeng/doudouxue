@@ -70,7 +70,9 @@
 	}
 </script>
 
-<style>
+<style lang="scss">
+	/* 注意要写在第一行，同时给style标签加入lang="scss"属性 */
+	@import "@/uni_modules/uview-ui/index.scss";
 	/* 全局字体图标和公共样式 */
 	@import url("/components/iconfont/iconfont.css");
 	@import url("/common/common.scss");

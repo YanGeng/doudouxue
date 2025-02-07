@@ -107,6 +107,8 @@
 
 				<use-list-title title="我的收藏" iconfont="iconshoucang-" color="#ff6a6c" fwt="600" :tip="stats.collect"
 					@goto="to('/pages/user/collect/collect')"></use-list-title>
+				<use-list-title title="豆豆老师" iconfont="iconhuiyuan" color="#ffab6c" fwt="600" tip="AI老师"
+					@goto="to('/pages/aichat/aichat?id=1')"></use-list-title>
 				<!-- <use-list-title title="分销中心" iconfont="iconyixiaoshou" color="#ffab6c" fwt="600" tip="分享赚钱"
 					@goto="to('/pages/user/distribution/distribution')"></use-list-title> -->
 				<!-- <use-list-title title="收货人" iconfont="icondizhi-" color="#5a9ded" fwt="600"

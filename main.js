@@ -7,6 +7,10 @@ import $db from './common/db.js'
 import $func from './common/func.js'
 import $store from './common/store.js'
 
+// main.js
+import uView from '@/uni_modules/uview-ui'
+Vue.use(uView)
+
 // import tabBar from "@/components/tabbar/tabbar.vue"
 // Vue.component('tabBar',tabBar)
 
