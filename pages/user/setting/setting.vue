@@ -19,7 +19,7 @@
 		<!-- #endif -->
 		<view class="gap"></view>
 		
-		<use-list-title title="用云电商" iconfont=" " :tip="version"></use-list-title>
+		<use-list-title title="豆豆学" iconfont=" " :tip="version"></use-list-title>
 		<view class="gap"></view>
 		
 		<view class="use-item log-out-btn tac" @click="tologin">
@@ -66,7 +66,7 @@
 					url:'/pages/user/setting/personal'
 				})
 			},
-			// 关于用云
+			// 关于豆豆学
 			toabout() {
 				// if (this.aboutData.type == '网页') {
 				// 	uni.navigateTo({
