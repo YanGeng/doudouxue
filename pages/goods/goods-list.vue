@@ -193,7 +193,7 @@
 				
 				this.reqdata.currentCity = this.current_city;
 				console.log('this.reqdata', this.reqdata, this.user_role);
-				this.$func.usemall.call('goods/list', this.reqdata).then(res => {
+				this.$func.usemall.call('goods/list', this.reqdata, true).then(res => {
 					if (res.code === 200) {
 						if (res.datas && res.datas.goods.length > 0) {
 							if (loading == 1 || type == 'refresh') {

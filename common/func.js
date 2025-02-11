@@ -29,8 +29,12 @@ FuncContext.prototype = {
  * action controller 函数路径
  * data controller 数据参数
  * */
-FuncContext.prototype.call = function(action, data) {
-	uni.showNavigationBarLoading();
+FuncContext.prototype.call = function(action, data, disableLoading) {
+	disableLoading = disableLoading || false;
+	console.log('FuncContext.prototype.call ', action, data, disableLoading);
+	if (!disableLoading) {
+		uni.showNavigationBarLoading();
+	}
 	return uniCloud.callFunction({
 		name: this.funcname,
 		data: {
@@ -60,7 +64,9 @@ FuncContext.prototype.call = function(action, data) {
 		}
 		return Promise.reject(err);
 	}).finally(res => {
-		uni.hideNavigationBarLoading();
+		if (!disableLoading) {
+			uni.hideNavigationBarLoading();
+		}
 	});
 }
 

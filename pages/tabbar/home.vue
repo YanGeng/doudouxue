@@ -185,7 +185,6 @@
 			
 			this.getLastedItems();
 			this.loadData("refresh");
-			this.getLastedItems();
 			// 设置不同登录状态，不同tabbar的方法
 			// if (this.islogin) {
 			// 	uni.setTabBarItem({
@@ -262,7 +261,7 @@
 					page: 1,
 					rows: 100,
 				};
-				this.$func.usemall.call('goods/list', redata).then(res => {
+				this.$func.usemall.call('goods/list', redata, true).then(res => {
 					if (res.code === 200) {
 						if (res.datas && res.datas.goods.length > 0) {
 							this.latestItems = res.datas.goods;
@@ -334,7 +333,7 @@
 				}
 				console.log("goodsHotDatas 3333", this.reqdata);
 				
-				this.$func.usemall.call('goods/list', this.reqdata).then(res => {
+				this.$func.usemall.call('goods/list', this.reqdata, true).then(res => {
 					if (res.code === 200) {
 						if (res.datas && res.datas.goods.length > 0) {
 							if (type == 'refresh') {
@@ -423,7 +422,7 @@
 				this.reqdata.currentCity = this.current_city;
 				console.log("goodsHotDatas 0000", this.reqdata);
 
-				await this.$func.usemall.call('app/mp/home', this.reqdata).then(res => {
+				await this.$func.usemall.call('app/mp/home', this.reqdata, true).then(res => {
 					if (res.code === 200) {
 						// 轮播图
 						this.swiperDatas = res.datas.carousel || [];

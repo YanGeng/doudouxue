@@ -63,9 +63,9 @@ export default {
 	data() {
 		return {
             webviewStyles: {
-				progress: {
-					color: "#00aa55"
-				}
+				// progress: {
+				// 	color: "#00aa55"
+				// }
 			},
             customWebview: {
             /* 设置 web-view 的宽度为 80% */

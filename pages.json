@@ -212,7 +212,7 @@
 			"path" : "pages/order/createFindStudent",
 			"style" : 
 			{
-				"navigationBarTitleText" : "创建需求",
+				"navigationBarTitleText" : "找学生",
 				"enablePullDownRefresh" : false
 			}
 		}, {
@@ -226,7 +226,7 @@
 			"path" : "pages/order/createFindTeacher",
 			"style" : 
 			{
-				"navigationBarTitleText" : "创建需求",
+				"navigationBarTitleText" : "找老师",
 				"enablePullDownRefresh" : false
 			}
 		},
@@ -278,6 +278,13 @@
 			"style" : 
 			{
 				"navigationBarTitleText" : ""
+			}
+		},
+		{
+			"path" : "pages/aichat/aichatpage",
+			"style" : 
+			{
+				"navigationBarTitleText" : "豆豆老师"
 			}
 		}
 	],

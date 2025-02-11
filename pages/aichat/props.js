@@ -2,7 +2,7 @@ export default {
 	// 自己的userId => 用于判断自己和别人
 	userId: {
 		type: String | Number,
-		default: ''
+		default: 1
 	},
 	// 更新的消息
 	updateList: {
@@ -15,26 +15,26 @@ export default {
 		default:() => []
 	},
 	// 標簽颜色配置項
-	tagOptions: {
-		type: Object,
-		default: () => {}
-	},
+	// tagOptions: {
+	// 	type: Object,
+	// 	default: () => {}
+	// },
 	// 列表key配置项
-	defaultOptions: {
-		type: Object,
-		default:() => (
-			{
-				userId: 'userId',
-				msgId: 'msgId',
-				name: 'name',
-				message: 'message',
-				img: 'img',
-				time: 'time',
-				avator: 'avator',
-				tagLabel: 'tagLabel'
-			}
-		)
-	},
+	// defaultOptions: {
+	// 	type: Object,
+	// 	default:() => (
+	// 		{
+	// 			userId: 'userId',
+	// 			msgId: 'msgId',
+	// 			name: 'name',
+	// 			message: 'message',
+	// 			img: 'img',
+	// 			time: 'time',
+	// 			avator: 'avator',
+	// 			tagLabel: 'tagLabel'
+	// 		}
+	// 	)
+	// },
 	// 是否使用下拉
 	useRefresh: {
 		type: Boolean,
@@ -68,7 +68,7 @@ export default {
 	// 默认头像
 	defaultAvator: {
 		type: String,
-		default: '/static/images/user/default4.webp'
+		default: 'https://mp-0fe42d5b-82e4-482d-8ad1-81bb97905319.cdn.bspapp.com/default_pic/yinyue_4.webp'
 	},
 	bannedToPost: {
 		type: Boolean,

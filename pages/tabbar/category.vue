@@ -185,7 +185,7 @@
 			this.loadData(() => {
 				if (this.mode == 2) {
 					// 加载商品数据
-					this.loadGoodsDatas('refresh')
+					this.loadGoodsDatas('refresh', true);
 				}
 			});
 		},
@@ -215,7 +215,7 @@
 				if (this.mode == 2) {
 					this.isRefreshing = true;
 					// 加载商品数据
-					this.loadGoodsDatas('refresh', () => {
+					this.loadGoodsDatas('refresh', true, () => {
 						this.isRefreshing = false;
 						uni.stopPullDownRefresh();
 					})
@@ -224,7 +224,7 @@
 			onScrolltolower() {
 				if (this.mode == 2) {
 					// 加载商品数据
-					this.loadGoodsDatas()
+					this.loadGoodsDatas('add', true)
 				}
 				console.log('hit the bottom');
 			},
@@ -278,7 +278,7 @@
 				})
 			},
 			// 加载商品数据
-			loadGoodsDatas(type = 'add', callback) {
+			loadGoodsDatas(type = 'add', disableLoading, callback) {
 				if (this.mode != 2) {
 					return;
 				}
@@ -335,7 +335,7 @@
 				// this.$db[_goods]
 				// 	.where(`state == "销售中"`)
 				// 	.where(whereStr).tolist(this.reqdata).then(res => {
-					this.$func.usemall.call('goods/list', this.reqdata).then(res => {
+					this.$func.usemall.call('goods/list', this.reqdata, disableLoading).then(res => {
 						if (res.code === 200) {
 							if (type == 'refresh') {
 								this.goodsDatas = [];
@@ -357,7 +357,7 @@
 									this.reqdata.otherCity = true;
 									this.reqdata.page = 1;
 									this.loadmoreType = 'more';
-									this.loadGoodsDatas();
+									this.loadGoodsDatas('add', true);
 									console.log("this.goodsDatas 2: ", this.goodsDatas);
 								}
 							}
