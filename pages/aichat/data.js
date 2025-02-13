@@ -1,5 +1,9 @@
 export default function (){
 	return {
+		aiChatImgLocalPath: '',
+		getFocus: false,
+		markdownIt: '',
+		nodes: [],
 		sendVal: '',
 		footerFlag: false,
 		scrollToId: 'y-chat-last',

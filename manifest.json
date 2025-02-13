@@ -19,7 +19,9 @@
         /* 模块配置 */
         "modules" : {
             "Contacts" : {},
-            "Messaging" : {}
+            "Messaging" : {},
+            "Camera" : {},
+            "Push" : {}
         },
         /* 应用发布信息 */
         "distribute" : {
@@ -56,7 +58,13 @@
             },
             /* SDK配置 */
             "sdkConfigs" : {
-                "ad" : {}
+                "ad" : {},
+                "push" : {
+                    "unipush" : {
+                        "version" : "2",
+                        "offline" : false
+                    }
+                }
             },
             "icons" : {
                 "android" : {

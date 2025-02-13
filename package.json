@@ -73,5 +73,10 @@
                 }
             }
         }
+    },
+    "dependencies": {
+        "@rojer/katex-mini": "^1.2.0",
+        "markdown-it": "^14.1.0",
+        "shiki": "^2.3.2"
     }
 }

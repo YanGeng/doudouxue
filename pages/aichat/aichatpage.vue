@@ -10,7 +10,7 @@
 					{{ item.timeLabel }}
 				</view>
 				<view>
-					<u-image width="80rpx" height="80rpx" :src="item[defaultOptions['avator']] || defaultAvator"
+					<u-image width="65rpx" height="65rpx" :src="item[defaultOptions['avator']] || defaultAvator"
 						@click="tapAvator(item)" radius="20rpx" bgColor="red"></u-image>
 					<view
 						:class="['y-wrap_message_content_box_msg', { 'y-wrap_message_content_box_my' : item[defaultOptions['userId']] == userId }]">
@@ -31,14 +31,26 @@
 						<!-- 这段是聊天内容 -->
 						<view :class="[
 								{ 'y-wrap_message_content_box_msg__val': item[defaultOptions['userId']] !== userId }, 
-								{ 'y-wrap_message_content_box_msg__my' : item[defaultOptions['userId']] === userId }
+								{ 'y-wrap_message_content_box_msg__my' : item[defaultOptions['userId']] === userId },
+                                { 'y-wrap_message_content_box_msg__img' : item[defaultOptions['img']] }
 							]">
 							<view v-if="item[defaultOptions['message']]" style="white-space: pre-wrap;">
-                                <text selectable="true">{{ item[defaultOptions['message']] }}</text>
+								<!-- <text selectable="true">{{ item[defaultOptions['message']] }}</text> -->
+								<rich-text selectable :nodes="item[defaultOptions['message']]"></rich-text>
+								<!-- <rich-text :nodes="nodes"></rich-text> -->
+							</view>
+                            <!-- 显示模拟对方正在输入 -->
+                            <view v-else-if="!item[defaultOptions['img']]" :class="[
+								{ 'y-wrap_message_content_box_msg__val': item[defaultOptions['userId']] !== userId }, 
+								{ 'y-wrap_message_content_box_msg__my' : item[defaultOptions['userId']] === userId }
+							]">
+                                <span class="dot dot-1"></span>
+                                <span class="dot dot-2"></span>
+                                <span class="dot dot-3"></span>
                             </view>
 							<u-image @tap="lookImg(item[defaultOptions['img']], index)"
 								v-if="item[defaultOptions['img']]" :src="item[defaultOptions['img']]"
-								width="calc(30vw - 15rpx)" height="auto" mode="widthFix"></u-image>
+								width="calc(65vw - 15rpx)" height="auto" mode="widthFix"></u-image>
 						</view>
 					</view>
 				</view>
@@ -47,14 +59,19 @@
 		<view class="y-wrap_footer">
 			<view class="y-wrap_footer_show_box" id="show_box">
 				<!-- @click="textShowFlag = false" -->
-				<u-icon custom-style="padding: 0 20rpx 0 10rpx;" :size="iconSize" name="camera" v-if="textShowFlag && !aiChatImgUrl" @click="playCamera"></u-icon>
+				<u-icon custom-style="padding: 0 10rpx;" :size="iconSize" name="camera"
+					v-if="textShowFlag && !aiChatImgUrl && !focus" @click="playCamera"></u-icon>
 				<!-- <u-icon custom-style="padding: 0 20rpx 0 10rpx;" :size="iconSize" name="camera" v-else @click="showText"></u-icon> -->
-                <view v-if="aiChatImgUrl" style="padding: 0 20rpx 0 10rpx;" @click="clearAiChatImgUrl">
-                    <u-image :src="aiChatImgUrl" width="70rpx" height="70rpx"></u-image>
-                </view>
+				<view v-if="aiChatImgUrl" style="padding: 0 10rpx;" @click="clearAiChatImgUrl">
+					<u-image :src="aiChatImgUrl" width="70rpx" height="70rpx"></u-image>
+				</view>
 				<view class="y-wrap_footer_show_box__ipt">
 					<!-- <input v-if="textShowFlag" v-model="sendVal" :focus="focus" @blur="blur"></input> -->
-					<u-input v-if="textShowFlag" type="textarea" v-model="sendVal" rows="1" autoHeight :placeholder="bannedToPost ? '禁言中' : placeholderText" :disabled="bannedToPost" :focus="focus"
+					<!-- <u-textarea v-if="textShowFlag" type="textarea" v-model="sendVal" rows="1" autoHeight :cursorSpacing="30"	
+						:placeholder="bannedToPost ? '禁言中' : placeholderText" :disabled="bannedToPost" :focus="focus"
+						@focus="focusChange" @blur="blur"></u-textarea> -->
+                    <u-input v-if="textShowFlag" type="textarea" v-model="sendVal"	
+						:placeholder="bannedToPost ? '禁言中' : placeholderText" :disabled="bannedToPost" :focus="focus"
 						@focus="focusChange" @blur="blur"></u-input>
 					<!-- <u-button v-else @touchstart="startAudio" @touchend="endAudio">按住说话</u-button> -->
 					<button v-else style="font-size: 32rpx; overflow: inherit;" @touchstart="startAudio"
@@ -63,7 +80,7 @@
 				<view>
 					<!-- <u-icon custom-style="padding: 0 10rpx" :size="iconSize" name="star"></u-icon> -->
 					<!-- #ifndef MP-WEIXIN -->
-					<u-icon customStyle="padding: 0 10rpx 0 20rpx;" :size="iconSize" name="plus" @click="showHideBox"
+					<u-icon customStyle="padding: 0 10rpx;" :size="iconSize" name="plus" @click="showHideBox"
 						:class="!sendVal ? 'width_to_mini' : 'fade_show'" v-if="!sendVal"></u-icon>
 					<button style="width:116rpx; padding: 0; text-align: center; margin-left: 10rpx;" type="primary"
 						size="mini" :class="sendVal ? 'width_to_large' : 'fade_show'" @touchend.prevent="send"
@@ -111,6 +128,34 @@
 	</view>
 </template>
 <script>
+	import {
+		MarkdownIt,
+		parseTokens
+	} from "@/uni_modules/wtto-markdown/js_sdk/index";
+	import {
+		katexPlugin
+	} from "@/uni_modules/wtto-markdown/js_sdk/katex";
+
+	// highlight
+	// import { createHighlighterCoreSync } from "shiki/core";
+	// import { createJavaScriptRegexEngine } from "shiki/engine/javascript";
+	// import { bundledLanguages } from "shiki/langs.mjs";
+	// import githubLight from "shiki/themes/github-light.mjs";
+	// import githubDark from "shiki/themes/github-dark.mjs";
+	// import { highlightPlugin } from "@/uni_modules/wtto-markdown/js_sdk/highlight";
+
+	import deflistPlugin from "markdown-it-deflist";
+	import {
+		full as emoji
+	} from "markdown-it-emoji";
+	import insPlugin from "markdown-it-ins";
+	import markPlugin from "markdown-it-mark";
+	import subPlugin from "markdown-it-sub";
+	import supPlugin from "markdown-it-sup";
+	import footnotePlugin from "markdown-it-footnote";
+	import abbrPlugin from "markdown-it-abbr";
+	import containerPlugin from "markdown-it-container";
+
 	// 用来获取随机id的, 正式项目不需要
 	function getRandomNum() {
 		return Math.floor(Math.random() * 1000).toString() + Math.floor(Math.random() * 1000).toString()
@@ -156,6 +201,7 @@
 						this.list = newVal
 						// 判断视口和容器高度判断要不要滚动
 						setTimeout(async () => {
+							console.log('newMessageList changed scrollBottom');
 							if (oldVal.length == 0) {
 								const query = uni.createSelectorQuery().in(this);
 								const scrollBox = query.select('#scrollBox')
@@ -190,32 +236,39 @@
 			updateList: {
 				handler: function(newVal, oldVal) {
 					console.log('updateList changed', newVal, oldVal);
-					if (isEmpty(newVal)) return
-					const timeOptions = this.defaultOptions.time
-					const idOptions = this.defaultOptions.msgId
-					if (Object.prototype.toString.call(newVal).includes('Array')) {
-						//历史消息
-						newVal.forEach((item, index) => {
-							item.showTime = index == 0 ? true : item[timeOptions] - newVal[index - 1][
-								timeOptions
-							] >= this.intervalTime
-							item.timeLabel = disposeTime(item[timeOptions])
-						})
-						this.list = newVal.concat(this.list)
-					} else {
-						//发送消息
-						if (newVal.id != oldVal.id) {
-							let empty = isEmpty(this.list)
-							newVal.showTime = empty || newVal[timeOptions] - this.list[this.list.length - 1][
-								timeOptions
-							] >= this.intervalTime
-							newVal.timeLabel = disposeTime(newVal[timeOptions])
-							this.list.push(newVal)
-							setTimeout(() => {
-								this.scrollBottom()
-							})
-						}
-					}
+                    this.addListNode(newVal);
+
+                    if (!Object.prototype.toString.call(newVal).includes('Array')) {
+                        this.scrollBottom();
+                    }
+					// if (isEmpty(newVal)) return
+					// const timeOptions = this.defaultOptions.time
+					// const idOptions = this.defaultOptions.msgId
+					// if (Object.prototype.toString.call(newVal).includes('Array')) {
+					// 	//历史消息
+					// 	newVal.forEach((item, index) => {
+					// 		item.showTime = index == 0 ? true : item[timeOptions] - newVal[index - 1][
+					// 			timeOptions
+					// 		] >= this.intervalTime
+					// 		item.timeLabel = disposeTime(item[timeOptions])
+					// 	})
+					// 	this.list = newVal.concat(this.list)
+					// } else {
+					// 	//发送消息
+					// 	if (newVal.id != oldVal.id) {
+					// 		let empty = isEmpty(this.list)
+					// 		newVal.showTime = empty || newVal[timeOptions] - this.list[this.list.length - 1][
+					// 			timeOptions
+					// 		] >= this.intervalTime
+					// 		newVal.timeLabel = disposeTime(newVal[timeOptions])
+					// 		this.list.push(newVal)
+					// 		// setTimeout(() => {
+					// 		//     console.log('updateList changed scrollBottom');
+					// 		// 	this.scrollBottom()
+					// 		// })
+					// 		this.scrollBottom()
+					// 	}
+					// }
 				},
 				immediate: true,
 				deep: true
@@ -230,14 +283,18 @@
 		data: data,
 		created() {
 			console.log('data,', this.defaultSheet, this.list);
-			this.scrollBottom();
+			// this.scrollBottom();
 		},
 		onShow() {
 			console.log('onShow this.list', this.hideBoxHeight, this.showBoxHeight, this.list);
 			// this.scrollBottom();
 		},
 		onLoad() {
-			this.scrollBottom();
+			this.init();
+
+			setTimeout(() => {
+				this.scrollBottom();
+			}, 300);
 		},
 		computed: {
 			bottomHeight() {
@@ -260,12 +317,99 @@
 			}
 		},
 		methods: {
-            clearAiChatImgUrl() {
-                this.aiChatImgUrl = '';
-                this.placeholderText = '发消息...'
+            addListNode(node) {
+                if (isEmpty(node)) return
+					const timeOptions = this.defaultOptions.time
+					const idOptions = this.defaultOptions.msgId
+					if (Object.prototype.toString.call(node).includes('Array')) {
+						//历史消息
+						node.forEach((item, index) => {
+							item.showTime = index == 0 ? true : item[timeOptions] - node[index - 1][
+								timeOptions
+							] >= this.intervalTime
+							item.timeLabel = disposeTime(item[timeOptions])
+						})
+						this.list = node.concat(this.list)
+					} else {
+						//发送消息
+						// if (node.id != oldVal.id) {
+							let empty = isEmpty(this.list)
+							node.showTime = empty || node[timeOptions] - this.list[this.list.length - 1][
+								timeOptions
+							] >= this.intervalTime
+							node.timeLabel = disposeTime(node[timeOptions])
+							this.list.push(node)
+							// setTimeout(() => {
+							//     console.log('updateList changed scrollBottom');
+							// 	this.scrollBottom()
+							// })
+							// this.scrollBottom()
+						// }
+					}
             },
+			async init() {
+				uni.showLoading({
+					title: "加载中",
+					mask: true,
+				});
+				// 同步获取所有的语言
+				//   const langs = [];
+				//   for (const name in bundledLanguages) {
+				//     langs.push((await bundledLanguages[name]()).default);
+				//   }
+
+				console.log('init xxxxx: 111111111111');
+				//   const shiki = createHighlighterCoreSync({
+				//     themes: [githubLight, githubDark],
+				//     langs: langs,
+				//     engine: createJavaScriptRegexEngine(),
+				//   });
+
+				this.markdownIt = MarkdownIt({
+						typographer: true,
+						linkify: true,
+					})
+					.use(emoji)
+					.use(subPlugin)
+					.use(supPlugin)
+					.use(insPlugin)
+					.use(markPlugin)
+					.use(deflistPlugin)
+					.use(footnotePlugin)
+					.use(abbrPlugin)
+					.use(containerPlugin, "warning")
+					.use(katexPlugin, {
+						throwOnError: true
+					});
+				// .use(highlightPlugin, {
+				//   codeToTokens: (code, lang) =>
+				//     shiki.codeToTokens(code, {
+				//       themes: {
+				//         light: "github-light",
+				//         dark: "github-dark",
+				//       },
+				//       lang,
+				//     }),
+				// });
+
+				uni.hideLoading();
+
+				// this.render(this.markdownContent);
+			},
+			render(input) {
+				const tokens = this.markdownIt.parse(input, {});
+				let nodes = parseTokens(tokens, this.markdownIt.options);
+				console.log('render nodes', nodes);
+				return nodes;
+			},
+			clearAiChatImgUrl() {
+				this.aiChatImgUrl = '';
+				this.placeholderText = '发消息...'
+			},
 			focusChange() {
-                console.log('focusChange', this.hideBoxHeight, this.showBoxHeight);
+				console.log('focusChange', this.hideBoxHeight, this.showBoxHeight);
+                this.getFocus = true;
+                this.focus = true;
 				this.scrollBottom();
 			},
 			// 下拉刷新被触发
@@ -286,14 +430,15 @@
 			tapAvator(item) {
 				this.$emit('tapAvator', item)
 			},
-			scrollBottom() {
+			scrollBottom(duration) {
 				if (this.list.length == 0) return
-				let duration = 200
+				duration = duration || 230;
 				//'y-chat-' + this.list[this.list.length - 2][this.defaultOptions.msgId]
 				this.scrollToId = 'y'
 				console.log('scrollBottom xxxxxx', this.scrollToId)
 				// duration = 0
 				setTimeout(() => {
+                    // this.scrollToId = 'y'
 					this.scrollToId = 'y-chat-' + this.list[this.list.length - 1][this.defaultOptions.msgId]
 					console.log('scrollBottom yyyyy', this.scrollToId)
 				}, duration)
@@ -329,11 +474,12 @@
 				})
 			},
 			moreFun(item) {
-                console.log('moreFun xxxxx: ', item);
+				console.log('moreFun xxxxx: ', item);
 				item.default ? this[item.default]() : this.$emit(item.funLabel, item)
 			},
 			playCamera() {
-				if (this.bannedToPost) {
+                let _this = this;
+				if (_this.bannedToPost) {
 					uni.showToast({
 						title: '当前正在禁言中, 不能拍摄',
 						icon: 'none'
@@ -343,8 +489,11 @@
 				uni.chooseImage({
 					sourceType: ['camera'],
 					success(res) {
-						// console.log(res)
-						this.$emit('playCamera', res)
+						console.log('playCamera xxxxxxxx', res)
+                        _this.aiChatImgLocalPath = res.tempFilePaths[0];
+                        _this.uploadImage(_this.aiChatImgLocalPath); // 调用上传图片的方法
+						console.log('this.aiChatImgLocalPath', _this.aiChatImgUrl, res);
+						// this.$emit('playCamera', res)
 					},
 					fail(err) {
 						console.error(err, 'err')
@@ -360,31 +509,31 @@
 					return
 				}
 				uni.chooseImage({
-                    count: 1,
+					count: 1,
 					sourceType: ['album'],
 					success: (res) => {
 						// console.log(res,'imgRes')
 						// this.$emit('playPhoto', res)
-                        this.headImageLocalPath = res.tempFilePaths[0]; // 获取选中的图片路径
-						this.uploadImage(this.headImageLocalPath); // 调用上传图片的方法
-						console.log('this.headImageLocalPath', this.aiChatImgUrl, res);
+						this.aiChatImgLocalPath = res.tempFilePaths[0]; // 获取选中的图片路径
+						this.uploadImage(this.aiChatImgLocalPath); // 调用上传图片的方法
+						console.log('this.aiChatImgLocalPath', this.aiChatImgUrl, res);
 					},
 					fail: (err) => {
 						console.error(err, 'imgErr')
 					}
 				})
 			},
-            async uploadImage(filePath) {
+			async uploadImage(filePath) {
 				let fileName = ''
 				let lastSeparatorIndex = filePath.lastIndexOf("/");
 				if (lastSeparatorIndex !== -1) {
-    				fileName = filePath.substring(lastSeparatorIndex + 1);
-    				console.log("File Name xxx:", fileName);
+					fileName = filePath.substring(lastSeparatorIndex + 1);
+					console.log("File Name xxx:", fileName);
 					// let lastIndex = fileName.lastIndexOf(".");
 					// fileName = fileName.substring(0, lastIndex);
-    				// console.log("File Name:", fileName, lastIndex);
+					// console.log("File Name:", fileName, lastIndex);
 				} else {
-    				console.error("Invalid file path");
+					console.error("Invalid file path");
 				}
 
 				if (fileName) {
@@ -395,9 +544,9 @@
 				// const webpFilePath = await this.convertToWebP(filePath);
 
 				// let aaa = await uni.compressImage({
-          		// 	src: filePath,
-          		// 	quality: 50 // 压缩质量，范围 0 - 100，数值越小压缩越严重
-        		// });
+				// 	src: filePath,
+				// 	quality: 50 // 压缩质量，范围 0 - 100，数值越小压缩越严重
+				// });
 
 				// console.log("uploadImage zzzzz:", fileName, aaa[1]);
 				// let tmppath = aaa[1].tempFilePath;
@@ -405,84 +554,96 @@
 				// 将 Blob 转换为临时文件路径
 				// const webpTempFilePath = await this.blobToTempFilePath(webpBlob);
 				// console.log("uploadImage yyyy:", fileName, tmppath, aaa);
-      			// 调用uni-app提供的上传文件API
-                uni.showNavigationBarLoading();
+				// 调用uni-app提供的上传文件API
+				uni.showNavigationBarLoading();
 
-      			let {
-              		fileID
-            	} = await uniCloud.uploadFile({
-        			// url: this.uploadUrl, // 你的服务器上传接口地址
-        			filePath: filePath,
-        			cloudPath: fileName, // 文件对应的key，后端可能需要根据这个key来接收文件
+				let {
+					fileID
+				} = await uniCloud.uploadFile({
+					// url: this.uploadUrl, // 你的服务器上传接口地址
+					filePath: filePath,
+					cloudPath: fileName, // 文件对应的key，后端可能需要根据这个key来接收文件
 					cloudPathAsRealPath: true,
 					fileType: 'image'
-      			});
+				});
 
-                uni.hideNavigationBarLoading();
+				uni.hideNavigationBarLoading();
 
 				console.log('fileID', fileID);
 
 				if (fileID) {
 					this.aiChatImgUrl = fileID;
-                    this.placeholderText = '图片已挂载，请描述您的问题...'
+					this.placeholderText = '描述问题，如：第2题第1小题怎么做...'
 				}
-    		},
+			},
 			send() {
 				// this.$emit('send', this.sendVal)
 				// this.sendVal = ''
 				// this.focus = true
 				//两种方式
 				//方式一: 把数据以对象形式赋值给updateList即可自动发送(推荐)
-                // 如果图片不为空先发送图片
-                let sendValTmp = this.sendVal;
-                let sendImgTmp = this.aiChatImgUrl;
-                console.log('send send send: ', this.sendVal, this.aiChatImgUrl);
-                if (this.aiChatImgUrl) {
-                    this.updateList = {
-					    userId: 1,
-					    id: getRandomNum(), // id必须是唯一值
-					    name: '姜夔',
-					    message: '',
-                        img: this.aiChatImgUrl,
-					    time: new Date().getTime(),
-					    avator: 'https://mp-0fe42d5b-82e4-482d-8ad1-81bb97905319.cdn.bspapp.com/default_pic/huaxue_2.webp',
-					    tagLabel: 'jiang'
-				    }
+				// 如果图片不为空先发送图片
+				let sendValTmp = this.sendVal;
+				let sendImgTmp = this.aiChatImgUrl;
+				console.log('send send send: ', this.sendVal, this.aiChatImgUrl);
+				if (this.aiChatImgUrl) {
+					let picNode = {
+						userId: 1,
+						id: getRandomNum(), // id必须是唯一值
+						name: '姜夔',
+						message: '',
+						img: this.aiChatImgUrl,
+						time: new Date().getTime(),
+						avator: 'https://mp-0fe42d5b-82e4-482d-8ad1-81bb97905319.cdn.bspapp.com/default_pic/huaxue_2.webp',
+						tagLabel: 'jiang'
+					}
 
-                    setTimeout(() => {
-					    this.updateList = {
-					        userId: 1,
-					        id: getRandomNum(), // id必须是唯一值
-					        name: '姜夔',
-					        message: this.sendVal,
-					        time: new Date().getTime(),
-					        avator: 'https://mp-0fe42d5b-82e4-482d-8ad1-81bb97905319.cdn.bspapp.com/default_pic/huaxue_2.webp',
-					        tagLabel: 'jiang'
-				        }
+                    this.addListNode(picNode);
 
-				        this.clearAiChatImgUrl();
-                        this.sendVal = '';
-				        this.focus = true;
-				    }, 400)
-                } else {
-				    this.updateList = {
-				    	userId: 1,
-				    	id: getRandomNum(), // id必须是唯一值
-				    	name: '姜夔',
-				    	message: this.sendVal,
-				    	time: new Date().getTime(),
-				    	avator: 'https://mp-0fe42d5b-82e4-482d-8ad1-81bb97905319.cdn.bspapp.com/default_pic/huaxue_2.webp',
-				    	tagLabel: 'jiang'
-				    };
+					// setTimeout(() => {
+					// 	this.updateList = {
+					// 		userId: 1,
+					// 		id: getRandomNum(), // id必须是唯一值
+					// 		name: '姜夔',
+					// 		message: this.sendVal,
+					// 		time: new Date().getTime(),
+					// 		avator: 'https://mp-0fe42d5b-82e4-482d-8ad1-81bb97905319.cdn.bspapp.com/default_pic/huaxue_2.webp',
+					// 		tagLabel: 'jiang'
+					// 	}
 
-				    this.clearAiChatImgUrl();
-                    this.sendVal = '';
-				    this.focus = true;
-                }
+					// 	this.clearAiChatImgUrl();
+					// 	this.sendVal = '';
+					// 	this.focus = true;
 
-				setTimeout(() => {
-					this.getAiResponse(sendValTmp, sendImgTmp);
-				}, 1000)
+					// 	setTimeout(() => {
+					// 		this.getAiResponse(sendValTmp, sendImgTmp);
+					// 	}, 600)
+					// }, 400)
+				} 
+                // else {
+					let txtNode = {
+						userId: 1,
+						id: getRandomNum(), // id必须是唯一值
+						name: '姜夔',
+						message: this.sendVal,
+						time: new Date().getTime(),
+						avator: 'https://mp-0fe42d5b-82e4-482d-8ad1-81bb97905319.cdn.bspapp.com/default_pic/huaxue_2.webp',
+						tagLabel: 'jiang'
+					};
+
+                    this.addListNode(txtNode);
+
+					this.clearAiChatImgUrl();
+					this.sendVal = '';
+					this.focus = true;
+
+                    // this.scrollBottom(0);
+
+					// setTimeout(() => {
+						this.getAiResponse(sendValTmp, sendImgTmp);
+					// }, 600)
+				// }
+
 				//方式二: 自己操作messageList => 可以通过push, 也可以messageList整个重新赋值
 				// this.messageList.push({
 				// 	userId: 1,
@@ -496,26 +657,24 @@
 			},
 			getAiResponse(inputTxt, inputImg) {
 				let _this = this;
-                let data = {};
-                if (inputImg) {
-                    data = {
+				let data = {};
+				if (inputImg) {
+					data = {
 						app_id: "1876996248230322176",
 						conversation_id: "1887751490903375872",
 						key_value_pairs: [{
 							id: "user",
-                            "ivfiles": [
-                                {
-                                  "type": 1,
-                                  "url": inputImg
-                                }
-                            ],
+							"ivfiles": [{
+								"type": 1,
+								"url": inputImg
+							}],
 							type: "input",
 							name: "用户提问",
 							value: inputTxt
 						}]
-                    };
+					};
 				} else {
-                    data = {
+					data = {
 						app_id: "1876996248230322176",
 						conversation_id: "1887751490903375872",
 						key_value_pairs: [{
@@ -524,8 +683,8 @@
 							name: "用户提问",
 							value: inputTxt
 						}]
-                    };
-                }
+					};
+				}
 				uni.request({
 					url: 'https://open.bigmodel.cn/api/llm-application/open/v2/application/generate_request_id', // 替换为实际的 API 地址
 					data: data,
@@ -556,15 +715,18 @@
 			},
 			getStreamResult(requestId) {
 				let _this = this;
-				_this.updateList = {
+				let botInputing = {
 					userId: 2,
 					id: getRandomNum(), // id必须是唯一值
 					name: '豆豆学',
-					message: "正在输入...",
+					message: "",
 					time: new Date().getTime(),
 					avator: this.aiTeacherAvator,
 					tagLabel: 'jiang'
 				};
+
+                _this.addListNode(botInputing);
+                _this.scrollBottom(0);
 
 				let url = `https://open.bigmodel.cn/api/llm-application/open/v2/model-api/${requestId}/sse-invoke`;
 				console.log('getStreamResult url: ', requestId, url);
@@ -577,11 +739,11 @@
 						'content-type': 'text/event-stream'
 					},
 					success: function(res) {
-                        console.log('请求成功 原始结果res: ', res);
+						console.log('请求成功 原始结果res: ', res);
 						// let resList = res.data.split(/\n|<br\s*\/?>/i);
 						let result = _this.extractAndCombineMessages(res.data);
 						console.log('请求成功 getStreamResult', result, _this.list);
-						_this.scrollBottom();
+						_this.scrollBottom(0);
 					},
 					fail: function(err) {
 						console.error('请求失败:', err);
@@ -612,9 +774,10 @@
 					}
 				}
 
-                console.log('combinedMessages bb', combinedMessages);
-                let mewCombinedMessages = combinedMessages.split('**').join('');
-                mewCombinedMessages = mewCombinedMessages.split(/<br\s*\/?>/i).join('');
+				console.log('combinedMessages bb', combinedMessages);
+				// let mewCombinedMessages = combinedMessages.split('**').join('');
+				// mewCombinedMessages = mewCombinedMessages.split(/<br\s*\/?>/i).join('');
+				let mewCombinedMessages = _this.render(combinedMessages);
 				if (size > 0) {
 					_this.list[size - 1].message = mewCombinedMessages
 				}
@@ -622,7 +785,9 @@
 				return mewCombinedMessages;
 			},
 			blur() {
+                console.log('blur is run');
 				this.focus = false
+                this.getFocus = false;
 			},
 
 			showText() {
@@ -651,6 +816,9 @@
 </script>
 
 <style lang="scss">
+	@import "@/uni_modules/wtto-markdown/js_sdk/markdown.css";
+	@import "@/uni_modules/wtto-markdown/js_sdk/katex.css";
+
 	// import ''
 	@mixin msgBox ($diretion, $position, $symbol) {
 		content: '';
@@ -725,6 +893,45 @@
 		}
 	}
 
+    .typing-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+//   margin-top: 20px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background-color: #000;
+  border-radius: 50%;
+  margin: 0 3px;
+  animation: typing 1.4s infinite both;
+}
+
+.dot-1 {
+  animation-delay: 0.2s;
+}
+
+.dot-2 {
+  animation-delay: 0.4s;
+}
+
+.dot-3 {
+  animation-delay: 0.6s;
+}
+
+@keyframes typing {
+  0%,
+  80%,
+  100% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+}
+
 	.y-wrap {
 		overflow: hidden;
 		height: 100%;
@@ -739,7 +946,7 @@
 			transition: height 0.5s;
 
 			&_box {
-				padding: 20rpx 25rpx;
+				padding: 20rpx 20rpx;
 				height: auto;
 
 				&>view:last-child {
@@ -749,12 +956,12 @@
 				}
 
 				&_msg {
-					max-width: 70vw;
+					max-width: 77vw;
 					display: flex;
 					flex-direction: column;
 					align-items: flex-start;
 					padding: 0 20rpx;
-                    font-size: 32rpx;
+					font-size: 32rpx;
 
 					&__name {
 						// padding: 0 10px 5px;
@@ -805,6 +1012,10 @@
 					&__my::before {
 						@include msgBox(left, right, '+') border-left-color: #3a9af6;
 					}
+                    
+                    &__img {
+                            background-color: #f5f5f5;
+                        }
 				}
 
 				&_my {
@@ -826,16 +1037,18 @@
 			z-index: 10078;
 
 			&_show_box {
-				padding: 20rpx;
+				padding: 20rpx 20rpx 20rpx 20rpx;
 				box-sizing: border-box;
 				height: 140rpx;
 				display: flex;
 				align-items: center;
-                // margin-top: 20rpx;
-                // margin-bottom: 20rpx;
+                // justify-content: flex-end;
+				// margin-top: 20rpx;
+				// margin-bottom: 20rpx;
 
 				&__ipt {
 					flex: 1;
+                    padding: 0 10rpx 0 10rpx;
 				}
 
 				.fade_show {
