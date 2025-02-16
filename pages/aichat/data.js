@@ -1,5 +1,15 @@
 export default function (){
 	return {
+		scrollTop: 0,
+		isUpperLoading: false,
+		curChatNodeTime: '',
+		useRefresh: false,
+		defaultAvator: 'https://mp-0fe42d5b-82e4-482d-8ad1-81bb97905319.cdn.bspapp.com/default_pic/yinyue_4.webp',
+		iconSize: 30,
+		bannedToPost: false,
+		userId: 1,
+		hideBoxIconName: 'plus-circle',
+		enableScrollAnimation: false,
 		aiChatImgLocalPath: '',
 		getFocus: false,
 		markdownIt: '',
@@ -29,90 +39,7 @@ export default function (){
 		placeholderText: '发消息...',
 		focus: false,
 		aiChatImgUrl: '',
-		list: [
-			{
-				userId: 1,
-				id: 1,
-				name: '白',
-				message: '',
-				time: new Date().getTime(),
-				avator: '',
-				img: 'https://mp-0fe42d5b-82e4-482d-8ad1-81bb97905319.cdn.bspapp.com/default_pic/huaxue_2.webp'
-			},
-			{
-				userId: 2,
-				id: 2,
-				name: '黑',
-				message: '',
-				time: new Date().getTime(),
-				avator: '',
-				img: require('@/static/ces.png')
-			},
-			{
-				userId: 1,
-				id: 3,
-				name: '白',
-				message: '君不见昔时燕家重郭隗，拥篲折节无嫌猜',
-				time: new Date().getTime(),
-				avator: '',
-				tagLabel: 'libai'
-			},
-			{
-				userId: 2,
-				id: 4,
-				name: '黑',
-				message: '醉卧沙场君莫笑，古来征战几人回',
-				time: new Date().getTime(),
-				avator: '',
-				tagLabel: 'wanghan'
-			},
-			{
-				userId: 1,
-				id: 5,
-				name: '白',
-				message: '报君黄金台上意，提携玉龙为君死',
-				time: new Date().getTime(),
-				avator: '',
-				tagLabel: 'lihe'
-			},
-			{
-				userId: 2,
-				id: 6,
-				name: '黑',
-				message: '马上相逢无纸笔，凭君传语报平安',
-				time: new Date().getTime(),
-				avator: '',
-				tagLabel: 'censhen'
-			},
-			{
-				userId: 1,
-				id: 7,
-				name: '白',
-				message: '缓歌谩舞凝丝竹，尽日君王看不足',
-				time: new Date().getTime(),
-				avator: '',
-				tagLabel: 'baijvyi'
-			},
-			{
-				userId: 2,
-				id: 8,
-				name: '黑',
-				message: '此时相望不相闻，愿逐月华流照君',
-				time: new Date().getTime(),
-				avator: '',
-				tagLabel: 'zhangruoxu'
-			},
-			{
-				userId: 1,
-				id: 9,
-				msgId: 'last',
-				name: '白',
-				message: '几回魂梦与君同 ',
-				time: new Date().getTime(),
-				avator: '',
-				tagLabel: 'yanjidao'
-			}
-		],
+		list: [],
 		
 		textShowFlag: true,
 		audioFlag: false,
@@ -214,7 +141,8 @@ export default function (){
 			img: 'img',
 			time: 'time',
 			avator: 'avator',
-			tagLabel: 'tagLabel'
+			tagLabel: 'tagLabel',
+			localImg: 'localImg'
 		},
 		aiRequestId: 'h7DyIa09oLpRn-3yI_aaq'
 	}
