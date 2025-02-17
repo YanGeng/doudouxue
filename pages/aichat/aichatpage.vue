@@ -2,22 +2,22 @@
     <view class="y-wrap" :style="'--bottom-height:' + bottomHeight">
         <scroll-view class="y-wrap_message_content" id="scrollBox" scroll-y :scroll-into-view="scrollToId"
             :scroll-top="scrollTop" :refresher-enabled="useRefresh" :refresher-threshold="100"
-            :refresher-triggered="triggered" @scroll="onScroll" :scroll-with-animation="enableScrollAnimation"
-            refresher-default-style="white" @scrolltolower="scroll2Lower" refresher-background="#F2F2F2"
-            @refresherrefresh="onRefresh" @refresherrestore="onReset" @tap="closeFooter">
-            <view id="scroll-view-content">
-                <view v-for="(item, index) in list" :key="index" :id="'y-chat-' + item[defaultOptions['msgId']]"
-                    :class="['y-wrap_message_content_box', { 'y-wrap_message_content_my': item[defaultOptions['userId']] == userId }]">
-                    <view style="text-align: center; padding: 10rpx 0 20rpx;" v-if="item.showTime">
-                        {{ item.timeLabel }}
-                    </view>
-                    <view>
-                        <u-image width="65rpx" height="65rpx" :src="item[defaultOptions['avator']] || defaultAvator"
-                            @click="tapAvator(item)" radius="20rpx" bgColor="red"></u-image>
-                        <view
-                            :class="['y-wrap_message_content_box_msg', { 'y-wrap_message_content_box_my': item[defaultOptions['userId']] == userId }]">
-                            <!-- 这段代码用于显示当前用户的名字 -->
-                            <!-- <view :class="['y-wrap_message_content_box_msg__name', { 'y-wrap_message_content_box_msg__me' : item[defaultOptions['userId']] == userId }]">
+            :refresher-triggered="triggered" @scroll="onScroll" @scrolltoupper="scroll2Upper"
+            :scroll-with-animation="enableScrollAnimation" refresher-default-style="white"
+            refresher-background="#F2F2F2" @refresherrefresh="onRefresh" @refresherrestore="onReset" @tap="closeFooter">
+            <!-- <view id="scroll-view-content"> -->
+            <view v-for="(item, index) in list" :key="index" :id="'y-chat-' + item[defaultOptions['msgId']]"
+                :class="['y-wrap_message_content_box', { 'y-wrap_message_content_my': item[defaultOptions['userId']] == userId }]">
+                <view style="text-align: center; padding: 10rpx 0 20rpx;" v-if="item.showTime">
+                    {{ item.timeLabel }}
+                </view>
+                <view>
+                    <app-image width="65" height="65" :src="item[defaultOptions['avator']] || defaultAvator"
+                        @click="tapAvator(item)" radius="20rpx" imgClass="custom-image-class" bgColor="red"  isCatch></app-image>
+                    <view
+                        :class="['y-wrap_message_content_box_msg', { 'y-wrap_message_content_box_my': item[defaultOptions['userId']] == userId }]">
+                        <!-- 这段代码用于显示当前用户的名字 -->
+                        <!-- <view :class="['y-wrap_message_content_box_msg__name', { 'y-wrap_message_content_box_msg__me' : item[defaultOptions['userId']] == userId }]">
 							<u-tag
 								v-if="tagOptions[item[defaultOptions['tagLabel']]]"
 								:bgColor="tagOptions[item[defaultOptions['tagLabel']]] ? tagOptions[item[defaultOptions['tagLabel']]].bgColor : ''"
@@ -30,38 +30,39 @@
 							<text>{{ item[defaultOptions['name']] }}</text>
 						</view> -->
 
-                            <!-- 这段是聊天内容 -->
-                            <view :class="[
-                                { 'y-wrap_message_content_box_msg__val': item[defaultOptions['userId']] !== userId && (item[defaultOptions['message']] || item[defaultOptions['img']]) },
-                                { 'y-wrap_message_content_box_msg__dot': item[defaultOptions['userId']] !== userId && !item[defaultOptions['message']] && !item[defaultOptions['img']] },
-                                { 'y-wrap_message_content_box_msg__my': item[defaultOptions['userId']] === userId },
-                                { 'y-wrap_message_content_box_msg__img': item[defaultOptions['img']] }
+                        <!-- 这段是聊天内容 -->
+                        <view :class="[
+                            { 'y-wrap_message_content_box_msg__val': item[defaultOptions['userId']] !== userId && (item[defaultOptions['message']] || item[defaultOptions['img']]) },
+                            { 'y-wrap_message_content_box_msg__dot': item[defaultOptions['userId']] !== userId && !item[defaultOptions['message']] && !item[defaultOptions['img']] },
+                            { 'y-wrap_message_content_box_msg__my': item[defaultOptions['userId']] === userId },
+                            { 'y-wrap_message_content_box_msg__img': item[defaultOptions['img']] }
+                        ]">
+                            <view v-if="item[defaultOptions['message']]">
+                                <!-- <text selectable="true">{{ item[defaultOptions['message']] }}</text> -->
+                                <rich-text selectable :nodes="item[defaultOptions['message']]"></rich-text>
+                                <!-- <rich-text :nodes="nodes"></rich-text> -->
+                            </view>
+                            <!-- 显示模拟对方正在输入 -->
+                            <view v-else-if="!item[defaultOptions['img']]" :class="[
+                                { 'y-wrap_message_content_box_msg__dot': item[defaultOptions['userId']] !== userId },
+                                { 'y-wrap_message_content_box_msg__my': item[defaultOptions['userId']] === userId }
                             ]">
-                                <view v-if="item[defaultOptions['message']]">
-                                    <!-- <text selectable="true">{{ item[defaultOptions['message']] }}</text> -->
-                                    <rich-text selectable :nodes="item[defaultOptions['message']]"></rich-text>
-                                    <!-- <rich-text :nodes="nodes"></rich-text> -->
-                                </view>
-                                <!-- 显示模拟对方正在输入 -->
-                                <view v-else-if="!item[defaultOptions['img']]" :class="[
-                                    { 'y-wrap_message_content_box_msg__dot': item[defaultOptions['userId']] !== userId },
-                                    { 'y-wrap_message_content_box_msg__my': item[defaultOptions['userId']] === userId }
-                                ]">
-                                    <span class="dot dot-1"></span>
-                                    <span class="dot dot-2"></span>
-                                    <span class="dot dot-3"></span>
-                                </view>
-                                <u-image @tap="lookImg(item[defaultOptions['img']], index)"
-                                    v-if="item[defaultOptions['img']]" :src="item[defaultOptions['img']]"
-                                    width="calc(65vw - 15rpx)" height="auto" mode="widthFix"
-                                    :lazy-load="true"></u-image>
+                                <span class="dot dot-1"></span>
+                                <span class="dot dot-2"></span>
+                                <span class="dot dot-3"></span>
+                            </view>
+                            <view @tap="lookImg(item[defaultOptions['img']], index)">
+                            <app-image @tap="lookImg(item[defaultOptions['img']], index)"
+                                v-if="item[defaultOptions['img']]" :src="item[defaultOptions['img']]"
+                                width="480" height="auto" mode="widthFix" :lazy-load="true" isCatch></app-image>
                             </view>
                         </view>
                     </view>
                 </view>
-                <!-- 不可见的 view 元素 -->
-                <view id="y-chat-bottom-view" class="hidden-view"></view>
             </view>
+            <!-- </view> -->
+            <!-- 不可见的 view 元素 -->
+            <view id="y-chat-bottom-view" class="hidden-view"></view>
         </scroll-view>
         <view class="y-wrap_footer">
             <view class="y-wrap_footer_show_box" id="show_box">
@@ -234,11 +235,11 @@ export default {
 
                             const [window, container] = await Promise.all([scroll, content])
                             if (window < container) {
-                                // this.scrollBottom()
+                                this.scrollBottom()
                             }
                             return
                         }
-                        // this.scrollBottom()
+                        this.scrollBottom()
                     }, 100)
                 }
             },
@@ -250,7 +251,7 @@ export default {
                 this.addListNode(newVal);
 
                 if (!Object.prototype.toString.call(newVal).includes('Array')) {
-                    // this.scrollBottom();
+                    this.scrollBottom();
                 }
                 // if (isEmpty(newVal)) return
                 // const timeOptions = this.defaultOptions.time
@@ -312,7 +313,10 @@ export default {
     },
     onLoad() {
         // this.init();
-        this.ai_chat_list_tmp = this.ai_chat_list.slice(Math.max(this.ai_chat_list.length - 10, 0));
+        this.ai_chat_list_tmp = this.ai_chat_list.slice(-Math.min(this.ai_chat_list.length, this.pageSize));
+        console.log('onLoad ai_chat_list ai_chat_list ai_chat_list :', this.ai_chat_list.length, this.pageSize, this.ai_chat_list_tmp, this.ai_chat_list);
+        this.noMoreData = this.ai_chat_list_tmp.length < this.pageSize ? true : false;
+        // 获取当前最近记录的时间
         this.curChatNodeTime = this.ai_chat_list_tmp[0].time;
         console.log('onLoad ai_chat_list ai_chat_list ai_chat_list :', this.ai_chat_list);
         if (this.ai_chat_list_tmp.length > 0) {
@@ -326,9 +330,9 @@ export default {
             this.list = this.ai_chat_list_tmp;
         }
         console.log('onLoad 222 ai_chat_list_tmp ai_chat_list_tmp ai_chat_list_tmp :', this.curChatNodeTime, this.ai_chat_list_tmp);
-        // setTimeout(() => {
-        // this.scrollBottom();
-        // }, 300);
+        setTimeout(() => {
+            this.scrollBottom();
+        }, 300);
     },
     computed: {
         ...mapState(['ai_chat_list', 'token']),
@@ -391,24 +395,29 @@ export default {
 
             // this.scrollToId = 'y-chat-' + this.list[this.list.length - 1][this.defaultOptions.msgId];
             // setTimeout(() => {
-                // 将提取的记录插入到目标数组的头部
-                this.list.unshift(...result.reverse());
-                // this.list.push(...result.reverse());
-                // 恢复滚动位置
-                // this.$nextTick(() => {
-                    // this.scrollTop = currentScrollTop;
-                    // this.scrollToId = 'y-chat-' + this.list[this.list.length - 1][this.defaultOptions.msgId]
-                    this.isLoading = false;
-                    console.log('scroll2Upper done', currentScrollTop, this.list);
-                // });
-                this.curChatNodeTime = this.list[0].time;
+            // 将提取的记录插入到目标数组的头部
+            this.list.unshift(...result.reverse());
+            // this.list.push(...result.reverse());
+            // 恢复滚动位置
+            // this.$nextTick(() => {
+            // this.scrollTop = currentScrollTop;
+            // this.scrollToId = 'y-chat-' + this.list[this.list.length - 1][this.defaultOptions.msgId]
+            this.isLoading = false;
+            console.log('scroll2Upper done', currentScrollTop, this.list);
+            // });
+            this.curChatNodeTime = this.list[0].time;
             // }, 1000);
         },
         scroll2Upper() {
-            if (this.isUpperLoading) return;
-            this.isLoading = true;
+            if (this.isUpperLoading || this.noMoreData) {
+                console.log('scroll2Upper isUpperLoading noMoreData', this.isUpperLoading, this.noMoreData);
+                return;
+            }
+
+            this.isUpperLoading = true;
+            this.enableScrollAnimation = false;
             const currentScrollTop = this.scrollTop11;
-            ;
+            let Viewid = this.list[0][this.defaultOptions['msgId']];//记住第一个信息ID
             const result = [];
             let startIndex = -1;
             console.log('scroll2Upper', currentScrollTop, this.list);
@@ -424,29 +433,31 @@ export default {
             let preNode = this.list[0];
             // 如果找到了符合条件的起始元素
             if (startIndex !== -1) {
-                // 从起始元素开始，向上取 n 条记录
-                for (let i = startIndex; i >= 0 && result.length < 10; i--) {
-                    this.ai_chat_list[i].showTime = this.ai_chat_list[i].time - preNode.time >= this.intervalTime
+                // 从起始元素开始，向上取 this.pageSize 条记录
+                for (let i = startIndex; i >= 0 && result.length < this.pageSize; i--) {
+                    this.ai_chat_list[i].showTime = preNode.time - this.ai_chat_list[i].time >= this.intervalTime
                     this.ai_chat_list[i].timeLabel = disposeTime(this.ai_chat_list[i].time)
                     result.push(this.ai_chat_list[i]);
                     preNode = this.ai_chat_list[i];
                 }
             }
 
+            console.log('scroll2Upper', result.length, result);
 
-            // this.scrollToId = 'y-chat-' + this.list[this.list.length - 1][this.defaultOptions.msgId];
-            // setTimeout(() => {
-                // 将提取的记录插入到目标数组的头部
-                this.list.unshift(...result.reverse());
-                // this.list.push(...result.reverse());
-                // 恢复滚动位置
-                // this.$nextTick(() => {
-                    // this.scrollTop = currentScrollTop;
-                    // this.scrollToId = 'y-chat-' + this.list[this.list.length - 1][this.defaultOptions.msgId]
-                    this.isLoading = false;
-                    console.log('scroll2Upper done', currentScrollTop, this.list);
-                // });
-                this.curChatNodeTime = this.list[0].time;
+            this.noMoreData = result.length < this.pageSize ? true : false;
+            // 将提取的记录插入到目标数组的头部
+            this.list.unshift(...result.reverse());
+            // this.list.push(...result.reverse());
+            //这段代码很重要，不然每次加载历史数据都会跳到顶部
+            this.$nextTick(function () {
+                this.scrollToId = 'y-chat-' + Viewid; //跳转上次的第一行信息位置
+                this.$nextTick(function () {
+                    this.enableScrollAnimation = true; //恢复滚动动画
+                });
+
+            });
+            this.isUpperLoading = false;
+            this.curChatNodeTime = this.list[0].time;
             // }, 1000);
 
         },
@@ -476,7 +487,7 @@ export default {
                 //     console.log('updateList changed scrollBottom');
                 // 	this.scrollBottom()
                 // })
-                // this.scrollBottom()
+                this.scrollBottom()
                 // }
             }
         },
@@ -544,7 +555,7 @@ export default {
             this.enableScrollAnimation = true;
             this.getFocus = true;
             this.focus = true;
-            // this.scrollBottom();
+            this.scrollBottom();
         },
         // 下拉刷新被触发
         onRefresh() {
@@ -783,7 +794,7 @@ export default {
             this.sendVal = '';
             this.focus = true;
 
-            // this.scrollBottom(0);
+            this.scrollBottom();
 
             // setTimeout(() => {
             this.getAiResponse(sendValTmp, sendImgTmp);
@@ -873,7 +884,7 @@ export default {
             };
 
             _this.addListNode(botInputing);
-            // _this.scrollBottom();
+            _this.scrollBottom();
 
             let url = `https://open.bigmodel.cn/api/llm-application/open/v2/model-api/${requestId}/sse-invoke`;
             console.log('getStreamResult url: ', requestId, url);
@@ -890,7 +901,7 @@ export default {
                     // let resList = res.data.split(/\n|<br\s*\/?>/i);
                     let result = _this.extractAndCombineMessages(res.data);
                     console.log('请求成功 getStreamResult', result, _this.list);
-                    // _this.scrollBottom();
+                    _this.scrollBottom();
                 },
                 fail: function (err) {
                     console.error('请求失败:', err);
@@ -1057,8 +1068,8 @@ export default {
 }
 
 #scroll-view-content {
-    // display: flex;
-    // flex-direction: column-reverse;
+    display: flex;
+    flex-direction: column-reverse;
     // transform: scaleY(-1);
 }
 
@@ -1108,7 +1119,7 @@ export default {
         background-color: #f5f5f5;
         height: calc(100% - var(--bottom-height));
         transition: height 0.5s;
-        transform: scaleY(-1);
+        // transform: scaleY(-1);
         // transform: rotate(180deg);
         // -ms-transform: rotate(180deg);
         // -moz-transform: rotate(180deg);
@@ -1118,7 +1129,7 @@ export default {
         &_box {
             padding: 20rpx 20rpx;
             height: auto;
-            transform: scaleY(-1);
+            // transform: scaleY(-1);
 
             &>view:last-child {
                 display: flex;
@@ -1302,6 +1313,11 @@ export default {
             @include audioAnimate(#000);
         }
     }
+
+    .custom-image-class {
+  border-radius: 20rpx; /* 设置圆角 */
+//   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* 添加阴影 */
+}
 
     // $_audio_popup {
 

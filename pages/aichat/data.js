@@ -1,5 +1,7 @@
 export default function (){
 	return {
+		noMoreData: false,
+		pageSize: 10,
 		scrollTop: 0,
 		isUpperLoading: false,
 		curChatNodeTime: '',
@@ -16,7 +18,7 @@ export default function (){
 		nodes: [],
 		sendVal: '',
 		footerFlag: false,
-		scrollToId: 'y-chat-last',
+		scrollToId: 'y-chat-bottom-view',
 		freshing: false,
 		triggered: true,
 		hideBoxHeight: 0,
