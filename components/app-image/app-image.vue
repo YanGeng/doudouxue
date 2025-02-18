@@ -15,6 +15,9 @@
 
 <script>
 import appImageUtil from './AppImageUtil.js';
+import {
+    ImgCache
+} from './imgCache.js';
 
 // * 1 * 自定义要替换的错误图片地址
 // 数组形式, 当前对应资源文件 static/imgError/XXXX.png
@@ -132,9 +135,18 @@ export default {
 			}
 		};
 	},
+	watch: {
+            // 监听URL变化
+            src: {
+                handler(src) {
+                    this.handleCache(src);
+                },
+                immediate: true
+            }
+        },
 	mounted() {
 		// 调用图片初始化
-		this.imgInit();
+		// this.imgInit();
 		// appImageUtil.Catch.getAllKey('nosync').then(res => {
 		// 	console.log(res);
 		// })
@@ -173,6 +185,43 @@ export default {
 		}
 	},
 	methods: {
+		// 使用队列进行图片缓存，并增加mds对src进行编码
+		async handleCache(imgUrl) {
+			let __src = imgUrl;
+			if (typeof __src !== 'string') {
+				console.error('传入的类型错误，不为string', __src);
+				this.handleImageError()
+				return;
+			}
+
+			let str = RegExp('http');
+			this.networkImg = str.test(__src);
+
+			// 不是网络图片/没有开启缓存, 不检查缓存图片
+			if (!this.networkImg || !this.isCatch) {
+				this.compSrc = imgUrl;
+				console.log('checkImageUrl no http pic', this.compSrc, imgUrl);
+				return;
+			}
+
+			// #ifdef APP-PLUS
+			// const _img = uni.getStorageSync(appImageUtil.CATCH_FLAG + __src); // 同步方法
+			const _img = await ImgCache.getCache(imgUrl);
+			if (_img) {
+				// 得到缓存的图片 , 直接使用缓存的图片
+				console.log('checkImageUrl has cache', _img, imgUrl);
+				this.compSrc = _img;
+				this.isGetCatchImg = true;
+				return _img;
+			} else {
+				console.log('checkImageUrl has no cache', _img, imgUrl);
+                    // 不存在缓存，用网络地址
+                    this.compSrc = imgUrl;
+                    // 并且设置缓存
+                    ImgCache.setCache(imgUrl);
+                }
+			// #endif
+		},
 		// 图片初始化
 		imgInit() {
 			if (this.autoCheckImage) {

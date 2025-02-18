@@ -12,7 +12,7 @@
                     {{ item.timeLabel }}
                 </view>
                 <view>
-                    <app-image width="65" height="65" :src="item[defaultOptions['avator']] || defaultAvator"
+                    <app-image width="65" height="65" :src="item[defaultOptions['avator']]"
                         @click="tapAvator(item)" radius="20rpx" imgClass="custom-image-class" bgColor="red"  isCatch></app-image>
                     <view
                         :class="['y-wrap_message_content_box_msg', { 'y-wrap_message_content_box_my': item[defaultOptions['userId']] == userId }]">
@@ -293,9 +293,14 @@ export default {
         }
     },
     data: data,
-    created() {
-        console.log('created data,', this.defaultSheet, this.list);
+    onHide() {
+        this.updateAiChatList(this.aiChatListLocal);
+        console.log('onHide data,');
         // this.scrollBottom();
+    },
+    onUnload() {
+        this.updateAiChatList(this.aiChatListLocal);
+        console.log('onUnload data,');
     },
     onShow() {
         console.log('onShow this.list', this.hideBoxHeight, this.showBoxHeight, this.list);
@@ -313,6 +318,7 @@ export default {
     },
     onLoad() {
         // this.init();
+        this.aiChatListLocal = this.ai_chat_list;
         this.ai_chat_list_tmp = this.ai_chat_list.slice(-Math.min(this.ai_chat_list.length, this.pageSize));
         console.log('onLoad ai_chat_list ai_chat_list ai_chat_list :', this.ai_chat_list.length, this.pageSize, this.ai_chat_list_tmp, this.ai_chat_list);
         this.noMoreData = this.ai_chat_list_tmp.length < this.pageSize ? true : false;
@@ -474,6 +480,7 @@ export default {
                     item.timeLabel = disposeTime(item[timeOptions])
                 })
                 this.list = node.concat(this.list)
+                this.aiChatListLocal = node.concat(this.aiChatListLocal)
             } else {
                 //发送消息
                 // if (node.id != oldVal.id) {
@@ -483,11 +490,14 @@ export default {
                 ] >= this.intervalTime
                 node.timeLabel = disposeTime(node[timeOptions])
                 this.list.push(node)
+                this.aiChatListLocal.push(node)
                 // setTimeout(() => {
                 //     console.log('updateList changed scrollBottom');
                 // 	this.scrollBottom()
                 // })
-                this.scrollBottom()
+                // this.$nextTick(() => {
+                // this.scrollBottom()
+                // });
                 // }
             }
         },
@@ -583,9 +593,11 @@ export default {
             if (duration) {
                 setTimeout(() => {
                     // this.scrollToId = 'y'
-                    this.scrollToId = 'y-chat-bottom-view'
-                    // this.scrollToId = 'y-chat-' + this.list[this.list.length - 1][this.defaultOptions.msgId]
-                    console.log('scrollBottom yyyyy setTimeout', this.scrollToId)
+                    this.$nextTick(() => {
+                        this.scrollToId = 'y-chat-bottom-view'
+                        // this.scrollToId = 'y-chat-' + this.list[this.list.length - 1][this.defaultOptions.msgId]
+                        console.log('scrollBottom yyyyy setTimeout', this.scrollToId)
+                    });
                 }, duration)
             } else {
                 // duration = 0
@@ -794,7 +806,7 @@ export default {
             this.sendVal = '';
             this.focus = true;
 
-            this.scrollBottom();
+            // this.scrollBottom();
 
             // setTimeout(() => {
             this.getAiResponse(sendValTmp, sendImgTmp);
@@ -883,7 +895,9 @@ export default {
                 tagLabel: 'jiang'
             };
 
-            _this.addListNode(botInputing);
+            //  setTimeout(() => {
+                _this.addListNode(botInputing);
+                    // }, 100)
             _this.scrollBottom();
 
             let url = `https://open.bigmodel.cn/api/llm-application/open/v2/model-api/${requestId}/sse-invoke`;
@@ -939,8 +953,6 @@ export default {
             if (size > 0) {
                 _this.list[size - 1].message = mewCombinedMessages
             }
-
-            _this.updateAiChatList(_this.list);
 
             return mewCombinedMessages;
         },

@@ -38,7 +38,7 @@ export class ImgCache {
 		return `${wx.env.USER_DATA_PATH}/${fileName}`;
 		// #endif
 		// #ifdef APP-PLUS
-		return return `_doc/imgCache/${fileName}`;
+		return `_doc/imgCache/${fileName}`;
 		// #endif
 	}
 	/**

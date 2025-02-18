@@ -1,7 +1,8 @@
 export default function (){
 	return {
+		aiChatListLocal: [],
 		noMoreData: false,
-		pageSize: 10,
+		pageSize: 40,
 		scrollTop: 0,
 		isUpperLoading: false,
 		curChatNodeTime: '',
