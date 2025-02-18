@@ -13,7 +13,7 @@
                 </view>
                 <view>
                     <app-image width="65" height="65" :src="item[defaultOptions['avator']]"
-                        @click="tapAvator(item)" radius="20rpx" imgClass="custom-image-class" bgColor="red"  isCatch></app-image>
+                        @click="tapAvator(item)" radius="20rpx" imgClass="custom-image-class" bgColor="red" isCatch></app-image>
                     <view
                         :class="['y-wrap_message_content_box_msg', { 'y-wrap_message_content_box_my': item[defaultOptions['userId']] == userId }]">
                         <!-- 这段代码用于显示当前用户的名字 -->
@@ -71,7 +71,7 @@
                     v-if="textShowFlag && !aiChatImgUrl && !focus" @click="playCamera"></u-icon>
                 <!-- <u-icon custom-style="padding: 0 20rpx 0 10rpx;" :size="iconSize" name="camera" v-else @click="showText"></u-icon> -->
                 <view v-else-if="aiChatImgUrl" style="padding: 0 10rpx;" @click="clearAiChatImgUrl">
-                    <u-image :src="aiChatImgUrl" width="70rpx" height="70rpx"></u-image>
+                    <app-image :src="aiChatImgUrl" width="70" height="70" isCatch></app-image>
                 </view>
                 <view class="y-wrap_footer_show_box__ipt">
                     <!-- <input v-if="textShowFlag" v-model="sendVal" :focus="focus" @blur="blur"></input> -->
@@ -317,7 +317,36 @@ export default {
         // });
     },
     onLoad() {
+        // 创建 ConversationId
+        console.log('onLoad conversation_id', this.conversation_id);
+        if (!this.conversation_id) {
+            let _this = this;
+            uni.request({
+                url: 'https://open.bigmodel.cn/api/llm-application/open/v2/application/1876996248230322176/conversation', // 替换为实际的 API 地址
+                data: data,
+                method: 'POST',
+                header: {
+                    'Authorization': 'Bearer ac7d10ffe70d460f899f0ca958ade77e.mIc6yDBK6XGZ3SCD',
+                    'content-type': 'application/json'
+                },
+                success: function (res) {
+                    let covId = res.data.data.conversation_id;
+                    console.log('请求成功 conversationId 更新前', _this.conversation_id, res.data);
+                    _this.updateConversationId(covId);
+                    console.log('请求成功 conversationId 更新后', _this.conversation_id, res.data);
+                },
+                fail: function (err) {
+                    console.error('请求失败 conversationId', err);
+                    // 可以在这里显示错误提示信息
+                },
+                complete: function () {
+                    console.log('请求完成 conversationId');
+                }
+            });
+        }
+        
         // this.init();
+        // 加载对话记录
         this.aiChatListLocal = this.ai_chat_list;
         this.ai_chat_list_tmp = this.ai_chat_list.slice(-Math.min(this.ai_chat_list.length, this.pageSize));
         console.log('onLoad ai_chat_list ai_chat_list ai_chat_list :', this.ai_chat_list.length, this.pageSize, this.ai_chat_list_tmp, this.ai_chat_list);
@@ -341,7 +370,7 @@ export default {
         }, 300);
     },
     computed: {
-        ...mapState(['ai_chat_list', 'token']),
+        ...mapState(['ai_chat_list', 'token', 'conversation_id']),
         bottomHeight() {
             return this.footerFlag ? (this.hideBoxHeight + this.showBoxHeight + 'px') : this.showBoxHeight + 'px'
         },
@@ -362,7 +391,7 @@ export default {
         }
     },
     methods: {
-        ...mapMutations(['updateAiChatList']),
+        ...mapMutations(['updateAiChatList', 'updateConversationId']),
         onScroll(e) {
             // 记录当前的滚动位置
             // this.scrollTop11 = e.detail.scrollTop;
@@ -825,13 +854,13 @@ export default {
             // })
         },
         getAiResponse(inputTxt, inputImg) {
-            console.log('getAiResponse sddddddddddddd', inputTxt, inputImg);
+            console.log('getAiResponse sddddddddddddd', this.conversation_id, inputTxt, inputImg);
             let _this = this;
             let data = {};
             if (inputImg) {
                 data = {
                     app_id: "1876996248230322176",
-                    conversation_id: "1887751490903375872",
+                    conversation_id: this.conversation_id,
                     key_value_pairs: [{
                         id: "user",
                         "ivfiles": [{
@@ -846,7 +875,7 @@ export default {
             } else {
                 data = {
                     app_id: "1876996248230322176",
-                    conversation_id: "1887751490903375872",
+                    conversation_id: this.conversation_id,
                     key_value_pairs: [{
                         id: "user",
                         type: "input",

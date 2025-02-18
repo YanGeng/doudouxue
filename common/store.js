@@ -17,6 +17,7 @@ const store = new Vuex.Store({
 
 		// ai对话记录
 		ai_chat_list: {},
+		conversation_id: '',
 
 		__key_member: 'usemall_member',
 		__key_token: 'uni_id_token',
@@ -25,8 +26,18 @@ const store = new Vuex.Store({
 		__key_current_city: 'current_city',
 		__key_location_city: 'location_city',
 		__key_ai_chat_list: 'ai_chat_list',
+		__key_conversation_id: 'conversation_id',
 	},
 	mutations: {
+		// 更新 conversation_id
+		updateConversationId(state, conversationId) {
+			state.conversation_id = conversationId;
+			uni.setStorage({
+				key: state.__key_conversation_id,
+				data: state.conversation_id
+			})
+		},
+
 		// 更新选择地址
 		updateCurrentCity(state, city) {
 			state.current_city = city;
@@ -110,6 +121,7 @@ const store = new Vuex.Store({
 			state.current_city = uni.getStorageSync(state.__key_current_city);
 			state.location_city = uni.getStorageSync(state.__key_location_city);
 			state.ai_chat_list = uni.getStorageSync(state.__key_ai_chat_list);
+			state.conversation_id = uni.getStorageSync(state.__key_conversation_id);
 			
 			if (state.token_expired > new Date().getTime()) {
 				state.islogin = true;

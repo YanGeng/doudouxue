@@ -86,7 +86,7 @@ export default {
 		// 图片是否进行缓存
 		isCatch: {
 			type: Boolean,
-			default: false
+			default: true
 		},
 		// 图片懒加载
 		lazyLoad: {
@@ -200,7 +200,7 @@ export default {
 			// 不是网络图片/没有开启缓存, 不检查缓存图片
 			if (!this.networkImg || !this.isCatch) {
 				this.compSrc = imgUrl;
-				console.log('checkImageUrl no http pic', this.compSrc, imgUrl);
+				// console.log('checkImageUrl no http pic', this.compSrc, imgUrl);
 				return;
 			}
 
@@ -209,12 +209,12 @@ export default {
 			const _img = await ImgCache.getCache(imgUrl);
 			if (_img) {
 				// 得到缓存的图片 , 直接使用缓存的图片
-				console.log('checkImageUrl has cache', _img, imgUrl);
+				// console.log('checkImageUrl has cache', _img, imgUrl);
 				this.compSrc = _img;
 				this.isGetCatchImg = true;
 				return _img;
 			} else {
-				console.log('checkImageUrl has no cache', _img, imgUrl);
+				// console.log('checkImageUrl has no cache', _img, imgUrl);
                     // 不存在缓存，用网络地址
                     this.compSrc = imgUrl;
                     // 并且设置缓存
@@ -222,6 +222,7 @@ export default {
                 }
 			// #endif
 		},
+		
 		// 图片初始化
 		imgInit() {
 			if (this.autoCheckImage) {
