@@ -145,7 +145,8 @@ export default function (){
 			time: 'time',
 			avator: 'avator',
 			tagLabel: 'tagLabel',
-			localImg: 'localImg'
+			localImg: 'localImg',
+			rawMsg: 'rawMsg'
 		},
 		aiRequestId: 'h7DyIa09oLpRn-3yI_aaq'
 	}

@@ -16,7 +16,7 @@ const store = new Vuex.Store({
 		location_city: {},
 
 		// ai对话记录
-		ai_chat_list: {},
+		ai_chat_list: [],
 		conversation_id: '',
 
 		__key_member: 'usemall_member',

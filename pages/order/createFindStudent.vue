@@ -125,11 +125,11 @@
 			<input class="input" type="text" v-model="addrData.addr_detail" placeholder="请输入详细地址"
 				placeholder-class="placeholder" />
 		</view>
-		<!-- <view class="gap"></view>
+		<view class="gap"></view>
 		<view class="row dflex-b padding-lr">
-			<text class="tit">设为默认</text>
-			<switch :checked="addrDefault" color="#FF6A6C" @change="switchChange" />
-		</view> -->
+			<text class="">是否允许通过手机号联系您？</text>
+			<switch :checked="goods.canUsePhoneNo" color="#FF6A6C" @change="switchChange" />
+		</view>
 
 		<view class="padding w-full margin-top">
 			<view class="dflex-b border-radius-big">
@@ -209,7 +209,8 @@ import {
 					requestType: 1,
 					catetories: [],
 					addressId: '',
-					link: ''
+					link: '',
+					canUsePhoneNo: true,
 				},
 				goodsInfo: {},
 				id: 0,
@@ -375,7 +376,7 @@ import {
 				console.log('上传失败：', e)
 			},
 			switchChange(e) {
-				this.addrDefault = e.detail.value;
+				this.goods.canUsePhoneNo = e.detail.value;
 			},
 			openAddress() {
 				this.$refs.useAddress.open();
@@ -695,6 +696,7 @@ import {
 							// catetories: this.goods.catetories,
 							addressId: this.addrData._id,
 							link: this.goods.link,
+							canUsePhoneNo: this.goods.canUsePhoneNo,
 						})
 						.then(res => {
 							console.log("update request finished");
@@ -727,6 +729,7 @@ import {
 							// catetories: this.goods.catetories,
 							addressId: this.addrData._id,
 							link: this.goods.link,
+							canUsePhoneNo: this.goods.canUsePhoneNo,
 						})
 						.then(res => {
 							console.log("create request finished");

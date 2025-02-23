@@ -60,6 +60,7 @@ module.exports = class GoodsController extends Controller {
 			requestType,
 			addressId,
 			link,
+			canUsePhoneNo,
 			// 商品详情信息 usemall-goods-detail
 			desc_mobile,
 			// 商品sku信息 usemall-goods-sku
@@ -105,6 +106,7 @@ module.exports = class GoodsController extends Controller {
 			requestType: requestType,
 			addressId: addressId,
 			link: link,
+			canUsePhoneNo: canUsePhoneNo,
 		});
 
 		this.db.collection('usemall-goods-detail').doc(_id).update({
@@ -168,6 +170,7 @@ module.exports = class GoodsController extends Controller {
 			requestType,
 			catetories,
 			link,
+			canUsePhoneNo,
 			// 商品详情信息 usemall-goods-detail
 			desc_mobile,
 			addressId,
@@ -233,7 +236,15 @@ module.exports = class GoodsController extends Controller {
 		let imgTmp = img;
 		let imgsTmp = imgs;
 		if (cids && cids.length > 0 && (!imgs || imgs.length <= 0)) {
+			let count = 0;
 			for (let tag of cids) {
+				// 计数器加 1
+				count++;
+				// 当计数器达到 3 时，跳出循环
+				if (count === 4) {
+					break;
+				}
+
 				if (tag == 10002) {
 					imgTmp = !imgTmp || imgTmp == "" ? yuwen[Math.floor(Math.random() * 10) % 4] : imgTmp;
 					let imgNote = {
@@ -333,6 +344,7 @@ module.exports = class GoodsController extends Controller {
 			requestType: requestType,
 			addressId: addressId,
 			link: link,
+			canUsePhoneNo: canUsePhoneNo,
 		});
 
 		this.db.collection('usemall-goods-detail').add({

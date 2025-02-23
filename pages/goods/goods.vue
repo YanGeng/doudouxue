@@ -238,8 +238,8 @@
 			<view class="flex1 btn-container dflex-b border-radius-big">
 				<view class="tac padding-tb-sm flex1 bg-warn" v-if="goods.stock_num > 0" @click="tocart(goods)">加入关注栏</view>
 				<!-- <view class="tac padding-tb-sm flex1 bg-base" v-if="goods.stock_num > 0" @click="tobuy(goods)">立即购买</view> -->
-				<view class="tac padding-tb-sm flex1 bg-base" v-if="goods.stock_num > 0" @click="sendMsg(goods)">发送短信</view>
-				<view class="tac padding-tb-sm flex1 bg-disabled" v-else>已售磐</view>
+				<view class="tac padding-tb-sm flex1 bg-base" v-if="goods.stock_num > 0 && (goods.canUsePhoneNo == undefined || goods.canUsePhoneNo)" @click="sendMsg(goods)">发送短信</view>
+				<!-- <view class="tac padding-tb-sm flex1 bg-disabled" v-else>已售磐</view> -->
 			</view>
 		</view>
 

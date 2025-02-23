@@ -12,8 +12,8 @@
                     {{ item.timeLabel }}
                 </view>
                 <view>
-                    <app-image width="65" height="65" :src="item[defaultOptions['avator']]"
-                        @click="tapAvator(item)" radius="20rpx" imgClass="custom-image-class" bgColor="red" isCatch></app-image>
+                    <app-image width="65" height="65" :src="item[defaultOptions['avator']]" @click="tapAvator(item)"
+                        radius="20rpx" imgClass="custom-image-class" bgColor="red" isCatch></app-image>
                     <view
                         :class="['y-wrap_message_content_box_msg', { 'y-wrap_message_content_box_my': item[defaultOptions['userId']] == userId }]">
                         <!-- 这段代码用于显示当前用户的名字 -->
@@ -40,6 +40,7 @@
                             <view v-if="item[defaultOptions['message']]">
                                 <!-- <text selectable="true">{{ item[defaultOptions['message']] }}</text> -->
                                 <rich-text selectable :nodes="item[defaultOptions['message']]"></rich-text>
+								<!-- <mp-html :content="item[defaultOptions['rawMsg']]"/> -->
                                 <!-- <rich-text :nodes="nodes"></rich-text> -->
                             </view>
                             <!-- 显示模拟对方正在输入 -->
@@ -52,9 +53,9 @@
                                 <span class="dot dot-3"></span>
                             </view>
                             <view @tap="lookImg(item[defaultOptions['img']], index)">
-                            <app-image @tap="lookImg(item[defaultOptions['img']], index)"
-                                v-if="item[defaultOptions['img']]" :src="item[defaultOptions['img']]"
-                                width="480" height="auto" mode="widthFix" :lazy-load="true" isCatch></app-image>
+                                <app-image @tap="lookImg(item[defaultOptions['img']], index)"
+                                    v-if="item[defaultOptions['img']]" :src="item[defaultOptions['img']]" width="480"
+                                    height="auto" mode="widthFix" :lazy-load="true" isCatch></app-image>
                             </view>
                         </view>
                     </view>
@@ -144,6 +145,9 @@ import {
 import {
     parseTokens
 } from "@/uni_modules/wtto-markdown/js_sdk/index";
+
+// import mpHtml from '@/components/mp-html/mp-html'
+
 // import {
 // 	katexPlugin
 // } from "@/uni_modules/wtto-markdown/js_sdk/katex";
@@ -181,6 +185,10 @@ import {
 import props from './props.js'
 import data from './data.js'
 export default {
+//     components: {
+//  mpHtml
+// },
+
     // props,
     watch: {
         sheetList: {
@@ -334,6 +342,13 @@ export default {
                     console.log('请求成功 conversationId 更新前', _this.conversation_id, res.data);
                     _this.updateConversationId(covId);
                     console.log('请求成功 conversationId 更新后', _this.conversation_id, res.data);
+                    if (!_this.ai_chat_list || _this.ai_chat_list.length <= 0) {
+                        _this.sendVal = '请给我做一个自我介绍';
+                        _this.onlyShowResponse = true;
+                        _this.send()
+                        _this.sendVal = '';
+                        _this.onlyShowResponse = false;
+                    }
                 },
                 fail: function (err) {
                     console.error('请求失败 conversationId', err);
@@ -343,31 +358,40 @@ export default {
                     console.log('请求完成 conversationId');
                 }
             });
+        } else if (!this.ai_chat_list || this.ai_chat_list.length <= 0) {
+            this.sendVal = '请给我做一个自我介绍';
+            this.onlyShowResponse = true;
+            this.send()
+            this.sendVal = '';
+            this.onlyShowResponse = false;
         }
-        
+
         // this.init();
         // 加载对话记录
-        this.aiChatListLocal = this.ai_chat_list;
-        this.ai_chat_list_tmp = this.ai_chat_list.slice(-Math.min(this.ai_chat_list.length, this.pageSize));
-        console.log('onLoad ai_chat_list ai_chat_list ai_chat_list :', this.ai_chat_list.length, this.pageSize, this.ai_chat_list_tmp, this.ai_chat_list);
-        this.noMoreData = this.ai_chat_list_tmp.length < this.pageSize ? true : false;
-        // 获取当前最近记录的时间
-        this.curChatNodeTime = this.ai_chat_list_tmp[0].time;
-        console.log('onLoad ai_chat_list ai_chat_list ai_chat_list :', this.ai_chat_list);
-        if (this.ai_chat_list_tmp.length > 0) {
-            const timeOptions = this.defaultOptions.time
-            this.ai_chat_list_tmp.forEach((item, index) => {
-                item.showTime = index == 0 ? true : item.time - this.ai_chat_list_tmp[index - 1][timeOptions] >=
-                    this
-                        .intervalTime
-                item.timeLabel = disposeTime(item.time)
-            })
-            this.list = this.ai_chat_list_tmp;
+        console.log('onLoad' ,this.ai_chat_list);
+        if (this.ai_chat_list && this.ai_chat_list.length > 0) {
+            this.aiChatListLocal = this.ai_chat_list;
+            this.ai_chat_list_tmp = this.ai_chat_list.slice(-Math.min(this.ai_chat_list.length, this.pageSize));
+            console.log('onLoad ai_chat_list ai_chat_list ai_chat_list :', this.ai_chat_list.length, this.pageSize, this.ai_chat_list_tmp, this.ai_chat_list);
+            this.noMoreData = this.ai_chat_list_tmp.length < this.pageSize ? true : false;
+            // 获取当前最近记录的时间
+            this.curChatNodeTime = this.ai_chat_list_tmp[0].time;
+            console.log('onLoad ai_chat_list ai_chat_list ai_chat_list :', this.ai_chat_list);
+            if (this.ai_chat_list_tmp.length > 0) {
+                const timeOptions = this.defaultOptions.time
+                this.ai_chat_list_tmp.forEach((item, index) => {
+                    item.showTime = index == 0 ? true : item.time - this.ai_chat_list_tmp[index - 1][timeOptions] >=
+                        this
+                            .intervalTime
+                    item.timeLabel = disposeTime(item.time)
+                })
+                this.list = this.ai_chat_list_tmp;
+            }
+            console.log('onLoad 222 ai_chat_list_tmp ai_chat_list_tmp ai_chat_list_tmp :', this.curChatNodeTime, this.ai_chat_list_tmp);
+            setTimeout(() => {
+                this.scrollBottom();
+            }, 300);
         }
-        console.log('onLoad 222 ai_chat_list_tmp ai_chat_list_tmp ai_chat_list_tmp :', this.curChatNodeTime, this.ai_chat_list_tmp);
-        setTimeout(() => {
-            this.scrollBottom();
-        }, 300);
     },
     computed: {
         ...mapState(['ai_chat_list', 'token', 'conversation_id']),
@@ -796,7 +820,9 @@ export default {
                     tagLabel: 'jiang'
                 }
 
-                this.addListNode(picNode);
+                if (!this.onlyShowResponse) {
+                    this.addListNode(picNode);
+                }
 
                 // setTimeout(() => {
                 // 	this.updateList = {
@@ -829,11 +855,15 @@ export default {
                 tagLabel: 'jiang'
             };
 
-            this.addListNode(txtNode);
+            if (!this.onlyShowResponse) {
+                this.addListNode(txtNode);
+            }
 
             this.clearAiChatImgUrl();
             this.sendVal = '';
-            this.focus = true;
+            if (!this.onlyShowResponse) {
+                this.focus = true;
+            }
 
             // this.scrollBottom();
 
@@ -894,6 +924,7 @@ export default {
                     'content-type': 'application/json'
                 },
                 success: function (res) {
+                    console.log('请求成功 getAiResponse', _this.aiRequestId, res.data);
                     _this.aiRequestId = res.data.data.id;
                     console.log('请求成功 getAiResponse', _this.aiRequestId, res.data);
                     // 在这里可以处理响应数据，例如更新页面显示
@@ -925,8 +956,8 @@ export default {
             };
 
             //  setTimeout(() => {
-                _this.addListNode(botInputing);
-                    // }, 100)
+            _this.addListNode(botInputing);
+            // }, 100)
             _this.scrollBottom();
 
             let url = `https://open.bigmodel.cn/api/llm-application/open/v2/model-api/${requestId}/sse-invoke`;
@@ -981,6 +1012,7 @@ export default {
             let mewCombinedMessages = _this.render(combinedMessages);
             if (size > 0) {
                 _this.list[size - 1].message = mewCombinedMessages
+                _this.list[size - 1].rawMsg = combinedMessages
             }
 
             return mewCombinedMessages;
@@ -1356,9 +1388,10 @@ export default {
     }
 
     .custom-image-class {
-  border-radius: 20rpx; /* 设置圆角 */
-//   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* 添加阴影 */
-}
+        border-radius: 20rpx;
+        /* 设置圆角 */
+        //   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* 添加阴影 */
+    }
 
     // $_audio_popup {
 
