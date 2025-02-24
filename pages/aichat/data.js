@@ -1,5 +1,11 @@
 export default function (){
 	return {
+		isLongPressTriggered: false,
+		startX: 0,
+		startY: 0,
+		isScrolling: false,
+		// 设定的滚动距离阈值
+		scrollThreshold: 10,
 		aiChatListLocal: [],
 		noMoreData: false,
 		pageSize: 40,

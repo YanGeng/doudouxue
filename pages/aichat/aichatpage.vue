@@ -39,8 +39,10 @@
                         ]">
                             <view v-if="item[defaultOptions['message']]">
                                 <!-- <text selectable="true">{{ item[defaultOptions['message']] }}</text> -->
-                                <rich-text selectable :nodes="item[defaultOptions['message']]"></rich-text>
-								<!-- <mp-html :content="item[defaultOptions['rawMsg']]"/> -->
+                                <rich-text selectable :nodes="item[defaultOptions['message']]"
+                                    @longpress="handleLongPress(item)" @touchstart="handleTouchStart"
+                                    @touchmove="handleTouchMove"></rich-text>
+                                <!-- <mp-html :content="item[defaultOptions['rawMsg']]" :markdown="true"/> -->
                                 <!-- <rich-text :nodes="nodes"></rich-text> -->
                             </view>
                             <!-- 显示模拟对方正在输入 -->
@@ -185,9 +187,9 @@ import {
 import props from './props.js'
 import data from './data.js'
 export default {
-//     components: {
-//  mpHtml
-// },
+    //     components: {
+    //  mpHtml
+    // },
 
     // props,
     watch: {
@@ -368,7 +370,7 @@ export default {
 
         // this.init();
         // 加载对话记录
-        console.log('onLoad' ,this.ai_chat_list);
+        console.log('onLoad', this.ai_chat_list);
         if (this.ai_chat_list && this.ai_chat_list.length > 0) {
             this.aiChatListLocal = this.ai_chat_list;
             this.ai_chat_list_tmp = this.ai_chat_list.slice(-Math.min(this.ai_chat_list.length, this.pageSize));
@@ -637,6 +639,59 @@ export default {
         },
         tapAvator(item) {
             this.$emit('tapAvator', item)
+        },
+        handleTouchStart(event) {
+            // 记录手指按下时的 x 和 y 坐标
+            this.startX = event.changedTouches[0].pageX;
+            this.startY = event.changedTouches[0].pageY;
+            // 初始化滚动状态为 false
+            this.isScrolling = false;
+        },
+        handleTouchMove(event) {
+            const currentX = event.changedTouches[0].pageX;
+            const currentY = event.changedTouches[0].pageY;
+            // 计算手指在 x 和 y 方向上移动的距离
+            const dx = Math.abs(currentX - this.startX);
+            const dy = Math.abs(currentY - this.startY);
+            if (dx > this.scrollThreshold || dy > this.scrollThreshold) {
+                // 若移动距离超过阈值，标记为正在滚动
+                this.isScrolling = true;
+            }
+        },
+        async handleLongPress(item) {
+            console.log('handleLongPress isLongPressTriggered: ', this.isLongPressTriggered);
+            if (this.isLongPressTriggered) {
+                return;
+            }
+            this.isLongPressTriggered = true;
+            console.log('handleLongPress isLongPressTriggered start: ', this.isLongPressTriggered);
+            if (!this.isScrolling) {
+                // 从事件对象中获取要复制的文本 
+                const text = item[this.defaultOptions['rawMsg']] === undefined ? item[this.defaultOptions['message']] : item[this.defaultOptions['rawMsg']];
+                console.log('handleLongPress: ', text);
+                // 调用 uni.setClipboardData 方法将文本复制到剪贴板
+                await uni.setClipboardData({
+                    data: text,
+                    success: () => {
+                        // 复制成功后，弹出提示框
+                        uni.showToast({
+                            title: '复制成功',
+                            icon: 'success'
+                        });
+                    },
+                    fail: () => {
+                        // 复制失败时，弹出提示框
+                        uni.showToast({
+                            title: '复制失败',
+                            icon: 'none'
+                        });
+                    }
+                });
+            }
+            setTimeout(() => {
+                this.isLongPressTriggered = false;
+                console.log('handleLongPress isLongPressTriggered after timeout: ', this.isLongPressTriggered);
+            }, 1000);
         },
         scrollBottom(duration) {
             if (this.list.length == 0) return
