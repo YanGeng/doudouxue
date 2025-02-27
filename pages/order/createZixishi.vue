@@ -83,11 +83,11 @@
 			<input class="input" type="text" v-model="addrData.addr_detail" placeholder="请输入详细地址"
 				placeholder-class="placeholder" />
 		</view>
-		<!-- <view class="gap"></view>
+		<view class="gap"></view>
 		<view class="row dflex-b padding-lr">
-			<text class="tit">设为默认</text>
-			<switch :checked="addrDefault" color="#FF6A6C" @change="switchChange" />
-		</view> -->
+			<text class="">是否允许通过手机号联系您？</text>
+			<switch :checked="goods.canUsePhoneNo" color="#FF6A6C" @change="switchChange" />
+		</view>
 
 		<view class="padding w-full margin-top">
 			<view class="dflex-b border-radius-big">
@@ -167,7 +167,10 @@ import {
 					requestType: 0,
 					catetories: [],
 					addressId: '',
-					link: ''
+					link: '',
+					longitude: '',
+					latitude: '',
+					geohash: ''
 				},
 				goodsInfo: {},
 				id: 0,
@@ -330,7 +333,7 @@ import {
 				console.log('上传失败：', e)
 			},
 			switchChange(e) {
-				this.addrDefault = e.detail.value;
+				this.goods.canUsePhoneNo = e.detail.value;
 			},
 			openAddress() {
 				this.$refs.useAddress.open();
@@ -577,6 +580,7 @@ import {
 					}
 				}
 				
+				// 地理位置信息处理
 				if (this.addrData.city_name == '市辖区') {
 					this.goods.city_name = this.addrData.province_name;
 				} else {
@@ -584,6 +588,26 @@ import {
 				}
 				
 				this.goods.area_name = this.addrData.area_name;
+				let totalAddress = this.addressName + addrData.addr_detail;
+				const url = `http://api.tianditu.gov.cn/geocoder?ds={"keyWord":"${totalAddress}"}&tk=${this.key}`;
+				const lonLatData = await uni.request({
+      				url: url, // 请求的 URL
+      				method: 'GET' // 请求方法，如 GET、POST 等
+    			});
+				console.log('请求成功，返回的数据:', lonLatData);
+
+				if (lonLatData && lonLatData.length > 0) {
+					const itemWithData = lonLatData.find(item => item && item.data);
+					const dataValue = itemWithData ? itemWithData.data : null;
+					if (dataValue && dataValue.status == 0) {
+						let lonLatLocation = dataValue.location
+						this.goods.longitude = lonLatLocation.lon;
+						this.goods.latitude = lonLatLocation.lat;
+						const geohash = this.$ngeohash.encode(lonLatLocation.lat, lonLatLocation.lon, 5);
+						this.goods.geohash = geohash
+						console.log('GeoHash 编码结果:', this.goods);
+					}
+				}
 
 				// console.log('goods', this.headImageValue, this.detailImageValue, this.goods);
 				let realImgs = [];
@@ -651,6 +675,10 @@ import {
 							// catetories: this.goods.catetories,
 							addressId: this.addrData._id,
 							link: this.goods.link,
+							canUsePhoneNo: this.goods.canUsePhoneNo,
+							longitude: this.goods.longitude,
+							latitude: this.goods.latitude,
+							geohash: this.goods.geohash,
 						})
 						.then(res => {
 							console.log("update request finished");
@@ -683,6 +711,10 @@ import {
 							// catetories: this.goods.catetories,
 							addressId: this.addrData._id,
 							link: this.goods.link,
+							canUsePhoneNo: this.goods.canUsePhoneNo,
+							longitude: this.goods.longitude,
+							latitude: this.goods.latitude,
+							geohash: this.goods.geohash,
 						})
 						.then(res => {
 							console.log("create request finished");

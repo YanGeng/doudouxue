@@ -6,6 +6,7 @@ import $api from './common/common.js'
 import $db from './common/db.js'
 import $func from './common/func.js'
 import $store from './common/store.js'
+import $ngeohash from 'ngeohash'
 
 // main.js
 import uView from '@/uni_modules/uview-ui'
@@ -91,6 +92,7 @@ Vue.prototype.$dbcmd = uniCloud.database().command;
 Vue.prototype.$func = $func
 Vue.prototype.$store = $store
 Vue.prototype.$markdownIt = markdownIt
+Vue.prototype.$ngeohash = $ngeohash
 
 App.mpType = 'app'
 

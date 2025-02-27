@@ -207,6 +207,9 @@ import {
 					addressId: '',
 					link: '',
 					canUsePhoneNo: true,
+					longitude: '',
+					latitude: '',
+					geohash: ''
 				},
 				goodsInfo: {},
 				id: 0,
@@ -612,6 +615,7 @@ import {
 					}
 				}
 				
+				// 地理位置信息处理
 				if (this.addrData.city_name == '市辖区') {
 					this.goods.city_name = this.addrData.province_name;
 				} else {
@@ -619,6 +623,26 @@ import {
 				}
 				
 				this.goods.area_name = this.addrData.area_name;
+				let totalAddress = this.addressName + addrData.addr_detail;
+				const url = `http://api.tianditu.gov.cn/geocoder?ds={"keyWord":"${totalAddress}"}&tk=${this.key}`;
+				const lonLatData = await uni.request({
+      				url: url, // 请求的 URL
+      				method: 'GET' // 请求方法，如 GET、POST 等
+    			});
+				console.log('请求成功，返回的数据:', lonLatData);
+
+				if (lonLatData && lonLatData.length > 0) {
+					const itemWithData = lonLatData.find(item => item && item.data);
+					const dataValue = itemWithData ? itemWithData.data : null;
+					if (dataValue && dataValue.status == 0) {
+						let lonLatLocation = dataValue.location
+						this.goods.longitude = lonLatLocation.lon;
+						this.goods.latitude = lonLatLocation.lat;
+						const geohash = this.$ngeohash.encode(lonLatLocation.lat, lonLatLocation.lon, 5);
+						this.goods.geohash = geohash
+						console.log('GeoHash 编码结果:', this.goods);
+					}
+				}
 
 				// console.log('goods', this.headImageValue, this.detailImageValue, this.goods);
 				let realImgs = [];
@@ -687,6 +711,9 @@ import {
 							addressId: this.addrData._id,
 							link: this.goods.link,
 							canUsePhoneNo: this.goods.canUsePhoneNo,
+							longitude: this.goods.longitude,
+							latitude: this.goods.latitude,
+							geohash: this.goods.geohash,
 						})
 						.then(res => {
 							console.log("update request finished");
@@ -720,6 +747,9 @@ import {
 							addressId: this.addrData._id,
 							link: this.goods.link,
 							canUsePhoneNo: this.goods.canUsePhoneNo,
+							longitude: this.goods.longitude,
+							latitude: this.goods.latitude,
+							geohash: this.goods.geohash,
 						})
 						.then(res => {
 							console.log("create request finished");
