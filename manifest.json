@@ -21,7 +21,8 @@
             "Contacts" : {},
             "Messaging" : {},
             "Camera" : {},
-            "Push" : {}
+            "Push" : {},
+            "OAuth" : {}
         },
         /* 应用发布信息 */
         "distribute" : {
@@ -62,8 +63,14 @@
                 "push" : {
                     "unipush" : {
                         "version" : "2",
-                        "offline" : false
+                        "offline" : false,
+                        "mi" : {},
+                        "hms" : {}
                     }
+                },
+                "statics" : {},
+                "oauth" : {
+                    "univerify" : {}
                 }
             },
             "icons" : {
@@ -100,7 +107,7 @@
             }
         },
         "uniStatistics" : {
-            "enable" : false
+            "enable" : true
         }
     },
     /* 快应用特有相关 */
@@ -114,7 +121,7 @@
         },
         "usingComponents" : true,
         "uniStatistics" : {
-            "enable" : false
+            "enable" : true
         }
     },
     "mp-alipay" : {
@@ -142,11 +149,13 @@
         }
     },
     "uniStatistics" : {
-        "enable" : false
+        "enable" : false,
+        "version" : "2",
+        "reportInterval" : "60"
     },
     "h5" : {
         "uniStatistics" : {
-            "enable" : false
+            "enable" : true
         },
         "domain" : "",
         "router" : {
@@ -166,5 +175,10 @@
             "minified" : true
         }
     },
-    "vueVersion" : "2"
+    "vueVersion" : "2",
+    "app-harmony" : {
+        "uniStatistics" : {
+            "enable" : true
+        }
+    }
 }

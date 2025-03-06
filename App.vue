@@ -42,7 +42,44 @@
 					}
 				});
 			}
+
+			uni.getProvider({
+				service: 'oauth',
+				success: function (res) {
+					console.log('支持登录方法：', res.provider)// ['qq', 'univerify']
+				}
+			});
+
+			// 一键登录预登陆，可以显著提高登录速度
+			uni.preLogin({
+				provider: 'univerify',
+				success: (res) => {
+					// 成功
+					// this.setUniverifyErrorMsg();
+					console.log("preLogin success: ", res);
+				},
+				fail: (res) => {
+					// this.setUniverifyLogin(false);
+					// this.setUniverifyErrorMsg(res.errMsg);
+					// 失败
+					console.log("preLogin fail res: ", res);
+				}
+			})
 			
+			uni.onPushMessage((res) => {
+				console.log("收到推送消息：",res) //监听推送消息
+			})
+
+			// uni-app客户端获取push客户端标记	
+			uni.getPushClientId({
+				success: (res) => {
+					let push_clientid = res.cid
+					console.log('客户端推送标识:',push_clientid)
+				},
+				fail(err) {
+					console.log(err)
+				}
+			})
 		},
 		onShow: function(options) {
 			console.log('App Show');

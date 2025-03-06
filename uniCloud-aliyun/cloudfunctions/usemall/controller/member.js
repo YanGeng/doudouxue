@@ -1,6 +1,8 @@
 'use strict';
 
 const uidObj = require('uni-id');
+const uniIdCo = uniCloud.importObject('uni-id-co')
+
 const {
 	Controller
 } = require('uni-cloud-router');
@@ -198,6 +200,81 @@ module.exports = class MemberController extends Controller {
 		});
 
 		return res;
+	}
+
+	// 手机号一键登录
+	async loginByUniverify() {
+		let response = {
+			code: 1,
+			member: {},
+			user: {},
+			msg: null
+		};
+		
+		const {
+			phoneNumber,
+			openid,
+			access_token
+		} = this.ctx.data
+
+		// let aa = await uidObj.loginByUniverify({
+		// 	access_token: access_token,
+		// 	openid: openid
+		// })
+
+		let userRes = {};
+		userRes = await this.db.collection('uni-id-users')
+			.where({
+				username: phoneNumber
+			})
+			.field({
+				uid: true,
+				token: true,
+				password: true,
+				username: true,
+				role: true
+			})
+			.get();
+
+		if (!(userRes && userRes.data.length === 1)) {
+			return { code: 1, msg: '手机号不存在' };
+		}
+
+		// 将一键登录token更新进用户表
+		// let _id = userRes.data[0]._id
+		// let newTokens = userRes.data[0].token
+		// newTokens.push(access_token)
+		// const ress = await this.db.collection('uni-id-users').doc(_id)
+  //          .update({
+  //               token: newTokens // 更新 token 字段为新的值
+  //           });
+
+		
+		let res = {}
+		res.userInfo = userRes.data[0];
+		res.code = 0;
+		res.uid = res.userInfo._id;
+		res.token = userRes.data[0].token.at(-1);
+		const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+		res.tokenExpired = new Date().getTime() + oneDayInMilliseconds * 7;
+		
+		// let userInfo = await uidObj.getUserInfo({
+		// 	uid:res.uid
+		// });
+		
+		res.userInfo = userRes.data[0];
+
+		let member = {
+			member_access_token: res.token,
+			member_password: res.password || '',
+			member_mobile: res.username,
+		}
+		
+		response.code = 0;
+		response.member = await this.memberLogin(res, member);
+		response.user = res;
+
+		return response;
 	}
 
 	// 手机号+验证码 登录|注册

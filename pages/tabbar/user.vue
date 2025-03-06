@@ -109,7 +109,7 @@
 					@goto="to('/pages/user/collect/collect')"></use-list-title>
 				<!-- <use-list-title title="豆豆老师" iconfont="iconhuiyuan" color="#ffab6c" fwt="600" tip="AI老师"
 					@goto="to('/pages/aichat/aichat?id=2')"></use-list-title> -->
-				<use-list-title title="豆豆老师" iconfont="iconhuiyuan" color="#ffab6c" fwt="600" tip="AI老师"
+				<use-list-title title="豆豆老师" iconfont="iconkefu-01" color="#ffab6c" fwt="600" tip="AI老师"
 					@goto="to('/pages/aichat/aichatpage?id=1')"></use-list-title>
 				<!-- <use-list-title title="分销中心" iconfont="iconyixiaoshou" color="#ffab6c" fwt="600" tip="分享赚钱"
 					@goto="to('/pages/user/distribution/distribution')"></use-list-title> -->
@@ -117,6 +117,7 @@
 					@goto="to('/pages/user/address/address')"></use-list-title> -->
 				<use-list-title title="设置" iconfont="iconshezhi-" color="#58bc8a" fwt="600"
 					@goto="to('/pages/user/setting/setting')"></use-list-title>
+				<use-list-title title="工信部备案" iconfont="iconquanbudingdan-" color="#a09a9a" fwt="600" tip="沪ICP备2025112865号-1A"></use-list-title>
 			</view>
 
 			<view v-if="islogin" class="border-radius margin-top-sm padding-sm dflex-c bg-main log-out-btn"
@@ -138,8 +139,6 @@
 	</view>
 </template>
 <script>
-	const db = uniCloud.database();
-	
 	import { mapState, mapMutations } from 'vuex';
 	const _history = 'usemall-goods-history'
 	export default {
