@@ -19,6 +19,9 @@ const store = new Vuex.Store({
 		ai_chat_list: [],
 		conversation_id: '',
 
+		// 一键登录
+		isPreLoginSucess: false,
+
 		__key_member: 'usemall_member',
 		__key_token: 'uni_id_token',
 		__key_token_expired: 'uni_id_token_expired',
@@ -27,6 +30,7 @@ const store = new Vuex.Store({
 		__key_location_city: 'location_city',
 		__key_ai_chat_list: 'ai_chat_list',
 		__key_conversation_id: 'conversation_id',
+		__key_isPreLoginSucess: 'isPreLoginSucess',
 	},
 	mutations: {
 		// 更新 conversation_id
@@ -69,7 +73,6 @@ const store = new Vuex.Store({
 		login(state, res) {
 			// 用户已登录
 			// console.log(res)
-			state.islogin = true;
 			state.user_role = res.user.userInfo.role[0]
 			// console.log(state.user_role)
 			state.member = res.member;
@@ -98,6 +101,7 @@ const store = new Vuex.Store({
 				data: state.user_role
 			})
 			
+			state.islogin = true;
 			// uni.setTabBarItem({
 			// 	index: 2,
 			// 	// "pagePath": "/pages/tabbar/shopping",
@@ -185,6 +189,16 @@ const store = new Vuex.Store({
 			uni.setStorage({
 				key: state.__key_member,
 				data: state.member
+			})
+		},
+
+		setPreLoginStatus (state, isPreLoginSucess) {
+			state.isPreLoginSucess = isPreLoginSucess;
+			
+			// 存储预登陆数据
+			uni.setStorage({
+				key: state.__key_isPreLoginSucess,
+				data: state.isPreLoginSucess
 			})
 		}
 	},

@@ -10,7 +10,7 @@
 			...mapState(['member'])
 		},
 		methods: {
-			...mapMutations(['token', 'loadToken'])
+			...mapMutations(['token', 'loadToken', 'setPreLoginStatus'])
 		},
 		onLaunch: function(options) {
 			let _this = this;
@@ -56,10 +56,11 @@
 				success: (res) => {
 					// 成功
 					// this.setUniverifyErrorMsg();
+					this.setPreLoginStatus(true);
 					console.log("preLogin success: ", res);
 				},
 				fail: (res) => {
-					// this.setUniverifyLogin(false);
+					this.setPreLoginStatus(false);
 					// this.setUniverifyErrorMsg(res.errMsg);
 					// 失败
 					console.log("preLogin fail res: ", res);

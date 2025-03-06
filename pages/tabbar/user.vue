@@ -139,6 +139,8 @@
 	</view>
 </template>
 <script>
+	const db = uniCloud.database();
+
 	import { mapState, mapMutations } from 'vuex';
 	const _history = 'usemall-goods-history'
 	export default {

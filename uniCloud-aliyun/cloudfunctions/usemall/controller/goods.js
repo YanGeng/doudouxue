@@ -61,6 +61,9 @@ module.exports = class GoodsController extends Controller {
 			addressId,
 			link,
 			canUsePhoneNo,
+			longitude,
+			latitude,
+			geohash,
 			// 商品详情信息 usemall-goods-detail
 			desc_mobile,
 			// 商品sku信息 usemall-goods-sku
@@ -107,6 +110,9 @@ module.exports = class GoodsController extends Controller {
 			addressId: addressId,
 			link: link,
 			canUsePhoneNo: canUsePhoneNo,
+			longitude: longitude,
+			latitude: latitude,
+			geohash: geohash,
 		});
 
 		this.db.collection('usemall-goods-detail').doc(_id).update({
@@ -171,6 +177,9 @@ module.exports = class GoodsController extends Controller {
 			catetories,
 			link,
 			canUsePhoneNo,
+			longitude,
+			latitude,
+			geohash,
 			// 商品详情信息 usemall-goods-detail
 			desc_mobile,
 			addressId,
@@ -345,6 +354,9 @@ module.exports = class GoodsController extends Controller {
 			addressId: addressId,
 			link: link,
 			canUsePhoneNo: canUsePhoneNo,
+			longitude: longitude,
+			latitude: latitude,
+			geohash: geohash,
 		});
 
 		this.db.collection('usemall-goods-detail').add({

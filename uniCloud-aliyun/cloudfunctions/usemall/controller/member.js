@@ -237,42 +237,64 @@ module.exports = class MemberController extends Controller {
 			.get();
 
 		if (!(userRes && userRes.data.length === 1)) {
-			return { code: 1, msg: '手机号不存在' };
+			// 手机号不在，走注册逻辑
+			// 头像设置默认值
+			let avatarUrl = 'https://mp-0fe42d5b-82e4-482d-8ad1-81bb97905319.cdn.bspapp.com/default_pic/user_default_pic/default4.webp';
+			let randPrefix = '-' + (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+			let nickNameTmp = '豆学-' + phoneNumber.substr(7, 4) + randPrefix;
+			const res = await uidObj.register({
+				username: phoneNumber,
+				password: phoneNumber,
+				role: '',
+				nickname: nickNameTmp,
+				avatar: avatarUrl
+			});
+
+			if (res.code == 0) {
+				let member = {
+					member_name: res.username || nickNameTmp,
+					member_password: res.password || '',
+					member_mobile: res.username,
+					member_access_token: res.token,
+					member_nickname: nickNameTmp,
+					member_gender: 0,
+					member_headimg: avatarUrl || '',
+					member_weixin_headimg: avatarUrl || '',
+					member_city: '',
+				}
+
+				// const vcid = vcRes.data[0]._id;
+				// // 验证码已验证
+				// await this.db.collection('opendb-verify-codes').doc(vcid).update({ state: 1 });
+				response.code = 0;
+				response.user = res;
+				response.member = await this.memberLogin(res, member);
+			} else {
+				// response.datas = res;
+				response.msg = res.message;
+			}
+		} else {
+			// 手机号存在，走登录逻辑
+			let res = {}
+			res.userInfo = userRes.data[0];
+			res.code = 0;
+			res.uid = res.userInfo._id;
+			res.token = userRes.data[0].token.at(-1);
+			const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+			res.tokenExpired = new Date().getTime() + oneDayInMilliseconds * 7;
+
+			res.userInfo = userRes.data[0];
+
+			let member = {
+				member_access_token: res.token,
+				member_password: res.password || '',
+				member_mobile: res.username,
+			}
+
+			response.code = 0;
+			response.member = await this.memberLogin(res, member);
+			response.user = res;
 		}
-
-		// 将一键登录token更新进用户表
-		// let _id = userRes.data[0]._id
-		// let newTokens = userRes.data[0].token
-		// newTokens.push(access_token)
-		// const ress = await this.db.collection('uni-id-users').doc(_id)
-  //          .update({
-  //               token: newTokens // 更新 token 字段为新的值
-  //           });
-
-		
-		let res = {}
-		res.userInfo = userRes.data[0];
-		res.code = 0;
-		res.uid = res.userInfo._id;
-		res.token = userRes.data[0].token.at(-1);
-		const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
-		res.tokenExpired = new Date().getTime() + oneDayInMilliseconds * 7;
-		
-		// let userInfo = await uidObj.getUserInfo({
-		// 	uid:res.uid
-		// });
-		
-		res.userInfo = userRes.data[0];
-
-		let member = {
-			member_access_token: res.token,
-			member_password: res.password || '',
-			member_mobile: res.username,
-		}
-		
-		response.code = 0;
-		response.member = await this.memberLogin(res, member);
-		response.user = res;
 
 		return response;
 	}

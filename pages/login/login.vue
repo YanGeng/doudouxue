@@ -50,6 +50,9 @@
 			<view class="w-full margin-top-xl">
 				<view class="dflex-b border-radius-lg"><view class="tac padding-tb-sm flex1 bg-base fs" @click="tologin">登录</view></view>
 			</view>
+			<view v-if="isPreLoginSucess" class="w-full margin-top">
+				<view class="dflex-b border-radius-lg"><view class="tac padding-tb-sm flex1 bg-base fs" @click="loginByUniverify">本机手机号一键登录</view></view>
+			</view>
 		</view>
 		<view v-if="ismp" class="dflex-c margin-top-big">
 			<!-- #ifdef MP-WEIXIN -->
@@ -101,6 +104,7 @@ import { mapState, mapMutations } from 'vuex';
 export default {
 	data() {
 		return {
+			isLoginingByUniverify: false,
 			ismp: false,
 			platform: '',
 			platform_name: '',
@@ -116,11 +120,11 @@ export default {
 		};
 	},
 	computed: {
-		...mapState(['member', 'islogin'])
+		...mapState(['member', 'islogin', 'isPreLoginSucess'])
 	},
 
 	onShow() {
-		console.log('login Show');
+		console.log('login Show', this.isLoginingByUniverify);
 		// #ifdef MP-WEIXIN
 		let lopts = uni.getLaunchOptionsSync();
 		console.log(lopts);
@@ -164,111 +168,119 @@ export default {
         this.$nextTick(() => {
             // this.scrollBottomValue = 9999;
             // this.scrollToId = 'y-chat-bottom-view'
-            this.loginByUniverify();
+			if (this.isPreLoginSucess) {
+            	this.loginByUniverify();
+			}
         });
     },
 	methods: {
 		...mapMutations(['login', 'logout', 'token']),
 		loginByUniverify() {
-				let _this = this;
-				uni.login({
-					provider: 'univerify',
-					univerifyStyle: { // 自定义登录框样式
-						//参考`univerifyStyle 数据结构`
-						fullScreen: true,
-						icon: {
-							path: "/static/images/user/default4.webp", // 自定义显示在授权框中的logo，仅支持本地图片 默认显示App logo
-							width: "60px",  //图标宽度 默认值：60px
-							height: "60px"   //图标高度 默认值：60px
-						},
-						privacyTerms: {
-							defaultCheckBoxState: true, // 条款勾选框初始状态 默认值： true
-							isCenterHint: false, //未勾选服务条款时点击登录按钮的提示是否居中显示 默认值: false (3.7.13+ 版本支持)
-							uncheckedImage: "", // 可选 条款勾选框未选中状态图片（仅支持本地图片 建议尺寸 24x24px）(3.2.0+ 版本支持)
-							checkedImage: "", // 可选 条款勾选框选中状态图片（仅支持本地图片 建议尺寸24x24px）(3.2.0+ 版本支持)
-							checkBoxSize: 12, // 可选 条款勾选框大小
-							textColor: "#BBBBBB", // 文字颜色 默认值：#BBBBBB
-							termsColor: "#5496E3", //  协议文字颜色 默认值： #5496E3
-							prefix: "我已阅读并同意", // 条款前的文案 默认值：“我已阅读并同意”
-							suffix: "并使用本机号码登录", // 条款后的文案 默认值：“并使用本机号码登录”
-							privacyItems: [  // 自定义协议条款，最大支持2个，需要同时设置url和title. 否则不生效
-								{
-									url: "https://static-mp-0fe42d5b-82e4-482d-8ad1-81bb97905319.next.bspapp.com/health/#/pages/user/privacy/service", // 点击跳转的协议详情页面
-									title: "《服务协议》" // 协议名称
-								},
-								{
-									url: "https://static-mp-0fe42d5b-82e4-482d-8ad1-81bb97905319.next.bspapp.com/health/#/pages/user/privacy/privacy", // 点击跳转的协议详情页面
-									title: "《隐私政策》" // 协议名称
-								}
-							]
-						},
+			if (this.isLoginingByUniverify) {
+				return
+			}
+			let _this = this;
+			_this.isLoginingByUniverify = true;
+			uni.login({
+				provider: 'univerify',
+				univerifyStyle: { // 自定义登录框样式
+					//参考`univerifyStyle 数据结构`
+					fullScreen: true,
+					icon: {
+						path: "/static/images/user/default4.webp", // 自定义显示在授权框中的logo，仅支持本地图片 默认显示App logo
+						width: "60px",  //图标宽度 默认值：60px
+						height: "60px"   //图标高度 默认值：60px
 					},
-					success(res) { // 登录成功
-						console.log('登录成功', res.authResult);  // {openid:'登录授权唯一标识',access_token:'接口返回的 token'}
-						console.log(res);
-						let openid = res.authResult.openid; //拿到openid
-						let access_token = res.authResult.access_token; //拿到access_token
-						console.log(openid)
-						console.log(access_token)
-
-						// 在得到access_token和openid后，通过callfunction调用云函数
-						uniCloud.callFunction({
-							name: "getPhoneNumber",
-							data: {
-								openid,
-								access_token
+					privacyTerms: {
+						defaultCheckBoxState: true, // 条款勾选框初始状态 默认值： true
+						isCenterHint: false, //未勾选服务条款时点击登录按钮的提示是否居中显示 默认值: false (3.7.13+ 版本支持)
+						uncheckedImage: "", // 可选 条款勾选框未选中状态图片（仅支持本地图片 建议尺寸 24x24px）(3.2.0+ 版本支持)
+						checkedImage: "", // 可选 条款勾选框选中状态图片（仅支持本地图片 建议尺寸24x24px）(3.2.0+ 版本支持)
+						checkBoxSize: 12, // 可选 条款勾选框大小
+						textColor: "#BBBBBB", // 文字颜色 默认值：#BBBBBB
+						termsColor: "#5496E3", //  协议文字颜色 默认值： #5496E3
+						prefix: "我已阅读并同意", // 条款前的文案 默认值：“我已阅读并同意”
+						suffix: "并使用本机号码登录", // 条款后的文案 默认值：“并使用本机号码登录”
+						privacyItems: [  // 自定义协议条款，最大支持2个，需要同时设置url和title. 否则不生效
+							{
+								url: "https://static-mp-0fe42d5b-82e4-482d-8ad1-81bb97905319.next.bspapp.com/health/#/pages/user/privacy/service", // 点击跳转的协议详情页面
+								title: "《服务协议》" // 协议名称
+							},
+							{
+								url: "https://static-mp-0fe42d5b-82e4-482d-8ad1-81bb97905319.next.bspapp.com/health/#/pages/user/privacy/privacy", // 点击跳转的协议详情页面
+								title: "《隐私政策》" // 协议名称
 							}
-						}).then(res1 => {
-							console.log("获取成功");
-							console.log(res1);
-							// 获取用户的手机号
-							let phoneNumber = res1.result.phoneNumber;
-							//接下来就进行你自己的操作
-							_this.$func.usemall
-								.call('member/loginByUniverify', {
-									phoneNumber: phoneNumber
-								})
-								.then(res => {
-									console.log("login data: ", res);
-									if (res.code == 200) {
-										// 调用 store login
-										_this.login(res.datas);
+						]
+					},
+				},
+				success(res) { // 登录成功
+					console.log('登录成功', res.authResult);  // {openid:'登录授权唯一标识',access_token:'接口返回的 token'}
+					console.log(res);
+					let openid = res.authResult.openid; //拿到openid
+					let access_token = res.authResult.access_token; //拿到access_token
+					console.log(openid)
+					console.log(access_token)
 
-										_this.$api.msg('登录成功');
-										// #ifndef H5
-										
+					// 在得到access_token和openid后，通过callfunction调用云函数
+					uniCloud.callFunction({
+						name: "getPhoneNumber",
+						data: {
+							openid,
+							access_token
+						}
+					}).then(res1 => {
+						console.log("获取成功");
+						console.log(res1);
+						// 获取用户的手机号
+						let phoneNumber = res1.result.phoneNumber;
+						//接下来就进行你自己的操作
+						_this.$func.usemall
+							.call('member/loginByUniverify', {
+								phoneNumber: phoneNumber
+							})
+							.then(res => {
+								console.log("login data: ", res);
+								if (res.code == 200) {
+									// 调用 store login
+									_this.login(res.datas);
+
+									_this.$api.msg('登录成功');
+									// #ifndef H5
+
+									console.log("_this.$api.pages: ", _this.$api.pages().length);
+									if (_this.$api.pages().length > 1) {
+										// 返回上一页
 										console.log("_this.$api.pages: ", _this.$api.pages().length);
-										if (_this.$api.pages().length > 1) {
-											// 返回上一页
-											console.log("_this.$api.pages: ", _this.$api.pages().length);
-											_this.$api.timerout(() => {
-												uni.navigateBack({});
-											}, 200);
-
-											return;
-										}
-										// #endif
+										_this.$api.timerout(() => {
+											uni.navigateBack({});
+										}, 200);
 
 										return;
 									}
+									// #endif
 
-									_this.$api.msg(res.msg);
-								});
-						}).catch((err) => {
-							// 执行失败后的操作
-							//...
-							//...
-						})
+									return;
+								}
 
-						uni.closeAuthView();
-					},
-					fail(res) {  // 登录失败
-						console.log('登录失败')
-						console.log(res.errCode)
-						console.log(res.errMsg)
-					}
-				})
-			},
+								_this.$api.msg(res.msg);
+							});
+					}).catch((err) => {
+						// 执行失败后的操作
+						//...
+						//...
+					})
+
+					uni.closeAuthView();
+					_this.isLoginingByUniverify = false;
+				},
+				fail(res) {  // 登录失败
+					console.log('登录失败')
+					console.log(res.errCode)
+					console.log(res.errMsg)
+					_this.isLoginingByUniverify = false;
+				}
+			})
+		},
 		inputChange(e) {
 			const key = e.currentTarget.dataset.key;
 			this[key] = e.detail.value;
