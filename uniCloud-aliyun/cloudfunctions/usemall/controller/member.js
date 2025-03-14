@@ -505,23 +505,131 @@ module.exports = class MemberController extends Controller {
 		return response;
 	}
 
+	// 获取memberInfo
+	async getMemberInfo() {
+		let response = {
+			code: 1,
+			member: {}
+		};
+		uniCloud.logger.info(this.ctx.event);
+		let uid = '';
+		if (this.ctx.event.uniIdToken) {
+			// 已登录，获取当前登录 uid
+			const userRes = await uidObj.checkToken(this.ctx.event.uniIdToken);
+			if (userRes.code == 0) {
+				uid = userRes.uid;
+			}
+		}
+		if (!uid) {
+			response.msg = '当前未登录'
+			return response;
+		}
+
+		const memberRes = await this.db.collection('usemall-member').doc(uid)
+			.field({
+				_id: true,
+				member_nickname: true,
+				member_gender: true,
+				member_headimg: true,
+				member_weixin_headimg: true,
+				member_role: true,
+				perRecommend: true
+			}).get();
+		let memberData = {};
+		if (memberRes && memberRes.data.length === 1) {
+			memberData = memberRes.data[0];
+		}
+
+		response.member = memberData;
+
+		response.code = 0;
+		return response;
+	}
+
+	// 注销用户
+	async deleteUser() {
+		const uniIdInstance = uidObj.createInstance({ context: this.ctx });
+		try {
+			// 获取请求中的 token
+			// const { uni_id_token } = event;
+			// if (!uni_id_token) {
+			// 	return {
+			// 		code: 400,
+			// 		msg: '未提供有效的 token'
+			// 	};
+			// }
+			let uni_id_token = this.ctx.event.uniIdToken;
+			// 验证 token
+			const checkTokenRes = await uniIdInstance.checkToken(uni_id_token);
+			if (checkTokenRes.code) {
+				return {
+					code: checkTokenRes.code,
+					msg: checkTokenRes.msg || 'token 验证失败'
+				};
+			}
+			// 获取用户 ID
+			const { uid } = checkTokenRes;
+			// 执行账号注销操作
+			const deleteUserRes = await uniIdInstance.deleteUser({
+				userIds: [uid]
+			});
+			// const deleteUserRes = await uidObj.closeAccount({
+			// 	uid: [uid]
+			// });
+			if (deleteUserRes.code === 0) {
+				return {
+					code: 0,
+					msg: '账号注销成功'
+				};
+			} else {
+				return {
+					code: deleteUserRes.code,
+					msg: deleteUserRes.msg || '账号注销失败'
+				};
+			}
+		} catch (e) {
+			console.error('账号注销过程中出现异常', e);
+			return {
+				code: 500,
+				msg: '账号注销过程中出现异常',
+				error: e.message
+			};
+		}
+	}
+
 	// 修改数据
 	async update() {
 		const user = await uidObj.checkToken(this.ctx.event.uniIdToken);
 		if (user && user.code == 0) {
 			const { 
-				nickname,
-				gender,
-				avatar,
-				comment
+				perRecommend,
+				member_nickname,
+				member_gender,
+				member_headimg,
+				member_weixin_headimg,
+				member_role
 			} = this.ctx.data;
-			await this.db.collection('uni-id-users').doc(user.uid).update(this.ctx.data);
+
+			let last_modify_time = new Date().getTime();
+			let role = [];
+			role.push(member_role);
+
+			await this.db.collection('uni-id-users').doc(user.uid).update({
+					nickname: member_nickname,
+					avatar: member_headimg,
+					role: role
+				}
+			);
+
 			await this.db.collection('usemall-member').doc(user.uid).update({
-				member_nickname: nickname,
-				member_gender: gender,
-				member_headimg: avatar,
-				member_weixin_headimg: avatar,
-				member_city: comment
+				perRecommend: perRecommend,
+				member_nickname: member_nickname,
+				member_gender: member_gender,
+				member_headimg: member_headimg,
+				member_weixin_headimg: member_weixin_headimg,
+				member_role: member_role,
+				last_modify_time: last_modify_time,
+				last_modify_uid: user.uid
 			});
 		}
 

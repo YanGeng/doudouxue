@@ -61,6 +61,9 @@
 		},
 		"smscode": {
 			"templateId": "验证码短信模板Id"
+		},
+		"univerify": {
+		    "appid": "__UNI__15FFEB9"
 		}
 	},
 	"kd100": {

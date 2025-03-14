@@ -110,11 +110,6 @@
 				empty: false,
 				hasmore: 0,
 				loadmoreType: 'more',
-				// 商品请求数据
-				reqdata: {
-					rows: 20,
-					page: 1
-				},
 
 				top: 0,
 				scrollTop: 0,
@@ -130,10 +125,10 @@
 				    }
 				],
 				// requestType: '学生',
-				// 请求数据
+				// 商品请求数据
 				reqdata: {
 					page: 1,
-					rows: 8,
+					rows: 16,
 					sidx: 'last_modify_time',
 					sord: 'desc',
 					requestType: 1,
