@@ -157,11 +157,12 @@
 	const __goods_info = 'usemall-goods';
 	const __goods_detail = 'usemall-goods-detail';
 	import {
-		mapState
+		mapState,
+		mapMutations
 	} from 'vuex';
 	export default {
 		computed: {
-			...mapState(['islogin', 'user_role', 'token'])
+			...mapState(['islogin', 'user_role', 'token', 'isPreLoginSucess'])
 		},
 		data() {
 			return {
@@ -258,6 +259,7 @@
 		},
 
 		methods: {
+			...mapMutations(['setPreLoginStatus']),
 			// 跳转商品详情
 			clickItem(item) {
 				console.log('item', item)
@@ -313,7 +315,7 @@
 			
 			createZixishi() {
 				if (!this.islogin) {
-					this.$api.tologin()
+					this.tologin();
 					return;
 				}
 				
@@ -332,7 +334,7 @@
 			
 			findTeacher() {
 				if (!this.islogin) {
-					this.$api.tologin()
+					this.tologin();
 					return;
 				}
 				
@@ -352,7 +354,7 @@
 			// 判断是学生，还是教员
 			findStudent() {
 				if (!this.islogin) {
-					this.$api.tologin()
+					this.tologin();
 					return;
 				}
 
@@ -431,6 +433,25 @@
 			},
 			// 跳转登录页
 			tologin() {
+				if (!this.isPreLoginSucess) {
+                    // 一键登录预登陆，可以显著提高登录速度
+                    uni.preLogin({
+                        provider: 'univerify',
+                        success: (res) => {
+                            // 成功
+                            // this.setUniverifyErrorMsg();
+                            this.setPreLoginStatus(true);
+                            console.log("preLogin success: ", res);
+                        },
+                        fail: (res) => {
+                            this.setPreLoginStatus(false);
+                            // this.setUniverifyErrorMsg(res.errMsg);
+                            // 失败
+                            console.log("preLogin fail res: ", res);
+                        }
+                    })
+                }
+
 				this.$api.tologin();
 			},
 			// 跳转商品页

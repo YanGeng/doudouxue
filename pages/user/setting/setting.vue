@@ -16,10 +16,14 @@
 		<view class="use-item">
 			<button class="no-border wh-full tal" open-type="feedback" @click="tofeedback">意见反馈</button>
 		</view>
+		<!-- <use-list-title v-if="aboutData && aboutData._id" title="意见反馈" iconfont=" " @click="tofeedback"></use-list-title> -->
 		<!-- #endif -->
 		<view class="gap"></view>
 		
-		<use-list-title title="豆豆学" iconfont=" " :tip="version"></use-list-title>
+		<use-list-title title="账号注销" iconfont=" " tip="清空账号所有信息" @goto="zhuxiao"></use-list-title>
+		<view class="gap"></view>
+		
+		<use-list-title title="豆豆学" iconfont=" " tip="1.0.0"></use-list-title>
 		<view class="gap"></view>
 		
 		<view class="use-item log-out-btn tac" @click="tologin">
@@ -30,6 +34,27 @@
 		<view class="use-item log-out-btn tac" @click="tologout">
 			<text>退出登录</text>
 		</view>
+
+		<view class="gap"></view>
+		<view class="gap"></view>
+		<view class="gap"></view>
+		<view class="gap"></view>
+		<view class="gap"></view>
+		<view class="gap"></view>
+		<view class="gap"></view>
+		<view class="gap"></view>
+		<view class="gap"></view>
+		<view class="footer">
+			<view>
+				<navigator url="/pages/user/privacy/service" style="color: blue;">《服务协议》</navigator>
+			</view>
+			<text>和</text>
+			<view>
+				<navigator url="/pages/user/privacy/privacy" style="color: blue;">《隐私政策》</navigator>
+			</view>
+            <!-- <button @click="goToPrivacyPolicy">隐私政策</button>
+            <button @click="goToServiceAgreement">服务协议</button> -->
+        </view>
 	</view>
 </template>
 
@@ -84,6 +109,30 @@
 				// 	})
 				// } 
 			},
+			zhuxiao() {
+				let _this = this;
+				uni.showModal({
+					title: '提示',
+					content: '确认注销账号',
+					success: function (res) {
+						if (res.confirm) {
+							_this.$func.usemall.call('member/deleteUser', '', true).then(res => {
+								console.log('member/deleteUser', res, res.code);
+								if (res.code == 200) {
+									console.log('member/deleteUser success', res, res.code);
+									_this.$api.msg('注销成功');
+									_this.logout();
+									_this.$api.timerout(() => {
+										_this.$api.tohome();
+									}, 200);
+								}
+							});
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
+			},
 			tofeedback(){
 				// this.$api.msg('打开右上角-反馈功能');
 			},
@@ -131,5 +180,13 @@
 			background: #fff;
 			font-size: 15px;
 		}
+	}
+
+	.footer {
+		display: flex;
+		justify-content: center;
+		padding: 10px;
+		background-color: #f5f5f5;
+		// border-top: 1px solid #ccc;
 	}
 </style>

@@ -52,7 +52,7 @@
 </template>
 
 <script>
-	import { mapState } from 'vuex';
+	import { mapState, mapMutations } from 'vuex';
 	export default {
 		computed: {
 			...mapState(['islogin', 'member'])
@@ -124,6 +124,7 @@
 			}
 		},
 		methods:{
+			...mapMutations(['updateUserRole']),
 			switchChange(e) {
 				this.userData.perRecommend = e.detail.value;
 				console.log('switchChange:', e, this.userData);
@@ -227,8 +228,11 @@
 				await this.$func.usemall
 					.call('member/update', _this.userData)	
 					.then(res => {
-						console.log("update member info finished");
+						console.log("update member info finished", res.datas);
+						// 更新本地user_role
+						_this.updateUserRole(this.userData.member_role);
 					});
+
 
 				_this.isSubmitting = false;
 				// #ifndef H5

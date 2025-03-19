@@ -2,13 +2,15 @@
 	<view class="container bg-main pos-r">
 		<view class="padding-xl dflex-c dflex-flow-c">
 			<view class="portrait-box margin-bottom">
-				<image class="headimg border-radius-c" :src="(member && member.member_headimg) || '/static/images/user/default4.webp'"></image>
+				<image class="headimg border-radius-c"
+					:src="(member && member.member_headimg) || '/static/images/user/default4.webp'"></image>
 			</view>
 
 			<view class="w-full dflex padding-bottom-sm">
 				<view class="iconfont iconshouji margin-right"></view>
 				<view class="flex1 dflex">
-					<input class="border-line padding-sm flex1" type="number" data-key="mobile" maxlength="11" :value="mobile" @input="inputChange" placeholder="请输入手机号" />
+					<input class="border-line padding-sm flex1" type="number" data-key="mobile" maxlength="11"
+						:value="mobile" @input="inputChange" placeholder="请输入手机号" />
 					<view v-if="0 == 1" class="padding-tb-sm ft-dark" @click="send_code">获取</view>
 				</view>
 			</view>
@@ -16,31 +18,13 @@
 			<view class="w-full dflex">
 				<view class="iconfont iconmima margin-right"></view>
 				<!-- #ifdef MP -->
-				<input
-					class="border-line padding-sm flex1"
-					type="text"
-					password
-					data-key="password"
-					maxlength="20"
-					:value="password"
-					@input="inputChange"
-					@confirm="tologin"
-					placeholder="请输入密码"
-				/>
+				<input class="border-line padding-sm flex1" type="text" password data-key="password" maxlength="20"
+					:value="password" @input="inputChange" @confirm="tologin" placeholder="请输入密码" />
 				<!-- #endif -->
 
 				<!-- #ifndef MP -->
-				<input
-					class="border-line padding-sm flex1"
-					type="password"
-					password
-					data-key="password"
-					maxlength="20"
-					:value="password"
-					@input="inputChange"
-					@confirm="tologin"
-					placeholder="请输入密码"
-				/>
+				<input class="border-line padding-sm flex1" type="password" password data-key="password" maxlength="20"
+					:value="password" @input="inputChange" @confirm="tologin" placeholder="请输入密码" />
 				<!-- #endif -->
 			</view>
 			<view class="dflex-b w-full margin-bottom-sm">
@@ -48,10 +32,14 @@
 				<view class="padding-tb-sm ft-base" @click="toregister">立即注册</view>
 			</view>
 			<view class="w-full margin-top-xl">
-				<view class="dflex-b border-radius-lg"><view class="tac padding-tb-sm flex1 bg-base fs" @click="tologin">登录</view></view>
+				<view class="dflex-b border-radius-lg">
+					<view class="tac padding-tb-sm flex1 bg-base fs" @click="tologin">登录</view>
+				</view>
 			</view>
 			<view v-if="isPreLoginSucess" class="w-full margin-top">
-				<view class="dflex-b border-radius-lg"><view class="tac padding-tb-sm flex1 bg-base fs" @click="loginByUniverify">本机手机号一键登录</view></view>
+				<view class="dflex-b border-radius-lg">
+					<view class="tac padding-tb-sm flex1 bg-base fs" @click="loginByUniverify">本机手机号一键登录</view>
+				</view>
 			</view>
 		</view>
 		<view v-if="ismp" class="dflex-c margin-top-big">
@@ -62,25 +50,43 @@
 			</button>
 			<!-- #endif -->
 			<!-- #ifdef MP-BAIDU || MP-QQ -->
-			<button class="dflex-c dflex-flow-c no-border btn" open-type="getUserInfo" lang="zh_CN" withCredentials="true" @getuserinfo="mpGetUserInfo">
+			<button class="dflex-c dflex-flow-c no-border btn" open-type="getUserInfo" lang="zh_CN"
+				withCredentials="true" @getuserinfo="mpGetUserInfo">
 				<view class="iconfont padding-lr-sm border-radius-c fs-xxxl" :class="platform_icon"></view>
 				<view class="dflex-c fs-sm ft-dark">{{ platform_name }} · 授权登录</view>
 			</button>
 			<!-- #endif -->
 
 			<!-- #ifdef MP-ALIPAY -->
-			<view class="dflex-c dflex-flow-c no-border btn" open-type="getAuthorize" scope="userInfo" @click="onGetAuthorize" @error="onAuthError">
+			<view class="dflex-c dflex-flow-c no-border btn" open-type="getAuthorize" scope="userInfo"
+				@click="onGetAuthorize" @error="onAuthError">
 				<view class="iconfont padding-lr-sm border-radius-c fs-xxxl" :class="platform_icon"></view>
 				<view class="dflex-c fs-sm ft-dark">{{ platform_name }} · 授权</view>
 			</view>
 			<!-- #endif -->
 
 			<!-- #ifdef MP-TOUTIAO -->
-			<view class="dflex-c dflex-flow-c no-border btn" open-type="getUserInfo" lang="zh_CN" withCredentials="true" @click="getUserInfo">
+			<view class="dflex-c dflex-flow-c no-border btn" open-type="getUserInfo" lang="zh_CN" withCredentials="true"
+				@click="getUserInfo">
 				<view class="iconfont padding-lr-sm border-radius-c fs-xxxl" :class="platform_icon"></view>
 				<view class="dflex-c ft-dark">{{ platform_name }} · 授权</view>
 			</view>
 			<!-- #endif -->
+		</view>
+		<view class="w-full dflex-c margin-top-xl">
+			<checkbox-group @change="checkboxChange">
+				<label>
+					<checkbox value="true" />
+				</label>
+			</checkbox-group>
+			<text>我已阅读并同意</text>
+			<view>
+				<navigator url="/pages/user/privacy/service">《服务协议》</navigator>
+			</view>
+			<text>和</text>
+			<view>
+				<navigator url="/pages/user/privacy/privacy">《隐私政策》</navigator>
+			</view>
 		</view>
 
 		<!-- 用云版权 -->
@@ -116,7 +122,8 @@ export default {
 			mobile: '',
 			password: '',
 
-			authorize: 0
+			authorize: 0,
+			isAgreed: false,
 		};
 	},
 	computed: {
@@ -175,6 +182,14 @@ export default {
     },
 	methods: {
 		...mapMutations(['login', 'logout', 'token']),
+		checkboxChange(e) {
+			if (e.detail.value.includes('true')) {
+				this.isAgreed = true;
+			} else {
+				this.isAgreed = false;
+			}
+			console.log('选中的值为：', e.detail.value, this.isAgreed);
+		},
 		loginByUniverify() {
 			if (this.isLoginingByUniverify) {
 				return
@@ -192,11 +207,11 @@ export default {
 						height: "60px"   //图标高度 默认值：60px
 					},
 					privacyTerms: {
-						defaultCheckBoxState: true, // 条款勾选框初始状态 默认值： true
+						defaultCheckBoxState: false, // 条款勾选框初始状态 默认值： true
 						isCenterHint: false, //未勾选服务条款时点击登录按钮的提示是否居中显示 默认值: false (3.7.13+ 版本支持)
 						uncheckedImage: "", // 可选 条款勾选框未选中状态图片（仅支持本地图片 建议尺寸 24x24px）(3.2.0+ 版本支持)
 						checkedImage: "", // 可选 条款勾选框选中状态图片（仅支持本地图片 建议尺寸24x24px）(3.2.0+ 版本支持)
-						checkBoxSize: 12, // 可选 条款勾选框大小
+						checkBoxSize: 25, // 可选 条款勾选框大小
 						textColor: "#BBBBBB", // 文字颜色 默认值：#BBBBBB
 						termsColor: "#5496E3", //  协议文字颜色 默认值： #5496E3
 						prefix: "我已阅读并同意", // 条款前的文案 默认值：“我已阅读并同意”
@@ -236,7 +251,9 @@ export default {
 						//接下来就进行你自己的操作
 						_this.$func.usemall
 							.call('member/loginByUniverify', {
-								phoneNumber: phoneNumber
+								phoneNumber: phoneNumber,
+								openid: openid,
+								access_token: access_token
 							})
 							.then(res => {
 								console.log("login data: ", res);
@@ -313,6 +330,11 @@ export default {
 			}
 			if (this.$api.trim(this.password).length < 4) {
 				this.$api.msg('密码长度不能小于4位');
+				return;
+			}
+			console.log('privacyCb', this.privacyCb, this.isAgreed);
+			if (!_this.isAgreed) {
+				this.$api.msg('为更好保障您的合法权益，请阅读并同意以下协议《服务协议》《隐私政策》');
 				return;
 			}
 

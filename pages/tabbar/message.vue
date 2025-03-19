@@ -15,11 +15,12 @@
 <script>
     var wv;
     import {
-		mapState
+		mapState,
+        mapMutations
 	} from 'vuex';
 	export default {
         computed: {
-			...mapState(['islogin', 'user_role', 'token'])
+			...mapState(['islogin', 'user_role', 'token', 'isPreLoginSucess'])
 		},
 		watch: {
             backButtonPress(newVal, oldVal) {
@@ -34,7 +35,7 @@
                     setTimeout(() => {
                         this.addWvEventListener();
                         wv.reload();
-                    }, 150);
+                    }, 180);
 				}
 				
 				console.log('current url:', this.url);
@@ -145,10 +146,30 @@
             uni.$off('refreshIm');
         },
 		methods: {
+            ...mapMutations(['setPreLoginStatus']),
             // 跳转登录页
-			tologin() {
-				this.$api.tologin();
-			},
+            tologin() {
+                if (!this.isPreLoginSucess) {
+                    // 一键登录预登陆，可以显著提高登录速度
+                    uni.preLogin({
+                        provider: 'univerify',
+                        success: (res) => {
+                            // 成功
+                            // this.setUniverifyErrorMsg();
+                            this.setPreLoginStatus(true);
+                            console.log("preLogin success: ", res);
+                        },
+                        fail: (res) => {
+                            this.setPreLoginStatus(false);
+                            // this.setUniverifyErrorMsg(res.errMsg);
+                            // 失败
+                            console.log("preLogin fail res: ", res);
+                        }
+                    })
+                }
+
+                this.$api.tologin();
+            },
 
             addWvEventListener() {
                 // #ifdef APP-PLUS

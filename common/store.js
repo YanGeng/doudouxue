@@ -68,6 +68,15 @@ const store = new Vuex.Store({
 				data: state.ai_chat_list
 			})
 		},
+
+		// 更新用户身份
+		updateUserRole(state, userRole) {
+			state.user_role = userRole;
+			uni.setStorage({
+				key: state.__key_user_role,
+				data: state.user_role
+			})
+		},
 		
 		// 登录成功
 		login(state, res) {

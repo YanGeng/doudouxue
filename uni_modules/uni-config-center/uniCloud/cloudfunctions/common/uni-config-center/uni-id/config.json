@@ -11,7 +11,7 @@
 	"autoSetInviteCode": true,
 	"forceInviteCode": false,
 	"bindTokenToDevice": false,
-	"app-plus": {
+	"app": {
 		"tokenExpiresIn": 2592000,
 		"oauth": {
 			"weixin": {

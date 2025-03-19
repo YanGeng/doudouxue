@@ -1,0 +1,27 @@
+{
+    "version" : "1",
+    "prompt" : "template",
+    "title" : "隐私政策和用户协议",
+    "message" : "欢迎使用豆豆学！豆豆学十分注重用户的隐私保护和个人信息保护。在您使用豆豆学前请认真阅读 <a href=\"https://static-mp-0fe42d5b-82e4-482d-8ad1-81bb97905319.next.bspapp.com/health/#/pages/user/privacy/privacy\">《隐私政策》</a>与<a href=\"https://static-mp-0fe42d5b-82e4-482d-8ad1-81bb97905319.next.bspapp.com/health/#/pages/user/privacy/service\">《用户协议》</a>全部条款，您同意并接受全部条款后可开始我们的全部服务。",
+    "buttonAccept" : "同意并接受",
+    "buttonRefuse" : "暂不同意",
+    "second" : {
+        "title" : "确认提示",
+        "message" : "　　进入应用前，你需先同意<a href=\"https://static-mp-0fe42d5b-82e4-482d-8ad1-81bb97905319.next.bspapp.com/health/#/pages/user/privacy/privacy\">《隐私政策》</a>和<a href=\"https://static-mp-0fe42d5b-82e4-482d-8ad1-81bb97905319.next.bspapp.com/health/#/pages/user/privacy/service\">《用户协议》</a>，否则将退出应用。",
+        "buttonAccept" : "同意并接受",
+        "buttonRefuse" : "退出应用"
+    },
+    "styles" : {
+        "backgroundColor" : "#FFFFFF",
+        "borderRadius" : "10px",
+        "title" : {
+            "color" : "#333333"
+        },
+        "buttonAccept" : {
+            "color" : "#333333"
+        },
+        "buttonRefuse" : {
+            "color" : "#9B9AB9"
+        }
+    }
+}

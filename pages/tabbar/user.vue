@@ -145,7 +145,7 @@
 	const _history = 'usemall-goods-history'
 	export default {
 		computed: {
-			...mapState(['islogin', 'member'])
+			...mapState(['islogin', 'member', 'isPreLoginSucess'])
 		},
 		data() {
 			return {
@@ -185,10 +185,9 @@
 			this.loadData();
 		},
 		methods: {
-			...mapMutations(['logout', 'putMember']),
+			...mapMutations(['logout', 'putMember', 'setPreLoginStatus']),
 			// 加载数据
 			loadData() {
-
 				this.$func.usemall.call('member/data', '', true).then(res => {
 					if (res.code == 200) {
 						this.putMember(res.datas.member);
@@ -262,6 +261,24 @@
 			// 统一跳转接口，拦截未登录路由
 			to(url) {
 				if (!this.islogin) {
+					if (!this.isPreLoginSucess) {
+						// 一键登录预登陆，可以显著提高登录速度
+						uni.preLogin({
+							provider: 'univerify',
+							success: (res) => {
+								// 成功
+								// this.setUniverifyErrorMsg();
+								this.setPreLoginStatus(true);
+								console.log("preLogin success: ", res);
+							},
+							fail: (res) => {
+								this.setPreLoginStatus(false);
+								// this.setUniverifyErrorMsg(res.errMsg);
+								// 失败
+								console.log("preLogin fail res: ", res);
+							}
+						})
+					}
 					this.$api.tologin()
 					return;
 				}
