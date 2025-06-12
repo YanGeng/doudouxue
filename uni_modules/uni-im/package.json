@@ -1,7 +1,7 @@
 {
 	"id": "uni-im",
 	"displayName": "uni-im",
-	"version": "3.4.53",
+	"version": "3.4.54",
 	"description": "uni-im是云端一体的、全平台的、免费的、开源即时通讯系统",
 	"keywords": [
         "im,即时通讯,客服,聊天"
@@ -39,7 +39,8 @@
 			"Sansnn-uQRCode",
 			"uni-nav-bar",
 			"uni-im-msg-reader",
-      "uni-link"
+      "uni-link",
+			"uni-fab"
 		],
 		"encrypt": [],
 		"platforms": {

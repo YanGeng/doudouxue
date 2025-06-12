@@ -45,7 +45,7 @@
 
 					<view v-else class="padding-lr-sm" v-for="(item, index) in goodsDatas" :key="index"
 						@click="togoods(item)">
-						<view class="goods padding-top-lg padding-lr-sm bg-main">
+						<view class="goods padding-top-sm padding-lr-sm bg-main">
 							<view class="goods-left">
 								<image class="border-radius-xs wh-full" mode="aspectFill" :lazy-load="true" :src="item.img"></image>
 							</view>
@@ -57,6 +57,7 @@
 								</view>
 							</view>
 						</view>
+						<view class="gap-xs"></view>
 					</view>
 
 					<!-- 上拉加载更多 -->
@@ -78,10 +79,10 @@
 <script>
 	const _goods = 'usemall-goods'
 	const _goodscategory = 'usemall-goods-category'
-	import { mapState } from 'vuex';
+	import { mapState, mapGetters } from 'vuex';
 	export default {
 		computed: {
-			...mapState(['islogin', 'member', 'user_role', 'current_city'])
+			...mapGetters(['islogin', 'member', 'user_role', 'current_city'])
 		},
 		data() {
 			return {
@@ -116,11 +117,11 @@
 				navHeight: 0,
 				scrollTitle: [
 					{
-				        title: '找老师',
+				        title: '教员信息',
 				        value: 1,
 				    },
 				    {
-				        title: '找学生',
+				        title: '学员信息',
 				        value: 2,
 				    }
 				],
@@ -185,7 +186,7 @@
 			});
 		},
 		onShow() {
-			console.log('current_city: ', this.current_city);
+			console.log('current_city: ', this.current_city, this.fdatas);
 			// 获取存储的模式
 			// this.mode = uni.getStorageSync('category.mode') || 1;
 			
@@ -247,7 +248,7 @@
 			async loadData(callback) {
 				this.$db[_goodscategory].where({ state: '启用' }).tolist({rows:50,orderby:'sort asc'}).then(res => {
 					if (res.code === 200) {
-						// console.log("res: ", res);
+						console.log("res: ", res);
 						this.fdatas = [];
 						this.sdatas = [];
 

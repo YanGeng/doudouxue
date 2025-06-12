@@ -30,5 +30,31 @@ module.exports = {
 				unreadCountObj
 			}
 	  }
+	},
+	async getUserIdByExtUid(ext_uid){
+		const {data:[userInfo]} = await db.collection('uni-id-users').where({
+			/*identities:{
+				provider: 'uniImExternal',
+				uid: ext_uid,
+			}*/
+			// TODO：不使用identities，解决部分服务空间不支持数组查询的问题
+			uni_im_ext_uid: ext_uid
+		})
+		.field({
+			_id: true
+		})
+		.get()
+		
+		if (!userInfo) {
+			return {
+				errcode: 1001,
+				errmsg: '用户不存在'
+			}
+		} else {
+			return {
+				errcode: 0,
+				data: userInfo._id
+			}
+		}
 	}
 }

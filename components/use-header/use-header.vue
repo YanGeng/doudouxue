@@ -43,6 +43,7 @@ export default {
 	},
 	data() {
 		return {
+			navigatint2: false
 		};
 	},
 	methods: {
@@ -59,9 +60,17 @@ export default {
 			}
 		},
 		selectCity() {
+			if (this.navigatint2) {
+				return
+			}
+			
+			this.navigatint2 = true
+			setTimeout(() => {
+			    this.navigatint2 = false;
+			}, 500);
 			// console.log("selectCity");
 			uni.navigateTo({
-				url: '/pages/user/address/citys'
+				url: '/pages_user/user/address/citys'
 			})
 			// console.log("selectCity 2");
 		},

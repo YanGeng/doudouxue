@@ -1,5 +1,5 @@
 <template>
-	<use-popup mode="bottom" v-model="value" 
+	<use-popup mode="bottom" v-model="localValue" 
 		length="auto" 
 		:border-radius="borderRadius" 
 		:popup="false" 
@@ -86,7 +86,8 @@
 		},
 		data() {
 			return {
-				datas: []
+				datas: [],
+				localValue: this.value
 			}
 		},
 		computed: {

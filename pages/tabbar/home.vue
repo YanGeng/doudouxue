@@ -1,13 +1,16 @@
 <template>
 	<view class="box-sizing-b w-full">
 		<!-- 01. 头部组件 -->
-		<use-header :search-tip="searchTip" :search-auto="searchAuto" :current-city="current_city" @search="search"></use-header>
+		<use-header :search-tip="searchTip" :search-auto="searchAuto" :current-city="current_city"
+			@search="search"></use-header>
 
 		<!-- 02. 轮播区 -->
 		<view class="swiper-area pos-r" v-if="swiperDatas && swiperDatas.length > 0">
 			<!-- 轮播组件 -->
-			<swiper class="swiper w-full" autoplay indicator-dots indicator-color="#f7f7f7" indicator-active-color="#ff6a6c">
-				<swiper-item class="swiper-item padding-lr wh-full box-sizing-b" v-for="(item, index) in swiperDatas" :key="index">
+			<swiper class="swiper w-full" autoplay indicator-dots indicator-color="#f7f7f7"
+				indicator-active-color="#ff6a6c">
+				<swiper-item class="swiper-item padding-lr wh-full box-sizing-b" v-for="(item, index) in swiperDatas"
+					:key="index">
 					<view class="wh-full" @click.stop="topage(item)">
 						<image class="border-radius wh-full" mode="aspectFill" :lazy-load="true" :src="item.img" />
 					</view>
@@ -24,20 +27,22 @@
 			</view>
 		</view>
 		<view class="gap"></view>
-		
+
 		<!-- <uni-section title="文字滚动" subTitle="使用 scrollable 属性使通告滚动,此时 single 属性将失效,始终单行显示" type="line"> -->
-			<!-- <uni-notice-bar scrollable showIcon
+		<!-- <uni-notice-bar scrollable showIcon
 				:text="currentNotice" /> -->
 		<!-- </uni-section> -->
-		<view class="dflex margin-lr" v-if="latestItems && latestItems.length > 0">
-			<uni-icons class="notice_left" type="sound" size="22" />
-			<xzw-notice :list="currentNotice" direction="row" speed="slow" :showIcon="false" @goMore="goMore"></xzw-notice>
-			<!-- <xzw-notice :list="currentNotice" :showIcon="true" direction="row" speed="slow" theme="defult" @goMore="goMore"/> -->
+		<view v-if="latestItems && latestItems.length > 0">
+			<!-- <uni-icons class="notice_left" type="sound" size="22" /> -->
+			<!-- <xzw-notice :list="currentNotice" direction="row" speed="slow" :showIcon="false"
+				@goMore="goMore"></xzw-notice> -->
+			<xzw-notice :list="currentNotice" :showIcon="true" :showText="noticeShowText" direction="row" speed="slow" theme="defult" @goMore="goMore"/>
 		</view>
 		<view class="gap"></view>
 
 		<!-- 04. 限时精选 -->
-		<use-list-title title="精选自习室" size="32" fwt="600" color="#333" iconfont="icondaishouhuo-" @goto="limit">
+		<use-list-title title="精选自习室" size="32" fwt="600" color="#333" iconfont="icondaishouhuo-" tip='更多'
+			@goto="limit">
 		</use-list-title>
 		<view class="limit-area">
 			<scroll-view class="padding-lr" scroll-x>
@@ -64,29 +69,40 @@
 		<!-- #ifdef MP-WEIXIN -->
 		<official-account @bindload="wxOAccountLoad" @binderror="wxOAccountErr"></official-account>
 		<!-- #endif -->
-		
+
 		<!-- <tabBar selectedIndex = 0></tabBar> -->
 	</view>
 </template>
 
 <script>
-	import { mapState } from 'vuex';
+	import {
+		mapState,
+		mapGetters
+	} from 'vuex';
 
 	export default {
 		computed: {
-			...mapState(['islogin', 'member', 'user_role', 'current_city', 'token']),
+			...mapGetters(['islogin', 'member', 'user_role', 'current_city', 'token']),
 			currentNotice() {
 				let noticeTmp = [];
 				this.latestItems.forEach((row) => {
-					if(row.consignee != ''){
+					if (row.consignee != '') {
 						let newRow = {
-							title: '恭喜“' + row.consignee + '”成功发布需求！'
+							title: '恭喜“' + row.consignee + '”成功发布信息！'
 						}
 						noticeTmp.push(newRow);
 					}
 				});
 				console.log('notice is xxxx: ', noticeTmp);
-			    return noticeTmp;
+				return noticeTmp;
+			},
+			noticeShowText() {
+				let stext = '发布需求'
+				if (this.user_role != 'member' && this.user_role != '学生' && this.user_role != 'student') {
+					stext = '新建简历'
+				}
+				
+				return stext;
 			}
 		},
 		data() {
@@ -157,6 +173,7 @@
 		//   },
 		watch: {
 			user_role(e) {
+				console.log('user_role changed', this.user_role)
 				if (e === 'teacher') {
 					this.reqdata.requestType = 2;
 				} else {
@@ -182,25 +199,43 @@
 			} else {
 				this.reqdata.requestType = 1;
 			}
-			
+
 			this.getLastedItems();
 			this.loadData("refresh");
-			// 设置不同登录状态，不同tabbar的方法
+			// // 设置不同登录状态，不同tabbar的方法
 			// if (this.islogin) {
 			// 	uni.setTabBarItem({
-			// 		index: 2,
-			// 		"pagePath": "/pages/tabbar/cart",
-			// 		"iconPath": "/static/images/tabbar/cart.png",
-			// 		"selectedIconPath": "/static/images/tabbar/cart-active.png",
-			// 		"text": "购物车"
+			// 		index: 3,
+			// 		"pagePath": "/pages/tabbar/index",
+			// 		"iconPath": "/static/images/tabbar/message.png",
+			// 		"selectedIconPath": "/static/images/tabbar/message-active4.png",
+			// 		"text": "消息",
+			// 		success: function() {
+			// 			console.log('修改成功');
+			// 		},
+			// 		fail: function(err) {
+			// 			console.error('修改失败', err);
+			// 		},
+			// 		complete: function() {
+			// 			console.log('修改操作结束');
+			// 		}
 			// 	})
 			// } else {
 			// 	uni.setTabBarItem({
-			// 		index: 2,
-			// 		"pagePath": "/pages/tabbar/shopping",
-			// 		"iconPath": "/static/images/tabbar/shopping.png",
-			// 		"selectedIconPath": "/static/images/tabbar/shopping-active.png",
-			// 		"text": "购物圈"
+			// 		index: 3,
+			// 		"pagePath": "/pages/tabbar/need-login",
+			// 		"iconPath": "/static/images/tabbar/message.png",
+			// 		"selectedIconPath": "/static/images/tabbar/message-active4.png",
+			// 		"text": "消息",
+			// 		success: function() {
+			// 			console.log('修改成功');
+			// 		},
+			// 		fail: function(err) {
+			// 			console.error('修改失败', err);
+			// 		},
+			// 		complete: function() {
+			// 			console.log('修改操作结束');
+			// 		}
 			// 	})
 			// }
 		},
@@ -274,10 +309,10 @@
 					this.$api.tologin()
 					return;
 				}
-				
+
 				if (this.user_role == 'member' || this.user_role == '学生' || this.user_role == 'student') {
 					uni.navigateTo({
-						url: `/pages/order/createFindTeacher?type=add`,
+						url: `/pages_user/user/order/createFindTeacher?type=add`,
 						success(res) {
 							console.log(res);
 						},
@@ -287,7 +322,7 @@
 					})
 				} else if (this.user_role == 'teacher') {
 					uni.navigateTo({
-						url: `/pages/order/createFindStudent?type=add`,
+						url: `/pages_user/user/order/createFindStudent?type=add`,
 						success(res) {
 							console.log(res);
 						},
@@ -297,7 +332,7 @@
 					})
 				} else {
 					uni.navigateTo({
-						url: `/pages/order/createFindStudent?type=add`,
+						url: `/pages_user/user/order/createFindStudent?type=add`,
 						success(res) {
 							console.log(res);
 						},
@@ -313,13 +348,13 @@
 					// 防止重复加载
 					return;
 				}
-				
+
 				if (type == 'refresh') {
 					// 从首页开始加载
 					this.reqdata.page = 1;
 					this.reqdata.otherCity = false;
 				}
-				
+
 				// 没有更多直接返回 
 				if (type === 'add') {
 					if (this.loadmoreType === 'nomore') {
@@ -332,7 +367,7 @@
 					this.loadmoreType = 'more'
 				}
 				console.log("goodsHotDatas 3333", this.reqdata);
-				
+
 				this.$func.usemall.call('goods/list', this.reqdata, true).then(res => {
 					if (res.code === 200) {
 						if (res.datas && res.datas.goods.length > 0) {
@@ -341,7 +376,7 @@
 							}
 							let _datas = [];
 							res.datas.goods.forEach((row) => {
-								if(row.state === '销售中'){
+								if (row.state === '销售中') {
 									_datas.push(row);
 								}
 							});
@@ -349,7 +384,7 @@
 							// 	if(res.res.datas.goods.state === '销售中')
 							// });
 							this.goodsHotDatas = [...this.goodsHotDatas, ..._datas];
-				
+
 							if (res.datas.goods.length >= this.reqdata.rows) {
 								this.reqdata.page++;
 								this.loadmoreType = 'more';
@@ -376,11 +411,11 @@
 							}
 						}
 					}
-				
+
 					if (this.goodsHotDatas.length === 0) {
 						this.empty = true;
 					}
-				
+
 					if (type == 'refresh') {
 						uni.stopPullDownRefresh();
 					}
@@ -396,13 +431,13 @@
 					// 防止重复加载
 					return;
 				}
-								
+
 				if (type == 'refresh') {
 					// 从首页开始加载
 					this.reqdata.page = 1;
 					this.reqdata.otherCity = false;
 				}
-				
+
 				// 没有更多直接返回
 				if (type === 'add') {
 					if (this.loadmoreType === 'nomore') {
@@ -418,7 +453,7 @@
 					// 更多
 					this.loadmoreType = 'more'
 				}
-				
+
 				this.reqdata.currentCity = this.current_city;
 				console.log("goodsHotDatas 0000", this.reqdata);
 
@@ -448,7 +483,7 @@
 						}
 					}
 				});
-				
+
 				if (typeof callback === 'function') {
 					// 数据加载完成回调函数
 					callback();
@@ -466,8 +501,16 @@
 						url: `/pages/content/web?url=${item.url}`
 					});
 				} else if (item && item.type == '页面') {
+					let par = ''
+					if (item.name) {
+						if (item.url.indexOf('?') !== -1) {
+							par = '&name=' + item.name
+						} else {
+							par = '?name=' + item.name
+						}
+					}
 					uni.navigateTo({
-						url: `${item.url}`
+						url: `${item.url}${par}`
 					});
 				} else {
 					if (item.id) this.$api.togoods({
@@ -500,7 +543,6 @@
 </script>
 
 <style lang="scss">
-
 	/* 轮播图区 */
 	.swiper-area {
 		.swiper {
@@ -537,5 +579,4 @@
 			}
 		}
 	}
-
 </style>

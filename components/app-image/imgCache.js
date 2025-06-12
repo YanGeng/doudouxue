@@ -1,4 +1,6 @@
-import md5 from "./md5.min.js";
+// import md5 from "./md5.min.js";
+// import { md5 } from './md5.min.js';
+import { md5 } from 'js-md5';
 import downLoadQueue from './download.js';
 
 /**

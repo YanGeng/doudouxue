@@ -2,6 +2,8 @@
 
 const uidObj = require('uni-id');
 const uniIdCo = uniCloud.importObject('uni-id-co')
+// const uniID = require('uni-id-common')  
+// const clientInfo = this.getClientInfo()  
 
 const {
 	Controller
@@ -11,15 +13,20 @@ module.exports = class MemberController extends Controller {
 
 	// 注册 
 	async register() {
-		let response = { code: 1, msg: '账号注册失败', datas: {} };
-		const { 
-			username, 
-			password, 
-			code, 
+		let response = {
+			code: 1,
+			msg: '账号注册失败',
+			datas: {}
+		};
+		const {
+			username,
+			password,
+			code,
 			user,
-			member_type
+			member_type,
+			phoneNumber
 		} = this.ctx.data;
-		
+
 		// 验证验证码有效性，先注释
 		// const vcRes = await this.validateSmsCode({
 		// 	mobile: username,
@@ -31,7 +38,7 @@ module.exports = class MemberController extends Controller {
 		// 	response.msg = '验证码错误或已失效';
 		// 	return response;
 		// }
-		
+
 		var member_type_list = new Array(member_type)
 
 		let nickNameTmp = user.nickName;
@@ -52,24 +59,27 @@ module.exports = class MemberController extends Controller {
 
 		// 头像设置默认值
 		if (!user.avatarUrl) {
-			user.avatarUrl = 'https://mp-0fe42d5b-82e4-482d-8ad1-81bb97905319.cdn.bspapp.com/default_pic/user_default_pic/default4.webp';
+			user.avatarUrl =
+				'https://mp-0fe42d5b-82e4-482d-8ad1-81bb97905319.cdn.bspapp.com/default_pic/user_default_pic/default4.webp';
 		}
-		
+
 		const res = await uidObj.register({
 			username,
 			password,
 			role: member_type_list,
 			nickname: nickNameTmp,
-			avatar: user.avatarUrl
+			avatar: user.avatarUrl,
+			mobile_confirmed: 1,
+			mobile: phoneNumber || username
 		});
-		
+
 		if (res.code == 0) {
 			let citys = [user.country, user.province, user.city];
 			// let nickname = user.nickName;
 			// if (res.username.length == 11) {
 			// 	nickname = '严选-' + res.username.substr(7, 4);
 			// }
-			
+
 			let member = {
 				member_name: res.username || user.nickName,
 				member_password: res.password || '',
@@ -81,22 +91,63 @@ module.exports = class MemberController extends Controller {
 				member_weixin_headimg: user.avatarUrl || '',
 				member_city: citys.filter(x => x).join('-') || '',
 			}
-			
+
 			// const vcid = vcRes.data[0]._id;
 			// // 验证码已验证
 			// await this.db.collection('opendb-verify-codes').doc(vcid).update({ state: 1 });
-			
+
 			response.datas.user = res;
 			response.datas.member = await this.memberLogin(res, member);
 		} else {
-			response.datas = res;
-			response.msg = res.message;
-			return response;
+			if (res.errCode == 'uni-id-user-account-closed') {
+				const user = await this.db.collection('uni-id-users')
+					.where({
+						username: username
+					})
+					.field({
+						uid: true,
+						username: true
+					})
+					.get();
+
+				if (user && user.data.length > 0) {
+					let uid = user.data[0]._id;
+					const openUserRes = await uidObj.openAccount({
+						uid: uid
+					});
+
+					if (openUserRes.code === 0) {
+						const resetPwdRes = await uidObj.resetPwd({
+							uid: uid,
+							password: password
+						})
+
+						return {
+							code: 0,
+							msg: '账号重新注册成功'
+						};
+					} else {
+						response.datas = openUserRes;
+						response.msg = openUserRes.message;
+						return response;
+					}
+				} else {
+					return {
+						code: 1,
+						msg: '账号重新注册失败'
+					};
+				}
+
+			} else {
+				response.datas = res;
+				response.msg = res.message;
+				return response;
+			}
 		}
-		
+
 		response.code = 0;
 		response.msg = '注册成功';
-		
+
 		return response;
 	}
 
@@ -108,40 +159,40 @@ module.exports = class MemberController extends Controller {
 			user: {},
 			msg: null
 		};
-		
+
 		const {
 			username,
 			password
 		} = this.ctx.data
-		
-		try{
+
+		try {
 			const res = await uidObj.login({
 				username,
 				password,
 				needPermission: true
 			})
 			console.log(res);
-			
+
 			if (!(res && res.uid)) {
 				response.msg = '账号密码不存在';
 				return response;
 			}
-			
+
 			let member = {
 				member_access_token: res.token,
 				member_password: res.password || '',
 				member_mobile: res.username,
 			}
-			
+
 			response.code = 0;
 			response.member = await this.memberLogin(res, member);
 			response.user = res;
-		} catch(e) {
+		} catch (e) {
 			//TODO handle the exception
 			response.msg = e.message;
 			console.log('catch', e);
 		}
-		
+
 		return response;
 	}
 
@@ -153,15 +204,18 @@ module.exports = class MemberController extends Controller {
 
 	// 验证码
 	async sendSmsCode() {
-		const { mobile, type } = this.ctx.data;
-		
+		const {
+			mobile,
+			type
+		} = this.ctx.data;
+
 		// 如果验证码类型为 注册，验证手机账号是否已存在
 		// 如果验证码类型为 忘记密码，验证手机账号是否存在
 		let userRes = {};
-		switch (type){
-			case 'register':		// 注册
+		switch (type) {
+			case 'register': // 注册
 				userRes = await this.db.collection('uni-id-users')
-					.where({ 
+					.where({
 						username: mobile,
 						role: 'member'
 					})
@@ -171,12 +225,15 @@ module.exports = class MemberController extends Controller {
 					.get();
 				// console.log('userRes', userRes);
 				if (userRes && userRes.data.length === 1) {
-					return { code: 1, msg: '手机号已存在' };
+					return {
+						code: 1,
+						msg: '手机号已存在'
+					};
 				}
 				break;
-			case 'forgot-password':	// 忘记密码
+			case 'forgot-password': // 忘记密码
 				userRes = await this.db.collection('uni-id-users')
-					.where({ 
+					.where({
 						username: mobile,
 						role: 'member'
 					})
@@ -186,33 +243,39 @@ module.exports = class MemberController extends Controller {
 					.get();
 				// console.log('userRes', userRes);
 				if (!(userRes && userRes.data.length === 1)) {
-					return { code: 1, msg: '手机号不存在' };
+					return {
+						code: 1,
+						msg: '手机号不存在'
+					};
 				}
 				break;
 			default:
 				break;
 		}
 
+		let phoneNo = mobile
 		const res = await uidObj.sendSmsCode({
 			...this.ctx.data,
 			code: Math.floor(Math.random() * 1000000) + "",
-			templateId: uidObj.config['service']['smscode']['templateId']
+			templateId: '36263'
+			// templateId: uidObj.config['service']['smscode']['templateId']
 		});
 
 		return res;
 	}
 
-	// 手机号一键登录
-	async loginByUniverify() {
+	// 手机号一键修改密码
+	async changePwdByUniverify() {
 		let response = {
 			code: 1,
 			member: {},
 			user: {},
 			msg: null
 		};
-		
+
 		const {
 			phoneNumber,
+			passwordNew,
 			openid,
 			access_token
 		} = this.ctx.data
@@ -239,7 +302,124 @@ module.exports = class MemberController extends Controller {
 		if (!(userRes && userRes.data.length === 1)) {
 			// 手机号不在，走注册逻辑
 			// 头像设置默认值
-			let avatarUrl = 'https://mp-0fe42d5b-82e4-482d-8ad1-81bb97905319.cdn.bspapp.com/default_pic/user_default_pic/default4.webp';
+			let avatarUrl =
+				'https://mp-0fe42d5b-82e4-482d-8ad1-81bb97905319.cdn.bspapp.com/default_pic/user_default_pic/default4.webp';
+			let randPrefix = '-' + (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+			let nickNameTmp = '豆学-' + phoneNumber.substr(7, 4) + randPrefix;
+			const res = await uidObj.register({
+				username: phoneNumber,
+				password: password,
+				role: '',
+				nickname: nickNameTmp,
+				avatar: avatarUrl,
+				mobile_confirmed: 1,
+				mobile: phoneNumber
+			});
+
+			if (res.code == 0) {
+				let member = {
+					member_name: res.username || nickNameTmp,
+					member_password: res.password || '',
+					member_mobile: res.username,
+					member_access_token: res.token,
+					member_nickname: nickNameTmp,
+					member_gender: 0,
+					member_headimg: avatarUrl || '',
+					member_weixin_headimg: avatarUrl || '',
+					member_city: '',
+				}
+
+				// const vcid = vcRes.data[0]._id;
+				// // 验证码已验证
+				// await this.db.collection('opendb-verify-codes').doc(vcid).update({ state: 1 });
+				response.code = 0;
+				response.user = res;
+				response.member = await this.memberLogin(res, member);
+			} else {
+				// response.datas = res;
+				response.msg = res.message;
+			}
+		} else {
+			// 手机号存在，走修改密码
+			let res = {}
+			res.userInfo = userRes.data[0];
+			res.code = 0;
+			res.uid = res.userInfo._id;
+			res.token = userRes.data[0].token.at(-1);
+			const user = await uidObj.checkToken(res.token);
+			if (user && user.code == 0 && user.token) {
+				res.token = user.token;
+				res.tokenExpired = user.tokenExpired
+				userRes.data[0].token = user.userInfo.token
+			} else {
+				const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+				res.tokenExpired = new Date().getTime() + oneDayInMilliseconds * 7;
+			}
+
+			const pwdRes = await uidObj.resetPwd({
+				uid: res.uid,
+				password: passwordNew
+			})
+
+			if (!pwdRes || pwdRes.code != 0) {
+				response.msg = '修改密码失败'
+				return response;
+			}
+
+			if (pwdRes.code == 0) {
+				let a = 0
+			}
+
+			res.userInfo = userRes.data[0];
+
+			let member = {
+				member_access_token: res.token,
+				member_password: res.password || '',
+				member_mobile: res.username,
+			}
+
+			response.code = 0;
+			response.member = await this.memberLogin(res, member);
+			response.user = res;
+		}
+
+		return response;
+	}
+
+	// 手机号一键登录
+	async loginByUniverify() {
+		let response = {
+			code: 1,
+			member: {},
+			user: {},
+			msg: null
+		};
+
+		const {
+			phoneNumber,
+			openid,
+			access_token
+		} = this.ctx.data
+
+		let userRes = {};
+		userRes = await this.db.collection('uni-id-users')
+			.where({
+				username: phoneNumber
+			})
+			.field({
+				uid: true,
+				token: true,
+				password: true,
+				username: true,
+				role: true
+			})
+			.get();
+
+		if (!(userRes && userRes.data.length === 1)) {
+			// 手机号不在，走注册逻辑
+			// 头像设置默认值
+			let avatarUrl =
+				'https://mp-0fe42d5b-82e4-482d-8ad1-81bb97905319.cdn.bspapp.com/default_pic/user_default_pic/default4.webp';
 			let randPrefix = '-' + (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
 			let nickNameTmp = '豆学-' + phoneNumber.substr(7, 4) + randPrefix;
 			const res = await uidObj.register({
@@ -247,7 +427,9 @@ module.exports = class MemberController extends Controller {
 				password: phoneNumber,
 				role: '',
 				nickname: nickNameTmp,
-				avatar: avatarUrl
+				avatar: avatarUrl,
+				mobile_confirmed: 1,
+				mobile: phoneNumber
 			});
 
 			if (res.code == 0) {
@@ -280,20 +462,65 @@ module.exports = class MemberController extends Controller {
 			res.code = 0;
 			res.uid = res.userInfo._id;
 			res.token = userRes.data[0].token.at(-1);
-			const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
-			res.tokenExpired = new Date().getTime() + oneDayInMilliseconds * 7;
 
-			res.userInfo = userRes.data[0];
+			// 创建uni-id实例
+			// let uniIDIns = uniID.createInstance({  
+			//     clientInfo  
+			// })  
 
-			let member = {
-				member_access_token: res.token,
-				member_password: res.password || '',
-				member_mobile: res.username,
+			// payload = await uniIDIns.checkToken(event.uniIdToken) // 后续使用uniIDIns调用相关接口
+			//   if (payload.code) {
+			//   	return payload
+			//   }
+
+			// const clientInfo = this.getClientInfo()
+			// let uniID2 = uidObj.createInstance({ // 创建uni-id实例，其上方法同uniID
+			// 	context
+			// })
+
+
+			// const aa = await uniID2.refreshToken({
+			//   token: res.token
+			// })
+			let type = 'login';
+			const loginRes = await uidObj.loginByUniverify({
+				access_token,
+				openid,
+				type
+			})
+
+			if (loginRes && loginRes.code == 0) {
+				res.userInfo = loginRes.userInfo;
+				res.token = loginRes.token;
+				res.tokenExpired = loginRes.tokenExpired
+
+				// const user = await uidObj.checkToken(res.token);
+				// if (user && user.code == 0 && user.token) {
+				// 	res.token = user.token;
+				// 	res.tokenExpired = user.tokenExpired
+				// 	userRes.data[0].token = user.userInfo.token
+				// } else {
+				// 	const aa = await uidObj.refreshToken({
+				// 		token: res.token
+				// 	})
+
+
+				// 	// const res = await uniIdInstance.refreshToken(oldToken);
+
+				// 	const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+				// 	res.tokenExpired = new Date().getTime() + oneDayInMilliseconds * 7;
+				// }
+
+				let member = {
+					member_access_token: res.token,
+					member_password: res.password || '',
+					member_mobile: res.username,
+				}
+
+				response.code = 0;
+				response.member = await this.memberLogin(res, member);
+				response.user = res;
 			}
-
-			response.code = 0;
-			response.member = await this.memberLogin(res, member);
-			response.user = res;
 		}
 
 		return response;
@@ -316,9 +543,13 @@ module.exports = class MemberController extends Controller {
 			msg: null
 		};
 		try {
-			this.ctx.data.role = ['member'];
+			this.ctx.data.role = ['student'];
+			console.log('this.ctx.data: ', this.ctx.data)
 			const res = await uidObj.loginByWeixin(this.ctx.data);
-			
+			// const res = await uidObj.LoginByWexinOptions({
+			//     code: this.ctx.data.code
+			//   })
+
 			let member = {
 				member_name: res.username || res.userInfo.nickname,
 				member_access_token: res.token,
@@ -330,20 +561,20 @@ module.exports = class MemberController extends Controller {
 				member_city: res.userInfo.comment || '',
 				member_openid: res.openid || '',
 			}
-			
+
 			response.code = 0;
 			response.member = await this.memberLogin(res, member);
 			response.user = res;
-			
-		} catch(e) {
+
+		} catch (e) {
 			//TODO handle the exception
 			response.msg = e;
 			console.log('catch', e);
 		}
-		
+
 		return response;
 	}
-	
+
 	// 支付宝小程序登录
 	async loginByAlipay() {
 		let response = {
@@ -355,7 +586,7 @@ module.exports = class MemberController extends Controller {
 		try {
 			this.ctx.data.role = ['member'];
 			const res = await uidObj.loginByAlipay(this.ctx.data);
-			
+
 			let member = {
 				member_name: res.username || res.userInfo.nickname,
 				member_access_token: res.token,
@@ -367,20 +598,20 @@ module.exports = class MemberController extends Controller {
 				member_city: res.userInfo.comment || '',
 				member_openid: res.openid || '',
 			}
-			
+
 			response.code = 0;
 			response.member = await this.memberLogin(res, member);
 			response.user = res;
-			
-		} catch(e) {
+
+		} catch (e) {
 			//TODO handle the exception
 			response.msg = e;
 			console.log('catch', e);
 		}
-		
+
 		return response;
 	}
-	
+
 	// 验证验证码有效性
 	async validateSmsCode(param) {
 		const vcRes = await this.db.collection('opendb-verify-codes').where({
@@ -388,20 +619,23 @@ module.exports = class MemberController extends Controller {
 			state: 0,
 			expired_at: this.db.command.gte(Date.now())
 		}).get();
-		
-		console.log("vcRes: ",vcRes, param);
+
+		console.log("vcRes: ", vcRes, param);
 		return vcRes;
 	}
 	// 忘记密码
 	async forgotPassword() {
-		let response = { code: 1, msg: '账号不存在' };
-		
+		let response = {
+			code: 1,
+			msg: '账号不存在'
+		};
+
 		const {
 			mobile,
 			password,
 			code
 		} = this.ctx.data;
-		
+
 		// 验证验证码有效性
 		const vcRes = await this.validateSmsCode({
 			mobile: mobile,
@@ -413,42 +647,45 @@ module.exports = class MemberController extends Controller {
 			response.msg = '验证码错误或已失效';
 			return response;
 		}
-		
+
 		// 加密密码
 		const encryptPwd = await uidObj.encryptPwd(password);
 		if (!(encryptPwd && encryptPwd.passwordHash)) {
 			response.msg = '密码修改失败';
 			return response;
 		}
-		
+
 		// 修改密码
 		response.datas = await this.db.collection('uni-id-users').where({
 			username: mobile
 		}).update({
 			password: encryptPwd.passwordHash
 		});
-		
+
 		if (response.datas.updated === 1) {
 			const vcid = vcRes.data[0]._id;
 			// 验证码已验证
-			await this.db.collection('opendb-verify-codes').doc(vcid).update({ state: 1 });
-			
+			await this.db.collection('opendb-verify-codes').doc(vcid).update({
+				state: 1
+			});
+
 			response.code = 0;
 			response.msg = '密码修改成功';
 			return response;
 		}
-		
+
 		return response;
 	}
 
 	// 获取数据
-	async data() {
+	async data(event) {
 		let response = {
 			code: 1,
 			member: {},
 			stats: {}
 		};
 		uniCloud.logger.info(this.ctx.event);
+		const token = event.event.uniIdToken 
 		let uid = '';
 		if (this.ctx.event.uniIdToken) {
 			// 已登录，获取当前登录 uid
@@ -483,7 +720,7 @@ module.exports = class MemberController extends Controller {
 			state: '已收藏'
 		}).count();
 		// todo: 优惠券
-		
+
 		const memberRes = await this.db.collection('usemall-member').doc(uid)
 			.field({
 				member_session_key: false,
@@ -548,7 +785,9 @@ module.exports = class MemberController extends Controller {
 
 	// 注销用户
 	async deleteUser() {
-		const uniIdInstance = uidObj.createInstance({ context: this.ctx });
+		const uniIdInstance = uidObj.createInstance({
+			context: this.ctx
+		});
 		try {
 			// 获取请求中的 token
 			// const { uni_id_token } = event;
@@ -568,14 +807,16 @@ module.exports = class MemberController extends Controller {
 				};
 			}
 			// 获取用户 ID
-			const { uid } = checkTokenRes;
+			const {
+				uid
+			} = checkTokenRes;
 			// 执行账号注销操作
-			const deleteUserRes = await uniIdInstance.deleteUser({
-				userIds: [uid]
-			});
-			// const deleteUserRes = await uidObj.closeAccount({
-			// 	uid: [uid]
+			// const deleteUserRes = await uniIdInstance.deleteUser({
+			// 	userIds: [uid]
 			// });
+			const deleteUserRes = await uidObj.closeAccount({
+				uid: uid
+			});
 			if (deleteUserRes.code === 0) {
 				return {
 					code: 0,
@@ -601,7 +842,7 @@ module.exports = class MemberController extends Controller {
 	async update() {
 		const user = await uidObj.checkToken(this.ctx.event.uniIdToken);
 		if (user && user.code == 0) {
-			const { 
+			const {
 				perRecommend,
 				member_nickname,
 				member_gender,
@@ -615,11 +856,10 @@ module.exports = class MemberController extends Controller {
 			role.push(member_role);
 
 			await this.db.collection('uni-id-users').doc(user.uid).update({
-					nickname: member_nickname,
-					avatar: member_headimg,
-					role: role
-				}
-			);
+				nickname: member_nickname,
+				avatar: member_headimg,
+				role: role
+			});
 
 			await this.db.collection('usemall-member').doc(user.uid).update({
 				perRecommend: perRecommend,
@@ -669,7 +909,7 @@ module.exports = class MemberController extends Controller {
 				...member,
 				member_login_cnt: this.db.command.inc(1),
 				member_login_current_ip: this.ctx.data.ip || this.ctx.context.CLIENTIP,
-				
+
 				version: this.db.command.inc(1),
 				last_modify_uid: res.uid,
 				last_modify_time: new Date().getTime()
@@ -736,22 +976,22 @@ module.exports = class MemberController extends Controller {
 
 	// 我的优惠券
 	async coupon() {
-		
+
 		let response = {
 			code: 1,
 			datas: []
 		};
-		
+
 		let start = new Date().getTime();
 		// 请求参数
 		const req = this.ctx.data;
-		
+
 		let {
 			page,
 			rows,
 			state
 		} = req;
-		
+
 		response.datas = [{
 			state,
 			"type": "满减",
@@ -776,7 +1016,7 @@ module.exports = class MemberController extends Controller {
 			"end_time": "2021-12-31 00:00",
 			"sort": 0,
 			"create_time": "2021-06-10 07:46:19",
-		},{
+		}, {
 			state,
 			"type": "满减",
 			"name": "满100减9.9",
@@ -800,7 +1040,7 @@ module.exports = class MemberController extends Controller {
 			"end_time": "2021-12-31 00:00",
 			"sort": 0,
 			"create_time": "2021-06-10 07:46:19",
-		},{
+		}, {
 			state,
 			"type": "满减",
 			"name": "满100减9.9",
@@ -825,12 +1065,12 @@ module.exports = class MemberController extends Controller {
 			"sort": 0,
 			"create_time": "2021-06-10 07:46:19",
 		}];
-		
+
 		let end = new Date().getTime();
 		console.log(`耗时：${end - start}ms`);
 		response.code = 0;
 		response.msg = `耗时：${end - start}ms`;
 		return response;
-		
+
 	}
 }

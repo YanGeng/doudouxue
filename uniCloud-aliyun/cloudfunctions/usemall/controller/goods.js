@@ -25,6 +25,36 @@ module.exports = class GoodsController extends Controller {
 		response.msg = `删除成功`;
 		return response;
 	}
+	
+	// 更新商品状态
+	async updateNewGoodsDeleteType() {
+		const {
+			// 商品信息 usemall-goods
+			_id,
+			deleteType
+		} = this.ctx.data;
+	
+		let uid = '';
+		if (this.ctx.event.uniIdToken) {
+			// 已登录，获取当前登录 uid
+			const user = await uidObj.checkToken(this.ctx.event.uniIdToken);
+			if (user.code == 0) {
+				uid = user.uid;
+			}
+		}
+	
+		this.db.collection('usemall-goods').doc(_id).update({
+			deleteType: deleteType
+		});
+	
+		let response = {
+			code: 1
+		};
+		response.datas = [];
+		response.code = 0;
+		response.msg = `更新成功`;
+		return response;
+	}
 
 	// 更新商品
 	async updateNewGoods() {
@@ -67,6 +97,8 @@ module.exports = class GoodsController extends Controller {
 			// 商品详情信息 usemall-goods-detail
 			desc_mobile,
 			// 商品sku信息 usemall-goods-sku
+			thanksMoney,
+			thanksDetails,
 		} = this.ctx.data;
 
 		let uid = '';
@@ -113,6 +145,8 @@ module.exports = class GoodsController extends Controller {
 			longitude: longitude,
 			latitude: latitude,
 			geohash: geohash,
+			thanksMoney: thanksMoney,
+			thanksDetails: thanksDetails,
 		});
 
 		this.db.collection('usemall-goods-detail').doc(_id).update({
@@ -183,6 +217,8 @@ module.exports = class GoodsController extends Controller {
 			// 商品详情信息 usemall-goods-detail
 			desc_mobile,
 			addressId,
+			thanksMoney,
+			thanksDetails,
 			// 商品sku信息 usemall-goods-sku
 		} = this.ctx.data;
 
@@ -357,6 +393,8 @@ module.exports = class GoodsController extends Controller {
 			longitude: longitude,
 			latitude: latitude,
 			geohash: geohash,
+			thanksMoney: thanksMoney,
+			thanksDetails: thanksDetails,
 		});
 
 		this.db.collection('usemall-goods-detail').add({
@@ -622,6 +660,65 @@ module.exports = class GoodsController extends Controller {
 		response.msg = `耗时：${end - start}ms`;
 		return response;
 	}
+
+	// 列表
+	async adminList() {
+		let response = {
+			code: 1,
+			goods: []
+		};
+
+		let start = new Date().getTime();
+		// 请求参数
+		const req = this.ctx.data;
+		let {
+			cid,
+			keyword,
+			limited,
+			requestType,
+			currentCity,
+			otherCity,
+			consignee,
+			mobile,
+			name,
+			school
+		} = req;
+
+		let whereObj = {
+			state: '销售中'
+		};
+		if (keyword) whereObj.name = new RegExp(keyword);
+		if (limited == 1) whereObj.limited = 1;
+		if (cid) whereObj.cids = isFinite(cid) ? parseInt(cid, 10) : cid;
+		if (requestType !== '') whereObj.requestType = isFinite(requestType) ? parseInt(requestType, 10) : requestType;
+		if (otherCity) {
+			if (currentCity) whereObj.city_name = this.db.command.neq(currentCity);
+		} else {
+			if (currentCity) whereObj.city_name = currentCity;
+		}
+		if (consignee) whereObj.consignee = consignee;
+		if (mobile) whereObj.mobile = mobile;
+		if (name) whereObj.name = name;
+		if (school) whereObj.school = school;
+		// currentCity,
+		// otherCity,
+
+		const goods = await this.db.collection('usemall-goods')
+			.where(whereObj)
+			.orderBy(req.sidx, req.sord)
+			.skip((req.page - 1) * req.rows)
+			.limit(req.rows)
+			.get();
+
+		response.goods = goods.data;
+
+		let end = new Date().getTime();
+		console.log(`耗时：${end - start}ms`);
+		response.code = 0;
+		response.msg = `耗时：${end - start}ms`;
+		return response;
+	}
+
 	// 加入购物车
 	async addcart() {
 		let start = new Date().getTime();

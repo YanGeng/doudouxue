@@ -217,7 +217,8 @@ async function getConversationList({
   if (friend_uids.length !== 0){
     usersInfoRes = await dbJQL.collection('uni-id-users')
       .where(`_id in ${JSON.stringify(friend_uids)}`)
-      .field('_id,avatar_file,nickname,realname_auth')
+			// 仅内部人员可见实名认证信息
+      .field('_id,avatar_file,nickname' + (this.current_user_role && this.current_user_role.includes('staff') ? ',realname_auth' : ''))
       .limit(friend_uids.length)
       .get()
   }

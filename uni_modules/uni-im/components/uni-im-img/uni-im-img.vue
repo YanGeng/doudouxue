@@ -80,15 +80,16 @@ import config from '@/uni_modules/uni-im/common/config.js';
             this.url = await uniIm.utils.getTempFileURL(src)
             // 文件存储的服务商
             const {provider} = config.cloudFile
+						const maxWidth = this.maxWidth ? this.toPx(this.maxWidth) : '400'
             switch(provider){
               case 'aliyun':
-                this.url += '?x-oss-process=image/resize,w_400/quality,q_80'
+                this.url += `?x-oss-process=image/resize,w_${maxWidth}/quality,q_80`
                 break
               case 'tencent':
-                this.url += '?imageMogr2/thumbnail/400x400>'
+                this.url += `?imageMogr2/thumbnail/${maxWidth}x${maxWidth}>`
                 break
               case 'qiniu':
-                this.url += '?imageMogr2/thumbnail/400x400>'
+                this.url += `?imageMogr2/thumbnail/${maxWidth}x${maxWidth}>`
                 break
             }
             

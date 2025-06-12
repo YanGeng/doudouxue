@@ -144,12 +144,12 @@
 import { provide } from "vue";
 import { rangeShoukeType, rangeKemu } from './order.js'
 import {
-		mapState
+		mapState, mapGetters
 } from 'vuex';
 	const __name = 'usemall-member-address';
 	export default {
 		computed: {
-			...mapState(['islogin', 'user_role'])
+			...mapGetters(['islogin', 'user_role'])
 		},
 		components: {},
 		data() {
@@ -543,7 +543,7 @@ import {
 					this.$api.msg('请填写昵称');
 					return;
 				}
-				if (!/(^1[3|4|5|7|8|9][0-9]{9}$)/.test(addrData.mobile)) {
+				if (!/(^1[3|4|5|6|7|8|9][0-9]{9}$)/.test(addrData.mobile)) {
 					this.$api.msg('请输入正确的手机号码');
 					return;
 				}
@@ -624,7 +624,7 @@ import {
 				
 				this.goods.area_name = this.addrData.area_name;
 				let totalAddress = this.addressName + addrData.addr_detail;
-				const url = `http://api.tianditu.gov.cn/geocoder?ds={"keyWord":"${totalAddress}"}&tk=${this.key}`;
+				const url = `https://api.tianditu.gov.cn/geocoder?ds={"keyWord":"${totalAddress}"}&tk=${this.key}`;
 				const lonLatData = await uni.request({
       				url: url, // 请求的 URL
       				method: 'GET' // 请求方法，如 GET、POST 等
@@ -812,6 +812,7 @@ import {
 						console.log('当前位置：' + JSON.stringify(this.location));
 						const url =
 							`https://api.tianditu.gov.cn/geocoder?postStr={"lon":${this.location.longitude},"lat":${this.location.latitude},"ver":1}&type=geocode&tk=${this.key}`;
+						console.log('url is:', url)
 						uni.request({
 							url,
 							method: 'GET',

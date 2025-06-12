@@ -14,6 +14,7 @@
     "uni-pay": "file:../../../uni_modules/uni-pay/uniCloud/cloudfunctions/common/uni-pay"
   },
   "extensions": {
-    "uni-cloud-verify": {}
+    "uni-cloud-verify": {},
+    "uni-cloud-sms": {}
   }
 }

@@ -327,6 +327,7 @@ export default {
         height: 0;
       }
       .item {
+				font-size: 16px;
         color: #333;
         text-align: center;
         padding: 5px 0;

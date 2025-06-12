@@ -49,7 +49,9 @@ async function sendMsg(params) {
     call_uid,
     action,
     // 是否为静默消息
-    is_mute
+    is_mute,
+		// 不保存消息到数据库
+		noSaveToDB
   } = params
 
   // 清除旧版三方系统客户端直传的 call_uid 参数
@@ -68,7 +70,8 @@ async function sendMsg(params) {
       about_msg_id: ['String'],
       action: ['String'],
       is_mute: ['Boolean'],
-      chat_source: ['Object']
+      chat_source: ['Object'],
+			noSaveToDB: ['Boolean']
     }
   })
 
@@ -80,8 +83,12 @@ async function sendMsg(params) {
   // 调用扩展点 valid-msg
   let result = await invokeExts('validate-msg', params, this)
   let isValid = result.find(valid => typeof valid !== 'undefined')
-
-  if (!isValid && is_mute !== undefined && this.current_uid !== 'system') {
+	
+	// 只有扩展点允许，或者id为system的用户可以发送:静音 或者 不保存消息 的消息
+  if (
+		!isValid && this.current_uid !== 'system' && 
+		(is_mute !== undefined || noSaveToDB !== undefined)
+	 ) {
     throw new Error('非法操作')
   }
 
@@ -169,6 +176,7 @@ async function sendMsg(params) {
     action,
     reader_list: [], // 已读消息的用户列表
     is_mute, // 是否为静默消息
+		noSaveToDB, // 不保存消息到数据库
 		from_ip: this.getClientInfo().clientIP
   }
 	
@@ -206,7 +214,11 @@ async function sendMsg(params) {
   }
 
   // todo:临时增加私有代码逻辑，后续会迁移到扩展模块中
-  if (type === 'system' && action === 'set-group-member-ext-plugin-order-info') {
+  if (
+		type === 'system' && action === 'set-group-member-ext-plugin-order-info'
+		||
+		msgData.noSaveToDB
+	) {
     // 群成员设置插件排序信息，不需要保存至数据库
     noPersistent = true
   }
@@ -1271,9 +1283,12 @@ function _isMuteMsg(msg) {
 }
 
 async function _isReadableMsg(msg) {
-    if (msg.type === 'revoke_msg') return false
-    if (msg.action === 'update-group-info-avatar_file') return false
-    if (msg.type === 'clear-conversation-unreadCount') return false
+		if( 
+			['revoke_msg', 'clear-conversation-unreadCount'].includes(msg.type) ||
+			['update-group-info-avatar_file', 'update-conversation-info'].includes(msg.action)		
+		){
+			 return false
+		}
 
     // 如果是扩展的消息类型，由扩展模块决定消息是否可见
     const { msgTypes } = require('uni-im-ext')

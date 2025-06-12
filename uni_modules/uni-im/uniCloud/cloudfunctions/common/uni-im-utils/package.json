@@ -13,7 +13,7 @@
         "uni-config-center": "file:..\/..\/..\/..\/..\/uni-config-center\/uniCloud\/cloudfunctions\/common\/uni-config-center"
     },
     "origin-plugin-dev-name": "uni-im",
-    "origin-plugin-version": "3.4.53",
+    "origin-plugin-version": "3.4.54",
     "plugin-dev-name": "uni-im",
-    "plugin-version": "3.4.53"
+    "plugin-version": "3.4.54"
 }

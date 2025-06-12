@@ -9,7 +9,7 @@
     <!-- #endif -->
     
     <!-- #ifndef MP -->
-      <div class="uni-im-editor" contenteditable="true" :inputmode="hideKeyboard ? 'none' : 'text'"></div>
+      <div class="uni-im-editor" ref="uni-im-editor" contenteditable="true" :inputmode="(hideKeyboard && systemInfo.platform != 'ios') ? 'none' : 'text'"></div>
       <!-- 与rmd通讯专用 -->
       <view :change:prop="rdm.$callMethod" :prop="callRmdParam"></view>
     <!-- #endif -->
@@ -19,8 +19,13 @@
 
 <script>
   import uniIm from '@/uni_modules/uni-im/sdk/index.js';
+	import parseHtml from './parseHtml.js'
+	import uploadHtmlArrayImgs from './uploadHtmlArrayImgs.js'
   export default {
     emits: ["input", "confirm", "change", "click"],
+		computed: {
+			...uniIm.mapState(['systemInfo'])
+		},
     data() {
       return {
         callRmdParam: [],
@@ -47,7 +52,12 @@
       maxlength: {
         type: Number,
         default: 140
-      }
+      },
+			// 回车直接发送
+			enterSend: {
+				type: Boolean,
+				default: true
+			}
     },
     // #ifdef MP
     watch: {
@@ -99,7 +109,8 @@
       // #endif
       
       // #ifdef H5
-      const uniImEditor = document.querySelector('.uni-im-editor')
+			const uniImEditors = document.querySelectorAll('.uni-im-editor');
+      const uniImEditor = uniImEditors[uniImEditors.length - 1];
       uniIm.utils.appEvent.onAppActivate(() => {
         // 主窗口激活时设置输入焦点到这里的文本编辑框
         uniImEditor.focus()
@@ -130,18 +141,45 @@
 
       uniImEditor.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
-          if (isComposing) {
-            console.log('输入法正在输入中，此时回车不发送消息')
-            event.preventDefault();
-          } else {
-            if (shiftIsDown) {
-              console.log('shift键处于按下状态，为换行不是confirm发送')
-            } else {
-              this.$emit('confirm');
-              // 防止，回车执行发送的同时执行换行
-              event.preventDefault();
-            }
-          }
+					if (this.enterSend === true) {
+						if (isComposing) {
+						  console.log('输入法正在输入中，此时回车不发送消息')
+						  event.preventDefault();
+						} else {
+						  if (shiftIsDown) {
+						    console.log('shift键处于按下状态，为换行不是confirm发送')
+						  } else {
+						    this.$emit('confirm');
+						    // 防止，回车执行发送的同时执行换行
+						    event.preventDefault();
+						  }
+						}
+					} else {
+						// 默认的回车会导致多包一层div，不方便解析。这里阻止默认行为，自定义换行
+						event.preventDefault();
+						// 判断光标是否在当前富文本的末尾，注意：此编辑框不仅仅支持文本，还支持图片等，因此不能直接判断innerText的长度
+						let cursorInLast = false
+						const selection = window.getSelection();
+						const range = selection.getRangeAt(0);
+						const endContainer = range.endContainer;
+						// 如果光标在最后一个子节点上
+						if (endContainer === uniImEditor.lastChild) {
+							const endOffset = range.endOffset;
+							// console.log('光标偏移量',endOffset)
+							if (endContainer.nodeType === 3) { // 文本节点
+							// console.log('光标所在的是文本节点',endOffset,endContainer.textContent.length)
+								cursorInLast = endOffset === endContainer.textContent.length;
+							} else {
+								// console.log('光标所在的不是文本节点',endOffset)
+								cursorInLast = endOffset === 0;
+							}
+						} else {
+							// console.log('光标不在最后一个“子节点“上')
+						}
+						// console.log('光标是否在末尾',cursorInLast)
+						// 光标在末尾时，多补一个换行
+						this.$addHtmlToCursor( "\n" + (cursorInLast ? "\n" : "") )
+					}
         }
       });
 
@@ -291,7 +329,20 @@
           value
         }
         // #endif
-        // console.error('input',e)
+        
+				// #ifndef MP
+				if ( typeof e.value === 'object' ){
+					e.value.getHtmlArray = ()=>{
+						const data = parseHtml(e.value.html)
+						
+						return {
+							data,
+							uploadImg: async htmlArray => await uploadHtmlArrayImgs(htmlArray || data)
+						}
+					}
+				}
+				// #endif
+				
         this.$emit('input', e)
       },
 			focus(){
@@ -328,7 +379,9 @@
       }
     },
     mounted() {
-      this.uniImEditor = document.querySelector('.uni-im-editor')
+			// 拿到最后一个uni-im-editor的dom对象
+			const uniImEditors = document.querySelectorAll('.uni-im-editor');
+			this.uniImEditor = uniImEditors[uniImEditors.length - 1];
       this.uniImEditor.addEventListener('input', e => {
         setTimeout(()=>this.$oninput(e.data),0);
       });
@@ -360,7 +413,7 @@
 							// console.log('拦截撤销操作');
 							event.preventDefault();
 							// 撤销操作
-							if(this.history.length > 0){
+							if (this.history.length > 0) {
 								let last = this.history.pop();
 								if (last === this.uniImEditor.innerHTML){
 									last = this.history.pop();
@@ -368,12 +421,13 @@
 								// console.log('撤销操作',last);
 								this.lock = true;
 								that.$setContent(last ? {html: last} : '')
-								// 设置光标在末尾
 								this.lock = false;
-							}else{
+							} else {
 								// console.log('无历史记录');
 								that.$setContent('')
 							}
+							// 设置光标在末尾
+							that.$focus({toLast: true})
 						}
 					});
 				}
@@ -443,7 +497,6 @@
         const hasA = this.uniImEditor.querySelector('a');
         if (hasImg || hasNickname || hasA) {
           param = {
-            // "rich-text": //uniIm.utils.parseHtml( 执行比较消耗内存，改为chat页面 confirm时执行,
             "html": val,
             "text": this.uniImEditor.innerText,
             "aboutUserIds": Array.from(this.uniImEditor.querySelectorAll('.nickname')).map(i=>i.getAttribute('user_id'))
@@ -604,7 +657,6 @@
           this.uniImEditor.innerHTML = data.html || this.$arrDomJsonToHtml(data);
           this.$oninput(this.uniImEditor.innerHTML);
         }
-				this.$focus({toLast: true})
       },
       $arrDomJsonToHtml(arr) {
         function parseItem(item) {
@@ -645,7 +697,7 @@
   /* #ifdef MP */
   .uni-im-editor-mp {
     width: 100%;
-    height: auto;
+    height: 26px;
     max-height: 110px;
   }
   /* #endif */
@@ -655,6 +707,7 @@
     min-height: 26px;
     max-height: 110px;
     overflow: auto;
+		white-space: pre-wrap;
     // 解决ios下不能编辑的问题
     user-select: text;
     -webkit-user-select:text;
@@ -672,6 +725,7 @@
     & ::v-deep {
       img {
         max-width: 50%;
+				height: auto;
         display: block;
       }
       .nickname {

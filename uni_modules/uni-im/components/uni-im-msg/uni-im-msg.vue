@@ -50,10 +50,9 @@
             <view class="msg-content-box" @longpress.prevent="showControl">
               <uni-icons v-if="self && msg.state != 100 && msgStateIcon" :color="msg.state===0?'#999':'#d22'"
                 :type="msgStateIcon" class="msgStateIcon" @click="retriesSendMsg" />
-              <component :is="'msg-'+msg.type" :class="'msg-'+msg.type" class="msg-content" ref="msg-content" :msg="msg"
+							<msg-content class="msg-content" ref="msg-content" :msg="msg"
                 @viewMsg="$emit('viewMsg',$event)"
-                cementing="MsgByType"
-              ></component>
+              />
             </view>
 						<template
 						  v-for="extra in extraComponents"
@@ -88,23 +87,9 @@
 
 <script>
   import uniIm from '@/uni_modules/uni-im/sdk/index.js';
-  // 导入各类型的消息组件
-  import msgSystem from './types/system.vue'
-  import msgUserinfoCard from './types/userinfo-card.vue'
-  import msgVideo from './types/video.vue'
-  import msgFile from './types/file.vue'
-  import msgHistory from './types/history.vue'
-  import msgRichText from './types/rich-text.vue'
-  import msgCode from './types/code.vue'
-  import msgText from './types/text.vue'
-  import msgSound from './types/sound.vue'
-  import msgImage from './types/image.vue'
-  import msgOrder from './types/order.vue'
-  import msgPayNotify from './types/pay-notify.vue'
-  import msgEncryption from './types/encryption.vue'
-
-  import { markRaw,computed } from 'vue'
-
+	import msgSystem from './types/system.vue'
+	import msgContent from './msg-content.vue'
+  import { markRaw } from 'vue'
 /**
  * uni-im-msg 组件，渲染一条消息。
  * 
@@ -124,19 +109,8 @@
  */
   export default {
     components: {
-      msgSystem,
-      msgUserinfoCard,
-      msgVideo,
-      msgFile,
-      msgHistory,
-      msgRichText,
-      msgCode,
-      msgText,
-      msgSound,
-      msgImage,
-      msgOrder,
-      msgPayNotify,
-      msgEncryption
+			msgSystem,
+			msgContent
     },
     props: {
       msg: {

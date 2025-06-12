@@ -331,13 +331,13 @@ export default async function (initParam) {
        */
 
       let unread_count = $state.notification.unreadCount()
-      // console.log({unread_count});
-      $utils.setTabBarBadge(2, unread_count)
+      console.log({unread_count});
+      // $utils.setTabBarBadge(2, unread_count)
 
       // 获取未读会话消息总数
       unread_count = $state.conversation.unreadCount()
-      // console.log({unread_count});
-      $utils.setTabBarBadge(0, unread_count)
+      console.log({unread_count});
+      $utils.setTabBarBadge(3, unread_count)
       // 设置底部选项卡角标值
     }, 300);
   }

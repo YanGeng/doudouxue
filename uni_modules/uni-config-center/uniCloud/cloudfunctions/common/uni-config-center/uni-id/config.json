@@ -15,8 +15,8 @@
 		"tokenExpiresIn": 2592000,
 		"oauth": {
 			"weixin": {
-				"appid": "weixin appid",
-				"appsecret": "weixin appsecret"
+				"appid": "wx7b4063ee02304de2",
+				"appsecret": "d78a3cfa9e2963a7f0b5f388502765cc"
 			}
 		}
 	},
@@ -24,8 +24,8 @@
 		"tokenExpiresIn": 259200,
 		"oauth": {
 			"weixin": {
-				"appid": "微信小程序appid",
-				"appsecret": "微信小程序appsecret"
+				"appid": "wx7b4063ee02304de2",
+				"appsecret": "d78a3cfa9e2963a7f0b5f388502765cc"
 			}
 		},
 		"pay": {
@@ -54,13 +54,11 @@
 	},
 	"service": {
 		"sms": {
-			"name": "应用名称，对应短信模版的name",
-			"codeExpiresIn": 600,
-			"smsKey": "短信密钥key",
-			"smsSecret": "短信密钥secret"
+			"name": "豆豆学",
+			"codeExpiresIn": 180
 		},
 		"smscode": {
-			"templateId": "验证码短信模板Id"
+			"templateId": "36263"
 		},
 		"univerify": {
 		    "appid": "__UNI__15FFEB9"

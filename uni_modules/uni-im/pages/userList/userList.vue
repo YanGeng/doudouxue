@@ -75,6 +75,7 @@ import uniIm from '@/uni_modules/uni-im/sdk/index.js';
 				'more'; // oading 的状态，可选值：more（loading前）、loading（loading中）、noMore（没有更多了）
 			},
 			async toChat(user_id) {
+				console.log('this for test', this.isWidescreen, user_id)
 				// 当前用户给对方发个消息
 				if (this.isWidescreen) {
 					//若为宽屏，则触发右侧详情页的自定义事件，通知右侧窗体刷新详情

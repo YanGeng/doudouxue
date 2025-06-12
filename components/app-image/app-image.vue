@@ -7,7 +7,7 @@
 			:fade-show="fadeShow"
 			:webp="webp"
 			:show-menu-by-longpress="showMenuByLongpress"
-			:style="`width: ${mainWidth}${imgUnit}; height: ${mainHeight}${imgUnit}; ${imgStyle}`"
+			:style="mainStyle"
 			:class="imgClass"
 		></image>
 	</view>
@@ -21,7 +21,7 @@ import {
 
 // * 1 * 自定义要替换的错误图片地址
 // 数组形式, 当前对应资源文件 static/imgError/XXXX.png
-let defaultImgArr = ['/static/app-image/imgError/imgError-1.png'];
+let defaultImgArr = ['/static/app-image/imgError/imgError-1.webp'];
 
 export default {
 	name: 'AppImage',
@@ -182,7 +182,10 @@ export default {
 			}
 
 			return 88;
-		}
+		},
+        mainStyle() {
+            return `width: ${this.mainWidth}${this.imgUnit}; height: ${this.mainHeight}${this.imgUnit}; ${this.imgStyle}`;
+        }
 	},
 	methods: {
 		// 使用队列进行图片缓存，并增加mds对src进行编码

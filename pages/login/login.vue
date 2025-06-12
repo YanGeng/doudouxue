@@ -3,7 +3,7 @@
 		<view class="padding-xl dflex-c dflex-flow-c">
 			<view class="portrait-box margin-bottom">
 				<image class="headimg border-radius-c"
-					:src="(member && member.member_headimg) || '/static/images/user/default4.webp'"></image>
+					:src="(member && member.member_headimg) || '/static/images/user/default_head.jpg'"></image>
 			</view>
 
 			<view class="w-full dflex padding-bottom-sm">
@@ -28,7 +28,7 @@
 				<!-- #endif -->
 			</view>
 			<view class="dflex-b w-full margin-bottom-sm">
-				<view class="padding-tb-sm ft-dark" @click="toforget">忘记密码</view>
+				<!-- <view class="padding-tb-sm ft-dark" @click="toforget">忘记密码</view> -->
 				<view class="padding-tb-sm ft-base" @click="toregister">立即注册</view>
 			</view>
 			<view class="w-full margin-top-xl">
@@ -44,10 +44,10 @@
 		</view>
 		<view v-if="ismp" class="dflex-c margin-top-big">
 			<!-- #ifdef MP-WEIXIN -->
-			<button class="dflex-c dflex-flow-c no-border btn" lang="zh_CN" @click="mpWeixinTologin">
+			<!-- <button class="dflex-c dflex-flow-c no-border btn" lang="zh_CN" @click="mpWeixinTologin">
 				<view class="iconfont padding-lr-sm border-radius-c fs-xxxl" :class="platform_icon"></view>
 				<view class="dflex-c fs-sm ft-dark">{{ platform_name }} · 授权登录</view>
-			</button>
+			</button> -->
 			<!-- #endif -->
 			<!-- #ifdef MP-BAIDU || MP-QQ -->
 			<button class="dflex-c dflex-flow-c no-border btn" open-type="getUserInfo" lang="zh_CN"
@@ -105,7 +105,8 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex';
+import { mapState, mapMutations, mapGetters } from 'vuex';
+import uniIm from '@/uni_modules/uni-im/sdk/index.js';
 
 export default {
 	data() {
@@ -127,7 +128,7 @@ export default {
 		};
 	},
 	computed: {
-		...mapState(['member', 'islogin', 'isPreLoginSucess'])
+		...mapGetters(['member', 'islogin', 'isPreLoginSucess', 'token'])
 	},
 
 	onShow() {
@@ -181,7 +182,7 @@ export default {
         });
     },
 	methods: {
-		...mapMutations(['login', 'logout', 'token']),
+		...mapMutations(['login', 'logout']),
 		checkboxChange(e) {
 			if (e.detail.value.includes('true')) {
 				this.isAgreed = true;
@@ -202,7 +203,7 @@ export default {
 					//参考`univerifyStyle 数据结构`
 					fullScreen: true,
 					icon: {
-						path: "/static/images/user/default4.webp", // 自定义显示在授权框中的logo，仅支持本地图片 默认显示App logo
+						path: "/static/images/user/default_head.jpg", // 自定义显示在授权框中的logo，仅支持本地图片 默认显示App logo
 						width: "60px",  //图标宽度 默认值：60px
 						height: "60px"   //图标高度 默认值：60px
 					},
@@ -260,6 +261,23 @@ export default {
 								if (res.code == 200) {
 									// 调用 store login
 									_this.login(res.datas);
+									
+									let tmpToken = uni.getStorageSync('uni_id_token')
+									console.log('uniIm.login uni_id_token:', tmpToken, res.datas)
+									
+									tmpToken = res.datas.user.token
+									
+									console.log('xxxxxxxxxxx uni_id_token:', tmpToken, _this.token)
+									
+									uniIm.login({
+										//如果你项目的token不是存在storage内或key值不是token需要根据实际情况修改
+										uni_id_token: _this.token,
+										//如果你项目的用户信息不是存在storage内或key值不是current_user_id需要根据实际情况修改
+										// user_id: uni.getStorageSync('current_user_id')
+										
+										// 与token字段，两个参数二选一
+										// uni_id_token:  uni.getStorageSync('uni_id_token') 
+									})
 
 									_this.$api.msg('登录成功');
 									// #ifndef H5
@@ -348,6 +366,19 @@ export default {
 					if (res.code == 200) {
 						// 调用 store login
 						_this.login(res.datas);
+						
+						let tmpToken = uni.getStorageSync('uni_id_token')
+						console.log('uniIm.login uni_id_token:', tmpToken, _this.token, _this.islogin, res.datas)
+						
+						uniIm.login({
+							//如果你项目的token不是存在storage内或key值不是token需要根据实际情况修改
+							uni_id_token: _this.token,
+							//如果你项目的用户信息不是存在storage内或key值不是current_user_id需要根据实际情况修改
+							// user_id: uni.getStorageSync('current_user_id')
+							
+							// 与token字段，两个参数二选一
+							// uni_id_token:  uni.getStorageSync('uni_id_token') 
+						})
 						
 						_this.$api.msg('登录成功');
 						// #ifndef H5
@@ -512,6 +543,7 @@ export default {
 								code: mpres.code
 							})
 							.then(res => {
+								console.log('xxxxxxxxxxxxxxxxxxx', res);
 								if (res.code == 200) {
 									console.log('member/loginByWeixin', res);
 									// 调用 store login

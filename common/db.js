@@ -1,4 +1,5 @@
-import $config from './config.js'
+// import $config from './config.js'
+import $config from './config/envConfig.ts'
 import $api from './common.js'
 
 let db = {};

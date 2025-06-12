@@ -290,7 +290,9 @@
 				// #ifndef MP-WEIXIN
 				const needRC = ['input']
 				// #ifdef APP
-				needRC.push('emoji')
+				if(uniIm.systemInfo.platform != 'ios'){
+					needRC.push('emoji')
+				}
 				// #endif
 				if (needRC.includes(this.mode)) {
 					// 获取焦点

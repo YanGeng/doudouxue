@@ -7,10 +7,10 @@
       <uni-list-item v-for="(val,key) in editorFields" :key="key" @click.native="openPopupInfo(key)" :title="val"
         :showArrow="isAdmin" :clickable="isAdmin">
         <template v-slot:footer>
-          <text
-            class="group-info-text">{{ (key == "notification" ? conversation.group[key]?.content : conversation.group[key]) || '未设置' }}</text>
+          <text class="group-info-text">{{conversation.group[key]}}</text>
         </template>
       </uni-list-item>
+			<uni-list-item @click.native="setGroupNotice" title="群公告" link></uni-list-item>
       <uni-list-item @click.native="setAvatar" title="群头像" :clickable="isAdmin">
         <template v-slot:footer>
           <uni-im-img width="50px" height="50px" :src="logoUrl||'/uni_modules/uni-im/static/avatarUrl.png'" mode=""></uni-im-img>
@@ -49,7 +49,12 @@
     <uni-popup v-if="isWidescreen" ref="popup-qr-code" type="center">
       <qrCodePage ref="popup-qr-code-page"></qrCodePage>
     </uni-popup>
+		
+		<uni-popup v-if="isWidescreen" ref="popup-notice-list" type="center">
+			<notice-list @close="$refs['popup-notice-list'].close()" class="notice-list" ref="noticeList"></notice-list>
+		</uni-popup>
     <!-- #endif -->
+		
   </view>
 </template>
 
@@ -57,6 +62,7 @@
   const db = uniCloud.database()
   import uniIm from '@/uni_modules/uni-im/sdk/index.js';
   import members from '@/uni_modules/uni-im/pages/group/members';
+	import noticeList from '@/uni_modules/uni-im/pages/group/notice/list.vue';
   // #ifdef H5
   import qrCodePage from './qrCode.vue'
   // #endif
@@ -64,7 +70,8 @@
     components: {
       'uni-im-group-members':members,
       // #ifdef H5
-      qrCodePage
+      qrCodePage,
+			noticeList
       // #endif
     },
     data() {
@@ -83,8 +90,7 @@
         leave_group: false,
         editorFields: {
           "name": " 群聊名称",
-          "introduction": "群简介",
-          "notification": "群公告"
+          "introduction": "群简介"
         },
         editorType: '',
         editorDefaultValue: '',
@@ -299,6 +305,20 @@
           .update(group)
         // console.log('change group info', res.result.updated,this.conversation);
       },
+			async setGroupNotice(){
+				if (uniIm.isWidescreen){
+					this.$refs['popup-notice-list'].open()
+					setTimeout(() => {
+						this.$refs['noticeList'].load({
+							group_id:this.conversation.group_id
+						})
+					},0)
+				} else {
+					uni.navigateTo({
+						url: '/uni_modules/uni-im/pages/group/notice/list?group_id=' + this.conversation.group_id,
+					});
+				}
+			},
       async setAvatar() {
         if (!this.isAdmin) return
         const crop = {
@@ -475,5 +495,15 @@
       padding: 15px;
       padding-top: 55px;
     }
+		
+		/* #ifdef H5 */
+		.notice-list {
+			height: 80vh;
+			width: 800px;
+			border-radius: 10px;
+			background-color: #fff;
+			overflow: hidden;
+		}
+		/* #endif */
   }
 </style>

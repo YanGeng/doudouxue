@@ -37,8 +37,8 @@
 							</view>
 							<view class="padding-tb-sm">
 								<text class="price">{{ item.goods.price / 100 }}</text>
-								<text class="m-price"
-									v-if="item.goods.market_price > 0">{{ item.goods.market_price / 100 }}</text>
+								<text class="m-price" v-if="item.goods.market_price > 0">{{ item.goods.market_price /
+									100 }}</text>
 							</view>
 
 							<!-- + - 购物车数量 -->
@@ -81,11 +81,11 @@
 			</view>
 			<view class="gap"></view>
 			<view class="dflex-b border-radius-big">
-				<view class="tac padding-tb-sm flex1 bg-warn" @click="findTeacher">找老师</view>
+				<view class="tac padding-tb-sm flex1 bg-warn" @click="findTeacher">发布需求</view>
 			</view>
 			<view class="gap"></view>
 			<view class="dflex-b border-radius-big">
-				<view class="tac padding-tb-sm flex1 bg-warn" @click="findStudent">找学生</view>
+				<view class="tac padding-tb-sm flex1 bg-warn" @click="findStudent">新建简历</view>
 			</view>
 		</view>
 		<view v-if="isStudent" class="padding-xs w-full margin-top">
@@ -94,7 +94,7 @@
 			</view>
 			<view class="gap"></view>
 			<view class="dflex-b border-radius-big">
-				<view class="tac padding-tb-sm flex1 bg-warn" @click="findTeacher">找老师</view>
+				<view class="tac padding-tb-sm flex1 bg-warn" @click="findTeacher">发布需求</view>
 			</view>
 		</view>
 		<view v-if="isTeacher" class="padding-xs w-full margin-top">
@@ -103,30 +103,36 @@
 			</view>
 			<view class="gap"></view>
 			<view class="dflex-b border-radius-big">
-				<view class="tac padding-tb-sm flex1 bg-warn" @click="findStudent">找学生</view>
+				<view class="tac padding-tb-sm flex1 bg-warn" @click="findTeacher">我要找老师</view>
+			</view>
+			<view class="gap"></view>
+			<view class="dflex-b border-radius-big">
+				<view class="tac padding-tb-sm flex1 bg-warn" @click="findStudent">新建简历</view>
 			</view>
 		</view>
-		
+
 		<view v-if="islogin" class="cart-list padding-sm">
-		<view class="bg-main padding-top padding-lr border-radius margin-top-sm" v-for="(item, index) in goodsInfos"
-			:key="index" @click="clickItem(item)">
-			<view class="w-full flex-row-alicenter border-line">
-				<view class="left">
-					<image class="border-radius-xs wh-full" mode="aspectFill" :lazy-load="true" :src="item.img"></image>
+			<view class="bg-main padding-top padding-lr border-radius margin-top-sm" v-for="(item, index) in goodsInfos"
+				:key="index" @click="clickItem(item)">
+				<view class="w-full flex-row-alicenter border-line">
+					<view class="left">
+						<image class="border-radius-xs wh-full" mode="aspectFill" :lazy-load="true" :src="item.img">
+						</image>
+					</view>
+					<view class="margin-lr-sm">
+						<view class="fwb margin-bottom-xs desc">
+							<text>{{ item.name }} {{ item.mobile }}</text>
+						</view>
+						<view class="margin-bottom-sm">
+							<text>{{ item.consignee }}</text>
+							<text v-if="!(item.requestType === 0)" class="margin-left cl-money">{{ item.price/100
+								}}</text>
+							<text class="margin-left">{{ item.tags.join() }}</text>
+						</view>
+					</view>
 				</view>
-				<view class="margin-lr-sm">
-				<view class="fwb margin-bottom-xs desc">
-					<text>{{ item.name }} {{ item.mobile }}</text>
-				</view>
-				<view class="margin-bottom-sm">
-					<text>{{ item.consignee }}</text>
-					<text v-if="!(item.requestType === 0)" class="margin-left cl-money">{{ item.price/100 }}</text>
-					<text class="margin-left">{{ item.tags.join() }}</text>
-				</view>
-				</view>
-			</view>
-			<view class="dflex-b">
-<!-- 				<view v-if="item.is_default == '是'" class="dflex active">
+				<view class="dflex-b">
+					<!-- 				<view v-if="item.is_default == '是'" class="dflex active">
 					<text class="iconfont iconxuanzhongzhuangtai padding-tb-sm padding-right-sm"></text>
 					<text> 默认地址</text>
 				</view>
@@ -134,16 +140,38 @@
 					<text class="iconfont padding-tb-sm padding-right-sm"></text>
 					<text> 设为默认</text>
 				</view> -->
-				<text class="clamp-2">{{ item.description }}</text>
-				<view v-if="source == 0 || source == 1" class="dflex">
-					<view class="padding-tb-sm padding-right-sm" @tap.stop="editRequest('edit', item)"><text
-							class="iconfont iconbianji-01 ft-dark"></text></view>
-					<view class="padding-tb-sm padding-left-sm" @tap.stop="removeRequest(item)"><text
-							class="iconfont iconlajitong-01 ft-dark"></text></view>
+					<text class="clamp-3">{{ item.description }}</text>
+					<view v-if="source == 0 || source == 1" class="dflex">
+						<view class="padding-tb-sm padding-lr-sm" @tap.stop="editRequest('edit', item)"><text
+								class="iconfont iconbianji-01 ft-dark"></text></view>
+						<!-- <view class="padding-tb-sm padding-left-sm" @tap.stop="removeRequest(item)"><text -->
+						<view class="padding-tb-sm padding-lr-sm" @tap.stop="showPopup(item)"><text
+								class="iconfont iconlajitong-01 ft-dark"></text></view>
+					</view>
 				</view>
 			</view>
 		</view>
-		</view>
+
+		<!-- <button type="primary" @click="showPopup">选择选项</button> -->
+
+		<uni-popup ref="popup" type="bottom">
+			<view class="padding-bottom-xl border-radius margin">
+				<view class="margin-lr-lg popup-content">
+					<!-- <view class="popup-title">请选择</view> -->
+					<radio-group @change="onRadioChange">
+						<label class="radio-item dflex-b margin-lr-sm" v-for="(item, index) in options" :key="index">
+							<text>{{ item.label }}</text>
+							<radio :value="item.value" :checked="selectedValue === item.value" />
+						</label>
+					</radio-group>
+				</view>
+
+					<view class="popup-buttons">
+						<button class="border-radius-big" type="default" @click="closePopup">取消</button>
+						<button class="border-radius-big" type="primary" @click="confirmSelection">确定</button>
+					</view>
+			</view>
+		</uni-popup>
 
 		<!-- 严选版权 -->
 		<use-copyright></use-copyright>
@@ -158,11 +186,12 @@
 	const __goods_detail = 'usemall-goods-detail';
 	import {
 		mapState,
-		mapMutations
+		mapMutations,
+		mapGetters
 	} from 'vuex';
 	export default {
 		computed: {
-			...mapState(['islogin', 'user_role', 'token', 'isPreLoginSucess'])
+			...mapGetters(['islogin', 'user_role', 'token', 'isPreLoginSucess'])
 		},
 		data() {
 			return {
@@ -184,6 +213,14 @@
 				check1: false,
 				check2: false,
 				addCart: false,
+
+				options: [
+					{ value: 'option1', label: '成功匹配' },
+					{ value: 'option2', label: '不需要了' },
+					{ value: 'option3', label: '开启接单' }
+				],
+				selectedValue: 'option1',
+				deleteItem: '',
 			};
 		},
 		watch: {
@@ -260,6 +297,48 @@
 
 		methods: {
 			...mapMutations(['setPreLoginStatus']),
+			showPopup(options) {
+				this.deleteItem = options;
+				console.log('aaaaaa test: ', this.deleteItem);
+				this.$refs.popup.open();
+			},
+			closePopup() {
+				this.$refs.popup.close();
+			},
+			onRadioChange(e) {
+				this.selectedValue = e.detail.value;
+				console.log('this.selectedValue: ', this.selectedValue)
+			},
+			confirmSelection() {
+				if (!this.selectedValue) {
+					uni.showToast({
+						title: '请选择选项',
+						icon: 'none'
+					});
+					return;
+				}
+				
+				let type = 'finished'
+				if (this.selectedValue =='option1') {
+					type = 'finished'
+				} else if (this.selectedValue =='option2') {
+					type = 'noneed'
+				} else {
+					type = 'opened'
+				}
+				console.log('aaaaaaaaa type: ', type)
+				this.$func.usemall
+					.call('goods/updateNewGoodsDeleteType', {
+						_id: this.deleteItem._id,
+						deleteType: type
+					})
+					.then(res => {
+						console.log("update request finished");
+						this.loadData();
+					});
+					
+				this.closePopup();
+			},
 			// 跳转商品详情
 			clickItem(item) {
 				console.log('item', item)
@@ -277,16 +356,16 @@
 				if (options.requestType === 1) {
 					let test = 10002;
 					uni.navigateTo({
-						url: `/pages/order/createFindStudent?type=${type}&id=${options._id}`
+						url: `/pages_user/user/order/createFindStudent?type=${type}&id=${options._id}`
 					});
 				} else if (options.requestType === 2) {
 					uni.navigateTo({
-						url: `/pages/order/createFindTeacher?type=${type}&id=${options._id}`
+						url: `/pages_user/user/order/createFindTeacher?type=${type}&id=${options._id}`
 					});
 				} else if (options.requestType === 0) {
 					// 暂不考虑自习室
 					uni.navigateTo({
-						url: `/pages/order/createZixishi?type=${type}&id=${options._id}`
+						url: `/pages_user/user/order/createZixishi?type=${type}&id=${options._id}`
 					});
 				}
 			},
@@ -322,7 +401,7 @@
 				// console.log("test = " + a)
 				// return a;
 				uni.navigateTo({
-					url: `/pages/order/createZixishi?type=add`,
+					url: `/pages_user/user/order/createZixishi?type=add`,
 					success(res) {
 						console.log(res);
 					},
@@ -341,7 +420,7 @@
 				// console.log("test = " + a)
 				// return a;
 				uni.navigateTo({
-					url: `/pages/order/createFindTeacher?type=add`,
+					url: `/pages_user/user/order/createFindTeacher?type=add`,
 					success(res) {
 						console.log(res);
 					},
@@ -361,7 +440,7 @@
 				// console.log("test = " + a)
 				// return a;
 				uni.navigateTo({
-					url: `/pages/order/createFindStudent?type=add`,
+					url: `/pages_user/user/order/createFindStudent?type=add`,
 					success(res) {
 						console.log(res);
 					},
@@ -433,6 +512,7 @@
 			},
 			// 跳转登录页
 			tologin() {
+				// #ifdef APP-PLUS
 				if (!this.isPreLoginSucess) {
                     // 一键登录预登陆，可以显著提高登录速度
                     uni.preLogin({
@@ -451,6 +531,7 @@
                         }
                     })
                 }
+				// #endif
 
 				this.$api.tologin();
 			},
@@ -695,4 +776,38 @@
 	}
 
 	/* #endif */
+
+	.popup-content {
+  padding: 20rpx;
+  background-color: #f5f5f5; /* 浅色背景 */
+  border-radius: 10rpx;
+}
+.popup-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  padding: 20rpx 0;
+  text-align: center;
+}
+.radio-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #eee;
+  background-color: #f5f5f5; /* 浅色背景 */
+  border-radius: 12rpx;
+  justify-content: space-between;
+  transition: all 0.2s;
+}
+.radio-item text {
+  margin-left: 20rpx;
+  font-size: 28rpx;
+}
+.popup-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 40rpx;
+}
+.popup-buttons button {
+  width: 40%;
+}
 </style>

@@ -57,7 +57,7 @@ module.exports = {
 		},
 		async beforeUpdate({where,updateData,userInfo}){
       //只开放部分字段
-      let canUpdateField = ["unread_count","pinned","hidden","mute","has_unread_group_notification","is_star"]
+      let canUpdateField = ["unread_count","pinned","hidden","mute","unread_group_notice_id","is_star"]
       Object.keys(updateData).forEach(field=>{
         if(!canUpdateField.includes(field)){
           throw new Error('uni-im-conversation.schema.ext.js beforeUpdate:限制只能更新的字段：'+canUpdateField.join('，'))

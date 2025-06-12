@@ -101,6 +101,7 @@ page {
           }
         }
         .content {
+					position: relative;
           flex: 1;
 					height: 0;
           ::v-deep {
@@ -133,6 +134,7 @@ page {
             .group-info-parent{
               height: 100%;
               overflow-y: auto;
+							background: #F9F9F9;
             }
             .group-info-text {
               max-width: 250px !important;

@@ -14,7 +14,8 @@ let $users = {
       usersInfo = obj
     }
 		for(let key in usersInfo){
-			if (!usersInfo[key].nickname.includes('(')){
+			const {nickname} = usersInfo[key]
+			if (nickname && !nickname.includes('(')){
 				usersInfo[key] = new Proxy(usersInfo[key], {
 					get(target, prop) {
 						if(prop === 'nickname'){

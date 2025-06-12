@@ -2,7 +2,7 @@
 	<!-- 热卖产品 -->
 	<view class="use-hot-goods">
 		<!-- 列表标题 -->
-		<use-list-title v-if="hotDatas && hotDatas.length > 0" :title="title" size="32" fwt="600" :type="titleType" color="#333" iconfont="iconremen" @goto="hot"></use-list-title>
+		<use-list-title v-if="hotDatas && hotDatas.length > 0" :title="title" size="32" fwt="600" :type="titleType" color="#333" iconfont="iconremen" tip='更多' @goto="hot"></use-list-title>
 		
 		<view class="list dflex-b dflex dflex-wrap-w w-full">
 			<view v-for="(item, index) in hotDatas" :key="index" class="item border-radius-sm padding-bottom-sm" @click="to_detail(item)">

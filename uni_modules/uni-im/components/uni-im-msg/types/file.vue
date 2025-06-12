@@ -1,6 +1,9 @@
 <template>
   <view class="msg-content file-msg-box" @click="downLoadFile" ref="msg-content">
-    <view class="file-msg-info">
+    <view class="file-msg-info" :class="{downloading}">
+			<view class="progress" v-if="downloading">
+				下载中：{{downloadProgress}}%
+			</view>
       <text class="name">{{fileName}}</text>
       <text class="size">{{fileSize}}</text>
     </view>
@@ -22,6 +25,9 @@
       },
     },
     computed: {
+			downloading() {
+				return this.downloadProgress != 0 && this.downloadProgress != 100
+			},
       fileSize() {
         if (this.msg.type == 'file') {
           let size = this.msg.body.size
@@ -51,23 +57,32 @@
     },
     data() {
       return {
-
+				downloadProgress: 0
       }
     },
     methods: {
       async downLoadFile() {
         const url = await uniIm.utils.getTempFileURL(this.msg.body.url)
-        // #ifdef H5
-        return window.open(url)
-        // #endif
-
-        // #ifndef H5
-        uni.downloadFile({
+        const downloadTask = uni.downloadFile({
           url,
           success: (res) => {
             if (res.statusCode === 200) {
               // console.log('下载成功');
               // console.log(res.tempFilePath);
+							
+							// #ifdef H5
+							// 触发下载
+							const a = document.createElement('a');
+							a.style.display = 'none';
+							a.href = res.tempFilePath;
+							a.download = this.msg.body.name || 'file';
+							a.target = '_blank';
+							document.body.appendChild(a);
+							a.click();
+							document.body.removeChild(a);
+							// #endif
+							
+							// #ifndef H5
               uni.saveFile({
                 tempFilePath: res.tempFilePath,
                 success: (res) => {
@@ -77,11 +92,19 @@
                   })
                 }
               });
+							// #endif
             }
           }
         });
-        // #endif
-      },
+				
+				downloadTask.onProgressUpdate((res) => {
+					console.log('下载进度' + res.progress);
+					console.log('已经下载的数据长度' + res.totalBytesWritten);
+					console.log('预期需要下载的数据总长度' + res.totalBytesExpectedToWrite);
+					this.downloadProgress = parseInt(res.totalBytesWritten / this.msg.body.size * 100)
+				})
+				
+      }
     }
   }
 </script>
@@ -94,10 +117,26 @@
     border-radius: 8px;
     flex-direction: row;
     justify-content: space-between;
+		/* #ifdef H5 */
+		cursor: pointer;
+		/* #endif */
     .file-msg-info {
+			position: relative;
       flex: 1;
       flex-direction: column;
       justify-content: space-around;
+			.progress {
+				position: absolute;
+				font-size: 14px;
+				height: 100%;
+				width: 100%;
+				top: 0;
+				left: 0;
+				background-color: #FFF;
+				opacity: 0.8;
+				justify-content: center;
+				align-items: center;
+			}
       .name {
         word-break: break-all;
         font-size: 16px;

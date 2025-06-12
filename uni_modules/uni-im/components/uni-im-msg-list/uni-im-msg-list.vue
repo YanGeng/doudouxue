@@ -50,6 +50,8 @@
     <uni-popup @change="$event.show?'':closeGroupNotification()" ref="group-notification-popup" type="center" class="group-notification-popup">
       <uni-im-group-notification ref="group-notification"></uni-im-group-notification>
     </uni-popup>
+		
+		<uni-im-group-notice-popup ref="uni-im-group-notice-popup"></uni-im-group-notice-popup>
 
     <uni-im-view-msg ref="view-msg"></uni-im-view-msg>
   </view>
@@ -110,7 +112,7 @@
             hasMore: true,
             visibleDataList: () => []
           },
-          has_unread_group_notification: false,
+          unread_group_notice_id: false,
           group_info: {
             notification: false
           }
@@ -128,32 +130,15 @@
       'conversation.remind_msg_ids'(remind_msg_ids) {
         this.remind_msg_ids = remind_msg_ids
       },
-      'conversation.has_unread_group_notification': {
-        async handler(hasUnreadGroupNotification) {
-          const group_notification = this.conversation?.group?.notification
-          const conversation_id = this.conversationId
-          // 弹出群公告
-          if (hasUnreadGroupNotification && group_notification && group_notification.content) {
-            await uniIm.utils.sleep(1000)
-            // TODO 临时解决，公告还没弹出来就切换会话，导致弹出多次
-            if(conversation_id !== this.conversationId){
-              return
-            }
-            // 判断列表中是否已经渲染了此群公告，是则 call 当前用户。否则弹框提示
-            let groupNotificationMsg = [...this.visibleMsgList].reverse().find(msg => msg.action ===
-              'update-group-info-notification')
-            // console.log('groupNotificationMsg', groupNotificationMsg,this.visibleMsgList);
-            
-            if (groupNotificationMsg) {
-              this.conversation.remind_msg_ids.push(groupNotificationMsg._id)
-              this.closeGroupNotification()
-            } else {
-              this.$refs["group-notification-popup"].open()
-              setTimeout(() => {
-                this.$refs["group-notification"].notification = group_notification
-              },0)
-            }
-          }
+      'conversation.unread_group_notice_id': {
+        async handler(notice_id) {
+					// 拿到新增的公告id
+					if(notice_id){
+						this.$refs["uni-im-group-notice-popup"].open({
+							group_id: this.conversation.group_id,
+							notice_id
+						})
+					}
         },
         immediate: true
       },
@@ -534,31 +519,6 @@
           this.activeMsgId = ''
         }, 2000);
         this.showMsgByIndex(index)
-
-        // 如果是显示群公告，则设置未读的群公告内容为 false
-        if (this.visibleMsgList[index].action === "update-group-info-notification") {
-          this.closeGroupNotification()
-        }
-
-      },
-      closeGroupNotification() {
-        // console.log('######关闭群公告',this.conversationId)
-        
-        const db = uniCloud.database();
-        
-        db.collection('uni-im-conversation')
-        .where({
-          id:this.conversationId,
-          user_id: this.currentUid
-        })
-        .update({
-          has_unread_group_notification: false
-        }).then(res => {
-          this.conversation.has_unread_group_notification = false
-          // console.log('关闭群公告成功', res)
-        }).catch(err => {
-          console.error('关闭群公告失败', err)
-        })
       },
       isChecked(msg) {
         return this.checkedMsgList.some(i => i._id === msg._id)

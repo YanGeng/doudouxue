@@ -1,13 +1,21 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import $config from './config.js'
+// import Vue from 'vue'
+// import Vuex from 'vuex'
+// import $config from './config.js'
 
-Vue.use(Vuex)
+// Vue.use(Vuex)
 
-const store = new Vuex.Store({
+// const store = new Vuex.Store({
+
+import {
+	createStore
+} from "vuex";
+const store = createStore({
+	// import Vuex from 'vuex'
+	// const store = new Vuex.Store({
 	state: {
 		islogin: false,
 		member: {},
+		token_changed: false,
 		token: '',
 		token_expired: 0,
 		// 'student', 'teacher', 'admin'，默认为'student'
@@ -19,10 +27,14 @@ const store = new Vuex.Store({
 		ai_chat_list: [],
 		conversation_id: '',
 
+		message_page_refresh_time: 0,
+
 		// 一键登录
 		isPreLoginSucess: false,
 
+		__key_message_page_refresh_time: 'message_page_refresh_time',
 		__key_member: 'usemall_member',
+		__key_token_changed: 'token_changed',
 		__key_token: 'uni_id_token',
 		__key_token_expired: 'uni_id_token_expired',
 		__key_user_role: 'user_role',
@@ -77,7 +89,25 @@ const store = new Vuex.Store({
 				data: state.user_role
 			})
 		},
-		
+
+		// 更新刷新时间
+		updateMessagePageRefreshTime(state, messagePageRefreshTime) {
+			state.message_page_refresh_time = messagePageRefreshTime;
+			uni.setStorage({
+				key: state.__key_message_page_refresh_time,
+				data: state.message_page_refresh_time
+			})
+		},
+
+		// 更新token变化状态
+		updateTokenChanged(state, tokenChanged) {
+			state.token_changed = tokenChanged;
+			uni.setStorage({
+				key: state.__key_token_changed,
+				data: state.token_changed
+			})
+		},
+
 		// 登录成功
 		login(state, res) {
 			// 用户已登录
@@ -85,8 +115,20 @@ const store = new Vuex.Store({
 			state.user_role = res.user.userInfo.role[0]
 			// console.log(state.user_role)
 			state.member = res.member;
+			if (res.user.token != state.token) {
+				state.token_changed = true;
+			} else {
+				state.token_changed = false;
+			}
+
 			state.token = res.user.token;
 			state.token_expired = res.user.tokenExpired;
+
+
+			uni.setStorage({
+				key: state.__key_token_changed,
+				data: state.token_changed
+			})
 
 			// 存储会员 member 数据
 			uni.setStorage({
@@ -109,33 +151,42 @@ const store = new Vuex.Store({
 				key: state.__key_user_role,
 				data: state.user_role
 			})
-			
+
 			state.islogin = true;
 			// uni.setTabBarItem({
-			// 	index: 2,
+			// 	index: 3,
 			// 	// "pagePath": "/pages/tabbar/shopping",
 			// 	// "iconPath": "/static/images/tabbar/shopping.png",
 			// 	// "selectedIconPath": "/static/images/tabbar/shopping-active.png",
 			// 	// "text": "购物圈",
-				
-			// 	"pagePath": "/pages/tabbar/cart",
-			// 	"iconPath": "/static/images/tabbar/cart.png",
-			// 	"selectedIconPath": "/static/images/tabbar/cart-active.png",
-			// 	"text": "购物车"
+
+			// 	"pagePath": "/pages/tabbar/index",
+			// 	"iconPath": "/static/images/tabbar/message.png",
+			// 	"selectedIconPath": "/static/images/tabbar/message-active4.png",
+			// 	"text": "消息",
+			// 	success: function() {
+			// 		console.log('修改成功');
+			// 	},
+			// 	fail: function(err) {
+			// 		console.error('修改失败', err);
+			// 	},
+			// 	complete: function() {
+			// 		console.log('修改操作结束');
+			// 	}
 			// })
 		},
-		
+
 		// 加载 Token
 		loadToken(state) {
 			state.member = uni.getStorageSync(state.__key_member);
 			state.token = uni.getStorageSync(state.__key_token);
 			state.token_expired = uni.getStorageSync(state.__key_token_expired);
-			state.user_role =  uni.getStorageSync(state.__key_user_role);
+			state.user_role = uni.getStorageSync(state.__key_user_role);
 			state.current_city = uni.getStorageSync(state.__key_current_city);
 			state.location_city = uni.getStorageSync(state.__key_location_city);
 			state.ai_chat_list = uni.getStorageSync(state.__key_ai_chat_list);
 			state.conversation_id = uni.getStorageSync(state.__key_conversation_id);
-			
+
 			if (state.token_expired > new Date().getTime()) {
 				state.islogin = true;
 			}
@@ -158,21 +209,30 @@ const store = new Vuex.Store({
 			uni.removeStorage({
 				key: state.__key_token_expired
 			})
-			
+
 			// uni.setTabBarItem({
-			// 	index: 2,
-			// 	"pagePath": "/pages/tabbar/shopping",
-			// 	"iconPath": "/static/images/tabbar/shopping.png",
-			// 	"selectedIconPath": "/static/images/tabbar/shopping-active.png",
-			// 	"text": "购物圈"
-				
-			// 	// "pagePath": "pages/tabbar/cart",
-			// 	// "iconPath": "static/images/tabbar/cart.png",
-			// 	// "selectedIconPath": "static/images/tabbar/cart-active.png",
-			// 	// "text": "购物车"
+			// 	index: 3,
+			// 	// "pagePath": "/pages/tabbar/shopping",
+			// 	// "iconPath": "/static/images/tabbar/shopping.png",
+			// 	// "selectedIconPath": "/static/images/tabbar/shopping-active.png",
+			// 	// "text": "购物圈",
+
+			// 	"pagePath": "/pages/tabbar/need-login",
+			// 	"iconPath": "/static/images/tabbar/message.png",
+			// 	"selectedIconPath": "/static/images/tabbar/message-active4.png",
+			// 	"text": "消息",
+			// 	success: function() {
+			// 		console.log('修改成功');
+			// 	},
+			// 	fail: function(err) {
+			// 		console.error('修改失败', err);
+			// 	},
+			// 	complete: function() {
+			// 		console.log('修改操作结束');
+			// 	}
 			// })
 		},
-		
+
 		// token 令牌
 		token(state, token, token_expired) {
 			state.token = token;
@@ -189,11 +249,11 @@ const store = new Vuex.Store({
 				data: state.token_expired
 			})
 		},
-		
+
 		// 修改 member 数据
-		putMember (state, user) {
+		putMember(state, user) {
 			state.member = user;
-			
+
 			// 存储会员 member 数据
 			uni.setStorage({
 				key: state.__key_member,
@@ -201,9 +261,9 @@ const store = new Vuex.Store({
 			})
 		},
 
-		setPreLoginStatus (state, isPreLoginSucess) {
+		setPreLoginStatus(state, isPreLoginSucess) {
 			state.isPreLoginSucess = isPreLoginSucess;
-			
+
 			// 存储预登陆数据
 			uni.setStorage({
 				key: state.__key_isPreLoginSucess,

@@ -105,12 +105,28 @@
 			};
 		},
 		watch: {
-			value(val) {
-				if (val) {
-					this.open();
-				} else {
-					if (this.showPopup) this.close();
-				}
+			// value(val) {
+			// 	if (val) {
+			// 		this.open();
+			// 	} else {
+			// 		if (this.showPopup) this.close();
+			// 	}
+			// }
+			// 如果需要监听value的变化并同步更新
+			value(newVal) {
+				console.log("value changed, ", this.visibleSync, newVal)
+			    this.visibleSync = newVal;
+			    this.$nextTick(() => {
+			        setTimeout(() => {
+						this.showPopup = newVal;
+					  
+						if (newVal) {
+							this.open();
+						} else {
+							if (this.showPopup) this.close();
+						}
+			        }, 30);
+			    });
 			}
 		},
 		computed: {
@@ -177,11 +193,16 @@
 			}
 		},
 		created() {
+			console.log("this.visibleSync: ", this.visibleSync, this.value)
 			// 先让弹窗组件渲染，再改变遮罩和抽屉元素的样式，让其动画其起作用(必须要有延时，才会有效果)
 			this.visibleSync = this.value;
+			
+			// 使用setTimeout延迟更新showPopup，触发动画
+			this.$nextTick(() => {
 			this.$api.timerout(() => {
 				this.showPopup = this.value;
 			}, 30);
+			});
 		},
 		methods: {
 			open() {

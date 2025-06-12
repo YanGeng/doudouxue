@@ -114,7 +114,9 @@ export default {
     return msg.type !== 'revoke_msg' &&
       msg.action !== 'update-group-info-avatar_file' && 
       msg.action !== 'set-group-member-ext-plugin-order-info' && 
-      msg.type !== 'clear-conversation-unreadCount'
+      msg.type !== 'clear-conversation-unreadCount' 
+			// && msg.action !== 'update-conversation-info'
+			
   },
   getMsgNote(_msg) {
     const msg = JSON.parse(JSON.stringify(_msg))
@@ -149,7 +151,8 @@ export default {
           "join-group": "[新用户加入群聊]",
           "group-exit": "[退出群聊]",
           "group-expel": "[被踢出群聊]",
-          "group-dissolved": "[此群聊已被解散]"
+          "group-dissolved": "[此群聊已被解散]",
+					"setUnreadGroupNoticeId": "[群公告]",
         } [msg.action] || '[系统消息]'
       } else if (type == "rich-text") {
         note = getRichTextText(msg.body)

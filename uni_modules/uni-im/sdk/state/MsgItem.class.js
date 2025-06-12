@@ -17,8 +17,10 @@ export default class MsgItem{
     __updateAfterTimer[this.unique_id] = setTimeout(()=>{
       const {conversation_id,_id} = this
       if(_id){
-        const conversation = $state.conversation.find({conversation_id})
-        conversation.msg.dataMap.set(_id,this)
+				const conversation = $state.conversation.find({conversation_id})
+				if (conversation) {
+					conversation.msg.dataMap.set(_id,this)
+				}
       }
       // #ifndef H5
       return // 仅H5环境下更新本地数据库

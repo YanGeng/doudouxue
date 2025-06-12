@@ -43,8 +43,10 @@
       redNote() {
         if (this.conversation.hasDraft){
           return '[草稿]'
-        }else if (this.conversation.remind_msg_ids.length){
+        } else if (this.conversation.remind_msg_ids.length){
           return '[@我]'
+        } else if (this.conversation.unread_group_notice_id){
+          return '[有未读群公告]'
         }
         return ''
       },

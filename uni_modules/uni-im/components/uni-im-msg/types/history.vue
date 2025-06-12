@@ -22,9 +22,21 @@
     data() {
       return {
         msgList: [],
-        title: ''
       }
     },
+		computed: {
+			title(){
+				const {to_uid,from_uid,group_id} = this.msg.body.msgList[0] || {}
+				if(group_id){
+					return this.msg.body.title
+				}else{
+				  let nickname1 = uniIm.users.getNickname(to_uid)
+					let nickname2 = uniIm.users.getNickname(from_uid)
+					return `${nickname1} 与 ${nickname2} 的聊天记录`;
+				  // console.log(this.title)
+				}
+			}
+		},
     mounted() {
       const msg = this.msg
       // console.log(msg)
@@ -35,16 +47,7 @@
         // 获取body 去掉所有 html 标签
         msg.content = typeof(msg.body) === 'string' ? msg.body.replace(/<[^>]+>/g, "") : '[多媒体类型]'
       }
-      if(!this.msgList[0].group_id){
-        let currentUid = uniIm.currentUser._id;
-        let currentNickname = uniIm.users.getNickname(currentUid);
-        // 找到不是自己的nickname去重
-        let nickname = this.msgList.map(item=>item.nickname).filter(nickname=>nickname!==currentNickname)[0]
-        this.title = currentNickname + (nickname?'与'+nickname:'')+'的聊天记录';
-        // console.log(this.title)
-      }else{
-        this.title = msg.body.title
-      }
+      
     },
     methods: {
       viewMsg(){

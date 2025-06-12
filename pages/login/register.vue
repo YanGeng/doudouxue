@@ -2,14 +2,16 @@
 	<view class="container bg-main pos-r">
 		<view class="padding-xl dflex-c dflex-flow-c">
 			<view class="portrait-box margin-bottom" @click="changeHeadPic">
-				<image class="headimg border-radius-c" :src="headImageLocalPath || (member && member.member_headimg) || '/static/images/user/default4.webp'"></image>
+				<image class="headimg border-radius-c"
+					:src="headImageLocalPath || (member && member.member_headimg) || '/static/images/user/default_head.jpg'">
+				</image>
 			</view>
 
 			<view class="w-full dflex padding-bottom-sm">
 				<view class="iconfont iconshouji margin-right"></view>
 				<view class="flex1 dflex">
 					<input class="border-line padding-sm flex1" type="number" data-key="mobile" maxlength="11"
-						:value="mobile" @input="inputChange" placeholder="请输入手机号" />
+						v-model="mobile" placeholder="请输入手机号" />
 					<view v-if="0 == 1" class="padding-tb-sm ft-dark">获取</view>
 				</view>
 			</view>
@@ -18,23 +20,48 @@
 				<view class="iconfont iconfenxiaohuiyuan-01 margin-right"></view>
 				<view class="flex1 dflex">
 					<input class="border-line padding-sm flex1" type="text" data-key="nick_name" maxlength="20"
-						:value="nick_name" @input="inputChange" placeholder="请输入您的昵称" />
+						v-model="nick_name" placeholder="请输入您的昵称" />
 					<view v-if="0 == 1" class="padding-tb-sm ft-dark">获取</view>
 				</view>
 			</view>
 
-			<view class="w-full dflex padding-bottom-sm">
+			<view class="w-full dflex-b padding-bottom-sm">
 				<view class="iconfont iconmima margin-right"></view>
+				<!-- 密码输入框 -->
+				<input v-if="!showPassword" class="border-line padding-sm flex1" 
+				    type="password" password maxlength="20" v-model="password"
+				    placeholder="请输入密码" />
+				         
+				<!-- 明文输入框 -->
+				<input v-else class="border-line padding-sm flex1" 
+				    type="text" maxlength="20" v-model="password"
+				    placeholder="请输入密码" />
+						 
+						<!-- <input class="border-line padding-sm flex1" type="password" password data-key="password" maxlength="20"
+						 	:value="password" @input="inputChange" placeholder="请输入密码" /> -->
+				<!-- <input class="border-line padding-sm flex1" :type="passwordType" maxlength="20" :value="password"
+					@input="inputChange" placeholder="请输入密码" /> -->
+				<view class="margin-right" @click="togglePasswordVisibility">
+					<uni-icons v-if="!showPassword" type="eye-filled" size="30"></uni-icons>
+					<uni-icons v-if="showPassword" type="eye" size="30"></uni-icons>
+
+					<!-- <view class="iconfont uniui-eye"></view> -->
+					<!-- <view class="iconfont">{{ showPassword ? 'uniui-eye' : 'uniui-eye' }}</view> -->
+				</view>
+			</view>
+
+			<!-- <view class="w-full dflex padding-bottom-sm">
+				<view class="iconfont iconmima margin-right"></view> -->
 				<!-- #ifdef MP -->
-				<input class="border-line padding-sm flex1" type="text" password data-key="password" maxlength="20"
-					:value="password" @input="inputChange" placeholder="请输入密码" />
+				<!-- <input class="border-line padding-sm flex1" type="text" password data-key="password" maxlength="20"
+					:value="password" @input="inputChange" placeholder="请输入密码" /> -->
 				<!-- #endif -->
 				<!-- #ifndef MP -->
-				<input class="border-line padding-sm flex1" type="password" password data-key="password" maxlength="20"
-					:value="password" @input="inputChange" placeholder="请输入密码" />
+				<!-- <input class="border-line padding-sm flex1" type="password" password data-key="password" maxlength="20"
+					:value="password" @input="inputChange" placeholder="请输入密码" /> -->
 				<!-- #endif -->
 
-			</view>
+			<!-- </view> -->
 
 			<!-- <view class="w-full dflex padding-bottom-sm">
 				<view class="iconfont iconyanzheng margin-right"></view>
@@ -45,59 +72,69 @@
 					<view v-else class="padding-tb-sm ft-base">{{code_time}}s 重新获取</view>
 				</view>
 			</view> -->
-			
+
 			<view class="w-full dflex padding-bottom-sm">
 				<view class="iconfont iconfenxiaodingdan-01 margin-right"></view>
-				<view class="dflex-e flex1 padding-left-sm">
+				<view class="dflex-s flex1 padding-left-sm">
 					<uni-data-checkbox :multiple="false" v-model="selectMemberRole" :localdata="member_role"
 						@change="changeMemberRole"></uni-data-checkbox>
 				</view>
 				<!-- <view class="uni-list">
 				<view class="uni-list-cell"> -->
-					<!-- <input class="border-line padding-sm flex1" type="text" password data-key="password" maxlength="20"
+				<!-- <input class="border-line padding-sm flex1" type="text" password data-key="password" maxlength="20"
 						:value="password" @input="inputChange" placeholder="选择类型" /> -->
-<!-- 					<view class="uni-list-cell-left border-line padding-sm flex1">
+				<!-- 					<view class="uni-list-cell-left border-line padding-sm flex1">
 										当前选择
 					</view> -->
-					<!-- <view class="uni-list-cell-db">
+				<!-- <view class="uni-list-cell-db">
 						<picker @change="bindPickerChange" :value="member_index" :range="member_type">
 							<view class="uni-input padding-sm flex1">
 								{{member_type[member_index]}}
 							</view>
 						</picker>
 					</view> -->
-					<!-- <view class="uni-list-cell-db">
+				<!-- <view class="uni-list-cell-db">
 										<picker mode="time" :value="time" start="09:01" end="21:01" @change="bindTimeChange">
 											<view class="uni-input">{{time}}</view>
 										</picker>
 									</view> -->
-								<!-- <view class="uni-list-cell-left">
+				<!-- <view class="uni-list-cell-left">
 									当前选择
 								</view> -->
-<!-- 								<view class="uni-list-cell-db">
+				<!-- 								<view class="uni-list-cell-db">
 									<picker @change="bindPickerChange" :value="index" :range="array">
 										<view class="uni-input">{{array[index]}}</view>
 									</picker>
 								</view> -->
 				<!-- </view>
 				</view> -->
-			
+
 			</view>
 			<view class="w-full margin-top-xl">
 				<view class="dflex-b border-radius-lg">
-					<view class="tac padding-tb-sm flex1 bg-base fs" @click="register">注册</view>
+					<view class="tac padding-tb-sm flex1 bg-log fs" @click="register">注册</view>
 				</view>
 			</view>
+			<!-- <view class="login_agreement Centered">
+				<text>登录/注册代表您已同意</text>
+				<text class="txt" @click="goUserServiceAgreement">《用户服务协议》</text>
+				<text>和</text>
+				<text class="txt" @click="goPrivacyAgreement">《隐私政策》</text>
+			</view> -->
 			<view class="w-full dflex-c margin-top-xl">
 				<checkbox-group @change="checkboxChange">
 					<label>
-						<checkbox value="true"/>
+						<checkbox value="true" />
 					</label>
 				</checkbox-group>
-				<text>我已阅读并同意</text>
-				<view><navigator url="/pages/user/privacy/service">《服务协议》</navigator></view>
+				<text>我同意</text>
+				<view>
+					<navigator url="/pages_user/user/privacy/service">《服务协议》</navigator>
+				</view>
 				<text>和</text>
-				<view><navigator url="/pages/user/privacy/privacy">《隐私政策》</navigator></view>
+				<view>
+					<navigator url="/pages_user/user/privacy/privacy">《隐私政策》</navigator>
+				</view>
 			</view>
 		</view>
 
@@ -108,7 +145,7 @@
 
 <script>
 	import {
-		mapState
+		mapState, mapGetters
 	} from 'vuex';
 
 	export default {
@@ -119,6 +156,7 @@
 
 				mobile: '',
 				password: '',
+				showPassword: false,
 				code: '',
 				nick_name: '',
 
@@ -145,7 +183,13 @@
 			};
 		},
 		computed: {
-			...mapState(["member"])
+			...mapGetters(["member"]),
+			passwordType() {
+				// 统一处理密码可见性，不需要区分小程序环境
+				let type = this.showPassword ? 'text' : 'password';
+				console.log('passwordType: ', type);
+				return type
+			}
 		},
 
 		// 页面加载获取 wx.login code
@@ -166,67 +210,72 @@
 			});
 		},
 		methods: {
+			togglePasswordVisibility() {
+				console.log('togglePasswordVisibility b: ', this.showPassword);
+				this.showPassword = !this.showPassword;
+				console.log('togglePasswordVisibility a: ', this.showPassword);
+			},
 			async convertToWebP(filePath) {
 				console.log('00000000000000000', filePath);
-      return new Promise((resolve, reject) => {
-        // 获取图片信息
-        uni.getImageInfo({
-          src: filePath,
-          success: (res) => {
-			console.log('00000000000000000', res);
-            const canvas = uni.createCanvasContext('webpCanvas');
-            canvas.drawImage(filePath, 0, 0, res.width, res.height);
-            canvas.draw(false, () => {
-				// 添加延迟，确保 canvas 绘制完成
-				setTimeout(() => {
-					console.log('2222222222222222222');
-                // 将 canvas 内容转换为 WebP 格式的临时文件
-                uni.canvasToTempFilePath({
-                  canvasId: 'webpCanvas',
-                  fileType: 'jpg',
-                  success: (tempRes) => {
-					console.log('11111111111111111111');
-                    resolve(tempRes.tempFilePath);
-                  },
-                  fail: (err) => {
-					console.log('11111111111111111111');
-                    reject(err);
-                  }
-                });
-              }, 5000); // 延迟 300 毫秒
-            //   // 将 canvas 内容转换为 WebP 格式的临时文件
-            //   uni.canvasToTempFilePath({
-            //     canvasId: 'webpCanvas',
-            //     fileType: 'webp',
-            //     success: (tempRes) => {
-            //       resolve(tempRes.tempFilePath);
-            //     },
-            //     fail: (err) => {
-            //       reject(err);
-            //     }
-            //   });
-            });
-          },
-          fail: (err) => {
-            reject(err);
-          }
-        });
-      });
-    },
-    async blobToTempFilePath(blob) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(blob);
-        reader.onload = () => {
-          const dataURL = reader.result;
-          const filePath = `data:image/webp;base64,${dataURL.split(',')[1]}`;
-          resolve(filePath);
-        };
-        reader.onerror = () => {
-          reject(new Error('Blob 转换为临时文件路径失败'));
-        };
-      });
-    },
+				return new Promise((resolve, reject) => {
+					// 获取图片信息
+					uni.getImageInfo({
+						src: filePath,
+						success: (res) => {
+							console.log('00000000000000000', res);
+							const canvas = uni.createCanvasContext('webpCanvas');
+							canvas.drawImage(filePath, 0, 0, res.width, res.height);
+							canvas.draw(false, () => {
+								// 添加延迟，确保 canvas 绘制完成
+								setTimeout(() => {
+									console.log('2222222222222222222');
+									// 将 canvas 内容转换为 WebP 格式的临时文件
+									uni.canvasToTempFilePath({
+										canvasId: 'webpCanvas',
+										fileType: 'jpg',
+										success: (tempRes) => {
+											console.log('11111111111111111111');
+											resolve(tempRes.tempFilePath);
+										},
+										fail: (err) => {
+											console.log('11111111111111111111');
+											reject(err);
+										}
+									});
+								}, 5000); // 延迟 300 毫秒
+								//   // 将 canvas 内容转换为 WebP 格式的临时文件
+								//   uni.canvasToTempFilePath({
+								//     canvasId: 'webpCanvas',
+								//     fileType: 'webp',
+								//     success: (tempRes) => {
+								//       resolve(tempRes.tempFilePath);
+								//     },
+								//     fail: (err) => {
+								//       reject(err);
+								//     }
+								//   });
+							});
+						},
+						fail: (err) => {
+							reject(err);
+						}
+					});
+				});
+			},
+			async blobToTempFilePath(blob) {
+				return new Promise((resolve, reject) => {
+					const reader = new FileReader();
+					reader.readAsDataURL(blob);
+					reader.onload = () => {
+						const dataURL = reader.result;
+						const filePath = `data:image/webp;base64,${dataURL.split(',')[1]}`;
+						resolve(filePath);
+					};
+					reader.onerror = () => {
+						reject(new Error('Blob 转换为临时文件路径失败'));
+					};
+				});
+			},
 			changeHeadPic() {
 				// 调用uni-app提供的选择图片API
 				uni.chooseImage({
@@ -311,9 +360,19 @@
 			        },
 					
 			inputChange(e) {
+				console.log('pass changed: ', this.password, e)
 				const key = e.currentTarget.dataset.key;
+				console.log('this key b: ', this[key], this.password)
 				this[key] = e.detail.value;
+				console.log('this key a: ', this[key], this.password)
 			},
+			
+			// inputChange(e) {
+			// 	console.log('pass changed b: ', this.password, e)
+			// 	this.password = e.detail.value;
+			// 	// 可以在这里添加密码强度验证等逻辑
+			// 	console.log('pass changed a: ', this.password, e)
+			// },
 
 			// 发送验证码
 			sendCode() {
@@ -323,7 +382,7 @@
 					this.$api.msg('请输入手机号');
 					return;
 				}
-				if (!/(^1[3|4|5|7|8|9][0-9]{9}$)/.test(this.mobile)) {
+				if (!/(^1[3|4|5|6|7|8|9][0-9]{9}$)/.test(this.mobile)) {
 					this.$api.msg('请输入正确的手机号码');
 					return;
 				}
@@ -384,11 +443,12 @@
 				
 				if (_this.is_register) return;
 
+				console.log('mobile: ', this.mobile)
 				if (!this.mobile) {
 					this.$api.msg('请输入手机号');
 					return;
 				}
-				if (!/(^1[3|4|5|7|8|9][0-9]{9}$)/.test(this.mobile)) {
+				if (!/(^1[3|4|5|6|7|8|9][0-9]{9}$)/.test(this.mobile)) {
 					this.$api.msg('请输入正确的手机号码');
 					return;
 				}
@@ -506,5 +566,18 @@
 		// border: 2px solid #007aff;
 		/* 修改圆角 */
 		// border-radius: 5px;
+	}
+
+	.password-input-container {
+		position: relative;
+	}
+
+	.password-toggle {
+		position: absolute;
+		right: 10px;
+		top: 50%;
+		transform: translateY(-50%);
+		color: #888;
+		cursor: pointer;
 	}
 </style>

@@ -4,7 +4,7 @@
 		<!-- 严选版权 -->
 		<view class="use-copyright dflex-c padding-lr w-full" @click="to">
 			<view v-if="false" class="iconfont iconxiangqing animated rotate margin-right-sm ft-base"></view>
-			<view class="ft-dark">严选</view><text class="margin-lr-xs">·</text><text>让开发更简单</text>
+			<!-- <view class="ft-dark">严选</view><text class="margin-lr-xs">·</text><text>让开发更简单</text> -->
 		</view>
 		<!-- #endif -->
 	</view>

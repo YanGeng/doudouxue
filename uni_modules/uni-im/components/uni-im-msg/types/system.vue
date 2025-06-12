@@ -1,7 +1,7 @@
 <template>
   <view class="system-msg-box">
     <template v-if="content">
-      <uni-im-group-notification v-if="msg.action === 'update-group-info-notification'" :content="content" :create_time="create_time"></uni-im-group-notification>
+			<group-notice v-if="msg.action === 'setUnreadGroupNoticeId'" :msg="msg"></group-notice>
       <text v-else class="system-msg">{{friendlyTime}} {{content}}</text>
     </template>
   </view>
@@ -9,7 +9,11 @@
 
 <script>
   import uniIm from '@/uni_modules/uni-im/sdk/index.js';
+	import groupNotice from './group-notice.vue'
   export default {
+		components: {
+			groupNotice
+		},
     data() {
       return {
         create_time:0
@@ -79,46 +83,22 @@
 <style lang="scss">
   .system-msg-box{
     align-items: center;
-  }
-  // 如果是 pc 端
-  // #ifdef H5
-  @media screen and (min-device-width:960px){
-    .system-msg-box{
-      max-width: 550px!important;
-      word-break: break-all;
-      margin: 0 auto;
-    }
-  }
-  // #endif
-    
-  .hidden {
-    height: 0;
-  }
-  .system-msg {
-    background-color: #f2f2f2;
-    color: #9d9e9d;
-    font-size: 12px;
-    line-height: 30px;
-    padding: 0 15rpx;
-    border-radius: 8px;
-    margin: 0 2em;
-  }
-  .group-notification {
-    padding:14px 16px;
-    background-color: #FFFFFF;
-    width: 600rpx;
-    font-size: 18px;
-    margin-top: 10px;
-  }
-  .group-notification .title-box{
-    flex-direction: row;
-  }
-  .group-notification .title-box .title{
-    padding-left: 5px;
-    color: #888;
-  }
-  .group-notification .content{
-    color: #555;
-    padding: 6px 0;
+		// 如果是 pc 端
+		// #ifdef H5
+		@media screen and (min-device-width:960px){
+		    max-width: 550px!important;
+		    word-break: break-all;
+		    margin: 0 auto;
+		}
+		// #endif
+		.system-msg {
+		  background-color: #f2f2f2;
+		  color: #9d9e9d;
+		  font-size: 12px;
+		  line-height: 30px;
+		  padding: 0 15rpx;
+		  border-radius: 8px;
+		  margin: 0 2em;
+		}
   }
 </style>

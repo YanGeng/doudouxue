@@ -99,10 +99,10 @@
       "description": "是否免打扰（右键设置会话消息免打扰）",
       "defaultValue": false
     },
-    "has_unread_group_notification":{
-      "bsonType": "bool",
-      "description": "是否有未读的群通知",
-      "defaultValue": false
+    "unread_group_notice_id":{
+      "bsonType": "string",
+      "description": "未读群公告id",
+      "defaultValue": ""
     }
 	}
 }

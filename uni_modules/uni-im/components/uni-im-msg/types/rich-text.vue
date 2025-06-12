@@ -17,7 +17,7 @@
           :size="item.isRead?'12px':'10px'" :color="item.isRead?'#25882a':'#bbb'"></uni-im-icons>
       </template>
       <text class="text" v-else-if="item.type == 'text'" :decode="true" space="ensp">{{trText(item.text)}}</text>
-      <uni-im-img v-else-if="item.name == 'img'" max-width="200px" @click="previewImage(item.attrs.src)"
+      <uni-im-img v-else-if="item.name == 'img'" :max-width="imgMaxWidth" @click="previewImage(item.attrs.src)"
         :src="item.attrs.src" :width="item.attrs.width" :height="item.attrs.height" mode="widthFix" class="img" />
 			<template  v-else-if="item.name == 'a' && item.children && typeof(item.children[0]) === 'object'">
 				<!-- 判断是否为应用内链接 -->
@@ -59,6 +59,10 @@
             body: []
           }
         }
+      },
+			imgMaxWidth: {
+        type: [String, Number],
+        default: '200px'
       }
     },
     data() {
@@ -269,7 +273,6 @@
   .img {
     margin: 5px 0 !important;
     /* #ifdef H5 */
-    max-width: 460rpx !important;
     display: block !important;
     box-shadow: #eee 0 0 5px;
     cursor: pointer;

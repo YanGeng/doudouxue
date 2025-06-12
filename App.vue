@@ -1,117 +1,196 @@
-<script>
-	/**
-	 * vuex 管理登陆状态，具体可以参考官方登陆模板示例 
-	 */
-	import { mapState, mapMutations } from 'vuex';
-	const db = uniCloud.database();
+<script lang="ts" setup>
+	import { onLaunch, onShow, onHide } from '@dcloudio/uni-app';
 	
-	export default {
-		computed: {
-			...mapState(['member'])
-		},
-		methods: {
-			...mapMutations(['token', 'loadToken', 'setPreLoginStatus'])
-		},
-		onLaunch: function(options) {
-			let _this = this;
-			// console.log(_this);
-			
-			if (uni.canIUse('getUpdateManager')) {
-				const updateManager = uni.getUpdateManager();
-			
-				updateManager.onCheckForUpdate(function(res) {
-					// 请求完新版本信息的回调
-					console.log(res.hasUpdate);
-					if (res.hasUpdate) {
-						updateManager.onUpdateReady(function(res) {
-							uni.showModal({
-								title: '更新提示',
-								content: '新版本已经准备好，是否重启应用？',
-								success(res) {
-									if (res.confirm) {
-										// 新的版本已经下载好，调用 applyUpdate 应用新版本并重启
-										updateManager.applyUpdate();
-									}
-								}
-							});
-						});
-			
-						updateManager.onUpdateFailed(function(res) {
-							// 新的版本下载失败
-						});
-					}
-				});
-			}
+	import { useStore, mapMutations } from 'vuex';
+	import { computed } from 'vue';
 
-			uni.getProvider({
-				service: 'oauth',
-				success: function (res) {
-					console.log('支持登录方法：', res.provider)// ['qq', 'univerify']
-				}
-			});
+	//1. 导入uni身份信息管理模块
+	import uniIdPagesInit from '@/uni_modules/uni-id-pages/init.js';
+	//2. 导入uniIm
+	import uniIm from '@/uni_modules/uni-im/sdk/index.js';
+	// 3.引入扩展插件（项目默认引入了，扩展插件uniImMsgReader用于展示消息是否已读）
+	import MsgReaderExtension from '@/uni_modules/uni-im-msg-reader/extension.js'
+	
+	const store = useStore();
 
-			// 一键登录预登陆，可以显著提高登录速度
-			uni.preLogin({
-				provider: 'univerify',
-				success: (res) => {
-					// 成功
-					// this.setUniverifyErrorMsg();
-					this.setPreLoginStatus(true);
-					console.log("preLogin success: ", res);
-				},
-				fail: (res) => {
-					this.setPreLoginStatus(false);
-					// this.setUniverifyErrorMsg(res.errMsg);
-					// 失败
-					console.log("preLogin fail res: ", res);
-				}
-			})
-			
-			uni.onPushMessage((res) => {
-				console.log("收到推送消息：",res) //监听推送消息
-			})
-
-			// uni-app客户端获取push客户端标记	
-			uni.getPushClientId({
-				success: (res) => {
-					let push_clientid = res.cid
-					console.log('客户端推送标识:',push_clientid)
-				},
-				fail(err) {
-					console.log(err)
-				}
-			})
-		},
-		onShow: function(options) {
-			console.log('App Show');
-			this.loadToken();
-			
-			if ([1011, 1012, 1013].includes(options.scene) && options.query) {
-				uni.setStorageSync('__scene_query_q', options.query.q);
-			}
-			
-			// #ifdef MP-WEIXIN
-			let lopts = uni.getLaunchOptionsSync();
-			console.log(options, lopts);
-			
-			// 
-			if(lopts && lopts.query && lopts.query.share){
-				// is_share
-				// todo: 调用分享获积分服务-api
-				
-			}
-			// #endif			
-		},
-		onHide: function() {
-			console.log('App Hide')
-		}
+	// 定义全局数据结构类型
+	interface IGlobalData {
+		statusBarHeight?: number; // 状态栏高度
+		navigateHeight?: number; // 导航栏高度
+		screenHeight?: number; // 屏幕高度
+		safeAreaInsetsBottom?: number; // iphone底部虚拟键安全区
+		capsuleWidth?: number; // 胶囊宽度
+		capsuleHeight?: number; // 胶囊高度
+		capsuleMarginTopByStatusBar?: number; // 胶囊距离状态栏的距离
 	}
+
+	// 声明一个全局变量来保存全局数据对象
+	let app: IGlobalData = {};
+
+	// 初始化全局数据
+	onLaunch(async () => {
+		console.log('App Launch')
+		
+		uni.onPushMessage((res) => {
+			console.log("收到推送消息：",res) //监听推送消息
+		})
+
+		//4. 初始化uni身份信息管理模块
+		uniIdPagesInit();
+		//5. 安装uniIm扩展插件
+		MsgReaderExtension.install()
+		//6. 初始化uniIm
+		uniIm.init();
+		await fetchSystemInfo();
+		// 如果是微信小程序且需要胶囊按钮信息
+		if (process.env.UNI_PLATFORM === 'mp-weixin') {
+			await fetchCapsuleInfo();
+		}
+		getApp().globalData = app;
+	});
+	onShow(() => {
+		console.log('App Show')
+		console.log('***********************************************************')
+		console.log("******** ╔ ╗ ╔ ╗		╔ ═══╗		╔ ╗ ╔ ╗ ********");
+		console.log("******** ║ ║ ║ ║		║ ╔══╝		║ ║ ║ ║ ********");
+		console.log("******** ║ ╚ ╝ ║		║ ╚══╗		║ ╚ ╝ ║ ********");
+		console.log("******** ║ ╔ ╗ ║		║ ╔══╝		╚ ╗ ╔ ╝ ********");
+		console.log("******** ║ ║ ║ ║		║ ╚══╗		║ ║ ║ ║ ********");
+		console.log("******** ╚ ╝ ╚ ╝		╚ ═══╝		╚ ╝ ╚ ╝ ********");
+		console.log('***********************************************************')
+		console.log('``````````````` Uni-Basic-App Beta ```````````````')
+		console.log(`About Plugin     %cVersion%cv1.0.0`,
+			'background-color: #5ffcef; padding: 7px; color: #fff;',
+			'background-color: #ea7ded; color: #fff; padding: 7px;');
+		console.log(`About Alex       %c浙江-杭州%c学识尚浅，阅历如初。`,
+			'background-color: #5ffcef; padding: 7px; color: #fff;',
+			'background-color: #ea7ded; color: #fff; padding: 7px;');
+		console.log(`My WeChat        %cWeChat%cfour_this`, 
+			'background-color: #5ffcef; padding: 7px; color: #fff;',
+			'background-color: #ea7ded; color: #fff; padding: 7px;');
+		console.log(`My Github        %chttps://github.com/Alex-1116`,
+			'background-color: #5ffcef; color: #fff; padding: 7px;');
+		
+		const tokens = computed(() => store.getters.getToken);
+		console.log('App Show token ', tokens)
+		// 调用 mutations 中的 increment 函数
+		store.commit('loadToken');
+
+	});
+	onHide(() => {
+		console.log('App Hide')
+	});
+
+	// 获取系统宽高
+	const fetchSystemInfo = async () => {
+		try {
+			const systemInfo = await uni.getSystemInfo();
+			app.statusBarHeight = systemInfo.statusBarHeight;
+			// 网上此计算方式存在误差
+			// this.navigateHeight =  (this.menuInfo.top - this.systemInfo.statusBarHeight) * 2 + this.menuInfo.height; //导航栏高度
+			// 采用原始计算方式
+			// 参考【https://developers.weixin.qq.com/community/develop/article/doc/000a8c989307888cbe1abbf675f413】
+			// 计算公式：原生header整体高度 = 状态栏高度 + 44。
+			app.navigateHeight = 44; //导航栏高度
+			app.screenHeight = systemInfo.screenHeight; //屏幕高度
+			app.safeAreaInsetsBottom = systemInfo?.safeAreaInsets?.bottom; // iphone底部虚拟键安全区
+		} catch (error) {
+			console.error('Failed to fetch system info:', error);
+		}
+	};
+	// 获取微信小程序胶囊宽高
+	const fetchCapsuleInfo = async () => {
+		try {
+			const menuInfo = uni.getMenuButtonBoundingClientRect();
+			app.capsuleWidth = menuInfo.width; // 胶囊宽度
+			app.capsuleHeight = menuInfo.height; // 胶囊高度
+			app.capsuleMarginTopByStatusBar = menuInfo.top - (app.statusBarHeight || 0); // 胶囊距离状态栏的距离
+		} catch (error) {
+			console.error('Failed to fetch system info:', error);
+		}
+	};
+	
+	// export default {
+	// 	onLaunch: function() {
+	// 		console.log('App Launch')
+			
+	// 		var app = this.globalData;
+	// 		// 使用 async/await 处理异步操作，确保在使用结果前已完成获取
+	// 		async function initSystemInfo() {
+	// 			const res = await uni.getSystemInfo();
+				
+	// 			app.statusBarHeight = res.statusBarHeight; // 状态栏高度
+	// 			app.navigateHeight = 44; // 导航栏高度
+	// 			app.screenHeight = res.screenHeight; // 屏幕高度
+	// 			app.safeAreaInsetsBottom = res.safeAreaInsets?.bottom; // iPhone底部虚拟键安全区
+	// 		}
+		
+	// 		// 调用异步初始化函数
+	// 		initSystemInfo();
+			
+	// 		// #ifdef MP-WEIXIN
+	// 		// 在微信环境中获取胶囊按钮信息
+	// 		uni.getMenuButtonBoundingClientRect({
+	// 			success(menuInfo) {
+	// 				app.capsuleWidth = menuInfo.width; // 胶囊宽度
+	// 				app.capsuleHeight = menuInfo.height; // 胶囊高度
+	// 				app.capsuleMarginTopByStatusBar = menuInfo.top - app.statusBarHeight; // 胶囊距离状态栏的距离
+	// 			}
+	// 		});
+	// 		// #endif
+	// 	},
+	// 	onShow: function() {
+	// 		console.log('App Show')
+	// 		console.log('***********************************************************')
+	// 		console.log("******** ╔ ╗ ╔ ╗		╔ ═══╗		╔ ╗ ╔ ╗ ********");
+	// 		console.log("******** ║ ║ ║ ║		║ ╔══╝		║ ║ ║ ║ ********");
+	// 		console.log("******** ║ ╚ ╝ ║		║ ╚══╗		║ ╚ ╝ ║ ********");
+	// 		console.log("******** ║ ╔ ╗ ║		║ ╔══╝		╚ ╗ ╔ ╝ ********");
+	// 		console.log("******** ║ ║ ║ ║		║ ╚══╗		║ ║ ║ ║ ********");
+	// 		console.log("******** ╚ ╝ ╚ ╝		╚ ═══╝		╚ ╝ ╚ ╝ ********");
+	// 		console.log('***********************************************************')
+	// 		console.log('``````````````` Uni-Basic-App Beta ```````````````')
+	// 		console.log(`About Plugin     %cVersion%cv1.0.0`,
+	// 			'background-color: #5ffcef; padding: 7px; color: #fff;',
+	// 			'background-color: #ea7ded; color: #fff; padding: 7px;');
+	// 		console.log(`About Alex       %c浙江-杭州%c学识尚浅，阅历如初。`,
+	// 			'background-color: #5ffcef; padding: 7px; color: #fff;',
+	// 			'background-color: #ea7ded; color: #fff; padding: 7px;');
+	// 		console.log(`My WeChat        %cWeChat%cfour_this`, 
+	// 			'background-color: #5ffcef; padding: 7px; color: #fff;',
+	// 			'background-color: #ea7ded; color: #fff; padding: 7px;');
+	// 		console.log(`My Github        %chttps://github.com/Alex-1116`,
+	// 			'background-color: #5ffcef; color: #fff; padding: 7px;');
+	// 	},
+	// 	onHide: function() {
+	// 		console.log('App Hide')
+	// 	}
+	// }
 </script>
 
 <style lang="scss">
-	/* 注意要写在第一行，同时给style标签加入lang="scss"属性 */
-	@import "@/uni_modules/uview-ui/index.scss";
-	/* 全局字体图标和公共样式 */
+	/* #ifndef APP-NVUE */
+	@import url(uni_modules/hey-ui/static/style/main.css);
+	@import './static/fonts/iconfont.css';
+	@import './static/style/global.css';
 	@import url("/components/iconfont/iconfont.css");
-	@import url("/common/common.scss");
+	@import url("./common/common.scss");
+	/* #endif */
+
+	/*每个页面公共css */
+	page {
+		width: 100%;
+		height: 100%;
+		margin: 0;
+		padding: 0;
+		background-color: #ffffff;
+	}
+
+	view,
+	text,
+	image,
+	input,
+	textarea {
+		box-sizing: border-box;
+	}
 </style>

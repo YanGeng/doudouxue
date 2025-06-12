@@ -4,6 +4,7 @@ const uniImConfig = createConfig({
   pluginId: 'uni-im'
 })
 const getExternalUserInfo = uniImConfig.config('get_external_userinfo') || ''
+const loginAfterHookUrl = uniImConfig.config('login_after_hook_url')
 module.exports = {
 	async login(param){
 		// console.log('login',param)
@@ -156,6 +157,23 @@ module.exports = {
 			} else {
 				await deviceCollection.where({device_id}).update(deviceData)
 			}
+		}
+		
+		
+		// 请求外部服务器的接口，通知你的服务器用户已经登录成功
+		if (loginAfterHookUrl) {
+			const res = await uniCloud.request({
+				url: loginAfterHookUrl,
+				method: 'POST',
+				data: {
+					// 用户信息
+					userInfo,
+					// 客户端登录时传递的参数，可用于你的服务器“验证本次请求的合法性”等
+					loginParam: param
+				},
+				dataType: 'json'
+			})
+			// console.log('loginAfterHookUrl res',res)
 		}
 		
 		return {

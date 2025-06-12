@@ -15,8 +15,18 @@ exports.main = async (event = {}, context) => {
 	console.log('event.body: ', event.body)
 	// 拿到 token 参数
 	const { uni_id_token } = event.body
+	const { token } = event.body
+	
+	let tmpToken = null;
+	if (typeof uni_id_token !== 'undefined') {
+	    tmpToken = uni_id_token;
+	} else if (typeof token !== 'undefined') {
+	    tmpToken = token;
+	}
+
+	console.log('.uni_id_token: ', tmpToken)
 	// 检查 token 是否合法
-	const payload = await uniID.createInstance({ context }).checkToken(uni_id_token)
+	const payload = await uniID.createInstance({ context }).checkToken(tmpToken)
 	// 如果 token 不合法，返回错误信息给客户端
 	if (payload.code) return payload
 	// 如果 token 合法，返回用户信息给客户端

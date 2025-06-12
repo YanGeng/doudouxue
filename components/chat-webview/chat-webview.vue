@@ -92,7 +92,7 @@ export default {
 	},
     created() {
 		this.loadWebView();
-        console.log('xxxxxxxxxxxxxxxxxxxx', this.cur_token, this.token);
+        // console.log('xxxxxxxxxxxxxxxxxxxx', this.cur_token, this.token);
 	},
 	methods: {
 		to() {
@@ -188,13 +188,13 @@ export default {
 			}
             
             let timestamp = new Date().getTime();
-			console.log('kkkkkkkkkkkkkkkkkkkkkkkk', this.touid, this.url, this.param);
+			// console.log('kkkkkkkkkkkkkkkkkkkkkkkk', this.touid, this.url, this.param);
             if (typeof this.touid === 'undefined' || !this.touid) {
 			    this.url = `${this.imWebUrl + this.path}?login=${encodeURIComponent(JSON.stringify(this.param))}&timeflag=${timestamp}`;
             } else {
                 this.url = `${this.imWebUrl + this.path}?login=${encodeURIComponent(JSON.stringify(this.param))}&user_id=${this.touid}&timeflag=${timestamp}`;
             }
-			console.log('yyyyyyyyyyyyyyy', this.touid, this.url, this.param);
+			// console.log('yyyyyyyyyyyyyyy', this.touid, this.url, this.param);
 		},
 		onMessage(e) {
 			console.log('onMessage', e)

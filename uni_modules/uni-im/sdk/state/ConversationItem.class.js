@@ -107,7 +107,8 @@ class ConversationItem {
 			if(this.is_temp){
 				this.user_info = {}
 				$state.users.get(this.friend_uid).then(userInfo => {
-					this.user_info = userInfo
+					// 绕一圈，否则无法触发响应式
+					$state.conversation.find(this.id).user_info = userInfo
 				})
 			}else{
 				this.user_info = $state.users[this.friend_uid]

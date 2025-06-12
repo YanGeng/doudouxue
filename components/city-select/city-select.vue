@@ -17,8 +17,8 @@
 			<!-- 热门城市 -->
 			<view class="hot-title" v-if="hotCity.length > 0 && !serachCity">热门城市</view>
 			<view class="hot-city" v-if="hotCity.length > 0 && !serachCity">
-				<template v-for="(item, index) in hotCity">
-					<view :key="index" @click="cityTrigger(item, 'hot')" class="hot-item">{{ item[formatName] }}</view>
+				<template v-for="(item, index) in hotCity" :key="index">
+					<view @click="cityTrigger(item, 'hot')" class="hot-item">{{ item[formatName] }}</view>
 				</template>
 			</view>
 			<!-- 城市列表(搜索前) -->
@@ -116,8 +116,10 @@
 				serachCity: '', // 搜索的城市
 				cityData: [],
 				key: '0322dc54e25fb3c5945ca6efc7efe9f4',
+				// key: 'be939765f283d3ae002f87643d87d976',
 				location: {},
-				activateLoc: ''
+				activateLoc: '',
+				address: ''
 			};
 		},
 		computed: {
@@ -157,6 +159,7 @@
 		},
 		created() {
 			// 初始化城市数据
+			console.log("city-select vue 开始初始化", this.activeCity);
 			this.cityData = this.obtainCitys;
 			this.activateLoc = this.activeCity.cityName;
 			this.activeCity.cityName = this.activeCity.cityName.split("-")[0];
@@ -333,65 +336,115 @@
 				this.$emit('cityClick', newItem);
 			},
 			getLocation() {
+				let _this = this
 				let tmp = this.activateLoc;
+				console.log('当前地址 000：', this.activeCity);
 				this.activateLoc = '';
-				uni.getLocation({
-					type: 'wgs84',
-					// type: 'gcj02',
-					success: (res) => {
-						this.location = {
-							...res
-						};
-						console.log('当前位置：' + JSON.stringify(this.location));
-						const url =
-							`https://api.tianditu.gov.cn/geocoder?postStr={"lon":${this.location.longitude},"lat":${this.location.latitude},"ver":1}&type=geocode&tk=${this.key}`;
-						uni.request({
-							url,
-							method: 'GET',
+				// #ifdef MP-WEIXIN || MP-BAIDU
+				uni.authorize({
+					scope: 'scope.userLocation',
+					success() {
+				// #endif
+						uni.getLocation({
+							type: 'wgs84',
+							// type: 'gcj02',
 							success: (res) => {
-								console.log('当前地址：' + JSON.stringify(res.data));
-								if (res.data.status == 0) {
-									// 提取地址信息
-									let addressComponent = res.data.result.addressComponent
-									console.log('当前地址：' + JSON.stringify(res.data));
-									this.address = res.data.result.formatted_address;
-									this.activeCity.cityName = addressComponent.city ? addressComponent.city : addressComponent.province;
-									this.activateLoc = this.activeCity.cityName + '-' + addressComponent.county;
-									let activateLocItem = { cityName : this.activateLoc }
-									this.$emit('activateLoc', activateLocItem);
-								} else {
-									console.error('逆地理编码失败:', res.data.msg);
-								}
+								_this.location = {
+									...res
+								};
+								console.log('当前位置：' + JSON.stringify(_this.location));
+								const url =
+									`https://api.tianditu.gov.cn/geocoder?postStr={"lon":${_this.location.longitude},"lat":${_this.location.latitude},"ver":1}&type=geocode&tk=0322dc54e25fb3c5945ca6efc7efe9f4`;
+								console.log('url is:', url)
+								// _this.$func.usemall
+								// 	.call('tools/getLocation', {
+								// 		longitude: _this.location.longitude,
+								// 		latitude: _this.location.latitude,
+								// 	})
+								// 	.then(res => {
+								// 		console.log("create request finished，", res);
+								// 		if (res.code === 200) {
+								// 			let locationRes = res.datas
+								// 			// 提取地址信息
+								// 			let addressComponent = locationRes.data.result.addressComponent
+								// 			console.log('当前地址：' + JSON.stringify(locationRes.data));
+								// 			_this.address = locationRes.data.result.formatted_address;
+								// 			_this.activeCity.cityName = addressComponent.city ? addressComponent.city : addressComponent.province;
+								// 			_this.activateLoc = _this.activeCity.cityName + '-' + addressComponent.county;
+								// 			let activateLocItem = { cityName: _this.activateLoc }
+								// 			_this.$emit('activateLoc', activateLocItem);
+								// 		} else {
+								// 			console.error('逆地理编码失败:', res.data.msg);
+								// 		}
+								// 	});
+
+								uni.request({
+									url,
+									method: 'GET',
+									success: (res) => {
+										console.log('当前地址：' + JSON.stringify(res.data));
+										if (res.data.status == 0) {
+											// 提取地址信息
+											let addressComponent = res.data.result.addressComponent
+											console.log('当前地址：' + JSON.stringify(res.data));
+											_this.address = res.data.result.formatted_address;
+											console.log('当前地址 111：', addressComponent, _this.activeCity);
+											_this.activeCity.cityName = addressComponent.city ? addressComponent.city : addressComponent.province;
+											
+											console.log('当前地址 222：' + JSON.stringify(res.data));
+											_this.activateLoc = _this.activeCity.cityName + '-' + addressComponent.county;
+											console.log('当前地址 333：' + JSON.stringify(res.data));
+											let activateLocItem = { cityName: _this.activateLoc }
+											console.log('当前地址 444：' + JSON.stringify(activateLocItem));
+											_this.$emit('activateLoc', activateLocItem);
+										} else {
+											console.error('逆地理编码失败:', res.data.msg);
+										}
+									},
+									fail: (err) => {
+										_this.activateLoc = tmp;
+										console.error('请求失败:', err);
+									}
+								});
 							},
 							fail: (err) => {
-								this.activateLoc = tmp;
-								console.error('请求失败:', err);
+								console.error(err);
+								// 这里可以处理权限被拒绝的情况
+								if (err.errMsg === 'getLocation:fail auth deny') {
+									// 引导用户打开权限设置
+									uni.showModal({
+										title: '提示',
+										content: '需要获取您的位置信息，请到设置中打开相关权限',
+										success: function (res) {
+											if (res.confirm) {
+												// 打开设置页面
+												uni.openSetting({
+													success: function (res) {
+														console.log(res.authSetting);
+														// res.authSetting = { "scope.userLocation": true } 表示已获得权限
+													},
+												});
+											}
+										},
+									});
+								}
+							},
+						});
+					
+				// #ifdef MP-WEIXIN || MP-BAIDU
+					},
+					fail(err) {
+						uni.showModal({
+							title: '位置未授权，打开设置',
+							success: function (res) {
+								if (res.confirm) {
+									uni.openSetting({});
+								}
 							}
 						});
-					},
-					fail: (err) => {
-						console.error(err);
-						// 这里可以处理权限被拒绝的情况
-						if (err.errMsg === 'getLocation:fail auth deny') {
-							// 引导用户打开权限设置
-							uni.showModal({
-								title: '提示',
-								content: '需要获取您的位置信息，请到设置中打开相关权限',
-								success: function(res) {
-									if (res.confirm) {
-										// 打开设置页面
-										uni.openSetting({
-											success: function(res) {
-												console.log(res.authSetting);
-												// res.authSetting = { "scope.userLocation": true } 表示已获得权限
-											},
-										});
-									}
-								},
-							});
-						}
-					},
+					}
 				});
+				// #endif
 			},
 		}
 	};

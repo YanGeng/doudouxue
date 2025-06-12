@@ -112,6 +112,34 @@ msgEvent.onMsg(async res=>{
       // 阻止后续动作
       return
     }
+		
+		// 处理会话信息更新
+		if (msg.action == 'setUnreadGroupNoticeId') {
+			if (msg.body.type != 'add') {
+				// 除了添加动作，更新和删除都需要把之前的消息撤回
+				conversation.msg.dataList.forEach(item => {
+					if (item.body.notice_id == msg.body.notice_id) {
+						item.is_revoke = true
+					}
+				})
+			}
+			
+			
+			if(msg.body.type === 'delete'){
+				// 相等的情况下才能删除，否则会出现删除旧公告把新公告的通知“提示符”给清除的情况
+				if (conversation.unread_group_notice_id === msg.body.notice_id) {
+					conversation.unread_group_notice_id = false
+				}
+				return // 删除动作无需添加新的群公告，这里阻止继续运行
+			} else {
+				console.log('设置群公告提示符', msg.body.notice_id);
+				// 先设置为false，再设置为指定值触发更新
+				conversation.unread_group_notice_id = false
+				await $utils.sleep(100)
+				conversation.unread_group_notice_id = msg.body.notice_id
+			}
+		}
+		
     const isReadableMsg = $utils.isReadableMsg(msg)
     const isMuteMsg = $utils.isMuteMsg(msg)
     const canCreateNotification = isReadableMsg && 

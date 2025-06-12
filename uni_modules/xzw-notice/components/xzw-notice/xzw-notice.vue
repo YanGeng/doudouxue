@@ -12,7 +12,7 @@
 			<view :class="speed">{{list[rowIndex][theKey]}}</view>
 		</view>
 		<view class="notice_right" v-if="showMore">
-			<view style="text-align: center;" @click="goMore">发布需求</view>
+			<view style="text-align: center;" @click="goMore">{{showText}}</view>
 		</view>
 	</view>
 </template>
@@ -56,7 +56,11 @@
 			speed: {
 				type: String,
 				default: 'normal'
-			}
+			},
+			showText: {
+				type: String,
+				default: '发布需求'
+			},
 		},
 		data() {
 			return {

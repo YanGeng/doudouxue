@@ -64,10 +64,10 @@
 </template>
 
 <script>
-	import { mapState } from 'vuex';
+	import { mapState, mapGetters } from 'vuex';
 	export default {
 		computed: {
-			...mapState(['islogin', 'member', 'user_role', 'current_city'])
+			...mapGetters(['islogin', 'member', 'user_role', 'current_city'])
 		},
 		data() {
 			return {
@@ -151,6 +151,10 @@
 				title = '热门推荐';
 			} else if (options && options.limited) {
 				title = '限时精选';
+			} else if (options && options.name) {
+				title = options.name;
+			} else if (options && options.requestType && options.requestType == 0) {
+				title = '自习室';
 			}
 
 			uni.setNavigationBarTitle({

@@ -4,9 +4,11 @@
 		<!-- 搜索内容区 -->
 		<view class="search-area pos-r w-full padding-lr dflex-b">
 			<view class="h-full flex1 dflex-c">
-				<view class="icon-search pos-a">
-					<text class="iconfont iconsousuo-01"></text>
-				</view>
+				<!-- <view class="icon-search pos-a">
+					<view class="iconfont iconsousuo-01"></view>
+				</view> -->
+				
+				<view class="iconfont iconsousuo-01 pos-a icon-search"></view>
 				<input type="text" class="pos-a padding-left padding-tb-xs border-radius-lg box-sizing-b" maxlength="20"
 					placeholder="请输入关键字" @confirm="search" v-model="keyword" />
 			</view>

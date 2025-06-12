@@ -3,7 +3,7 @@
 
 		<view class="padding-xl dflex-c dflex-flow-c">
 			<view class="portrait-box margin-bottom">
-				<image class="headimg border-radius-c" :src="(member && member.member_headimg) || '/static/images/user/default4.webp'"></image>
+				<image class="headimg border-radius-c" :src="(member && member.member_headimg) || '/static/images/user/default_head.jpg'"></image>
 			</view>
 
 			<view class="w-full dflex padding-bottom-sm">
@@ -51,7 +51,8 @@
 
 <script>
 	import {
-		mapState
+		mapState,
+		mapGetters
 	} from 'vuex';
 
 	export default {
@@ -73,7 +74,7 @@
 			};
 		},
 		computed: {
-			...mapState(["member"])
+			...mapGetters(["member"])
 		},
 
 		// 页面加载获取 wx.login code
@@ -107,7 +108,7 @@
 					this.$api.msg('请输入手机号');
 					return;
 				}
-				if (!/(^1[3|4|5|7|8|9][0-9]{9}$)/.test(this.mobile)) {
+				if (!/(^1[3|4|5|6|7|8|9][0-9]{9}$)/.test(this.mobile)) {
 					this.$api.msg('请输入正确的手机号码');
 					return;
 				}
@@ -158,7 +159,7 @@
 					this.$api.msg('请输入手机号');
 					return;
 				}
-				if (!/(^1[3|4|5|7|8|9][0-9]{9}$)/.test(this.mobile)) {
+				if (!/(^1[3|4|5|6|7|8|9][0-9]{9}$)/.test(this.mobile)) {
 					this.$api.msg('请输入正确的手机号码');
 					return;
 				}
@@ -183,7 +184,7 @@
 						//参考`univerifyStyle 数据结构`
 						fullScreen: true,
 						icon: {
-							path: "/static/images/user/default4.webp", // 自定义显示在授权框中的logo，仅支持本地图片 默认显示App logo
+							path: "/static/images/user/default_head.jpg", // 自定义显示在授权框中的logo，仅支持本地图片 默认显示App logo
 							width: "60px",  //图标宽度 默认值：60px
 							height: "60px"   //图标高度 默认值：60px
 						},
@@ -290,7 +291,7 @@
 					this.$api.msg('请输入手机号');
 					return;
 				}
-				if (!/(^1[3|4|5|7|8|9][0-9]{9}$)/.test(this.mobile)) {
+				if (!/(^1[3|4|5|6|7|8|9][0-9]{9}$)/.test(this.mobile)) {
 					this.$api.msg('请输入正确的手机号码');
 					return;
 				}

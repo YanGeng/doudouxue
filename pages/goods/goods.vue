@@ -4,7 +4,9 @@
 		<view class="swiper-area w-full pos-f">
 			<swiper class="h-full pos-r" autoplay indicator-dots circular="true" duration="400">
 				<swiper-item v-for="(item, index) in swiperDatas" :key="index">
-					<view class="wh-full"><image :src="item.url" class="wh-full loaded" lazy-load="true" mode="aspectFill"></image></view>
+					<view class="wh-full">
+						<image :src="item.url" class="wh-full loaded" lazy-load="true" mode="aspectFit"></image>
+					</view>
 				</swiper-item>
 			</swiper>
 		</view>
@@ -16,9 +18,9 @@
 					<text class="price fwb fs-big">{{ goods.price / 100 || '' }}</text>
 					<text class="m-price" v-if="goods.market_price > 0">{{ goods.market_price / 100 || '' }}</text>
 				</view>
-				<view class="dflex fs-sm ft-dark">
+				<view class="dflex fs-sm">
 					<!-- #ifdef MP-WEIXIN || H5 -->
-					<view class="margin-right-sm dflex" @click="shareOpen">
+					<view class="margin-right-sm dflex ft-dark" @click="shareOpen">
 						<view class="iconfont iconfenxiang padding-right-xs"></view>
 						<text>分享</text>
 					</view>
@@ -32,8 +34,10 @@
 					</button>
 					<!-- #endif -->
 					<view class="margin-right-sm dflex">
-						<view class="padding-right-xs padding-right-xs">已售</view>
-						<text>{{ goods.sale_cnt || '0' }}</text>
+						<view v-if="goods.deleteType == 'noneed' || goods.deleteType == 'finished'"
+							class="padding-right-xs ft-dark">已结单</view>
+						<view v-else class="padding-right-xs ft-base">接单中</view>
+						<!-- <text>{{ goods.sale_cnt || '0' }}</text> -->
 					</view>
 					<!-- <view class="dflex">
 						<view class="padding-right-xs padding-right-xs">库存</view>
@@ -45,6 +49,10 @@
 		</view>
 		<view class="gap"></view>
 		<!-- 分享 -->
+		<!-- <uni-popup ref="popup" :mask-click="true">
+			<text>Popup</text>
+			<button @click="close">关闭</button>
+		</uni-popup> -->
 		<use-popup mode="bottom" bgclass=" " v-model="shareShow">
 			<view class="share-area margin border-radius bg-main">
 				<view class="tac w-full padding-sm">分享</view>
@@ -65,18 +73,25 @@
 		</use-popup>
 
 		<!-- 海报二维码 -->
-		<view class="qrcode tac padding-tb pos-f pos-tl-c">
+		<!-- <view class="qrcode tac padding-tb pos-f pos-tl-c">
 			<use-qrcode :onval="true" :val="posterQRcode" :show="false" loading-text="生成海报中" qrsize="200" @result="posterQRcodeResult"></use-qrcode>
-		</view>
+		</view> -->
 
 		<!-- 海报 -->
-		<view v-if="posterShow && !posterUrl" class="poster pos-f pos-tl-c padding">
-			<l-painter custom-style="position: fixed;z-index: -1;top: -200vh;left: -100vw;" :board="posterData" isRenderImage @success="posterSuccess" />
+		<view class="poster pos-f pos-tl-c padding">
+			<!-- <poster ref="poster" :list="list" background-color="#FFF" :width="750" :height="1334"
+			            @on-success="posterSuccess" @on-error="posterError"></poster> -->
+			<l-painter isCanvasToTempFilePath pathType="url" @success="posterSuccess" hidden :board="list" />
+			<!-- <l-painter custom-style="position: fixed;z-index: -1;top: -200vh;left: -100vw;" :board="list" isRenderImage @success="posterSuccess" /> -->
 		</view>
-		<use-popup mode="bottom" bgclass=" " v-model="posterShow" @close="">
+		<uni-popup ref="popuphaibao" :mask-click="true">
+			<!-- <use-popup mode="bottom" bgclass=" " v-model="posterShow" @close=""> -->
 			<view class="padding border-radius margin">
-				<view v-if="!posterUrl" class="tac bg-main padding border-radius pos-a pos-l-c" style="bottom: 45vh">海报生成中，请稍等</view>
-				<view class="w-full" style="height: 70vh"><image :src="posterUrl" class="wh-full" mode="aspectFit"></image></view>
+				<view v-if="!posterUrl" class="tac bg-main padding border-radius pos-a pos-l-c" style="bottom: 45vh">
+					海报生成中，请稍等</view>
+				<view class="w-full" style="height: 70vh">
+					<image :src="posterUrl" class="wh-full" mode="aspectFit"></image>
+				</view>
 
 				<view class="padding w-full margin-top">
 					<view class="dflex-b border-radius-big">
@@ -89,18 +104,15 @@
 					</view>
 				</view>
 			</view>
-		</use-popup>
+			<!-- </use-popup> -->
+		</uni-popup>
 
 		<!-- 03. 规格区 -->
 		<view v-if="skuDatas.length > 0" class="sku-area bg-main padding-lr padding-top padding-bottom-xs pos-r">
 			<view class="con dflex dflex-wrap-w">
-				<view
-					class="margin-right-sm margin-bottom-sm dflex bg-drak border-radius-lg padding-tb-16 padding-lr"
-					:class="{ active: item.selected }"
-					v-for="(item, index) in skuDatas"
-					:key="index"
-					@click="selectSKU(item)"
-				>
+				<view class="margin-right-sm margin-bottom-sm dflex bg-drak border-radius-lg padding-tb-16 padding-lr"
+					:class="{ active: item.selected }" v-for="(item, index) in skuDatas" :key="index"
+					@click="selectSKU(item)">
 					<text class="fs-xs">{{ item.name }}</text>
 				</view>
 			</view>
@@ -111,8 +123,8 @@
 		<!-- <use-list-title title="优惠" tip="领取优惠券" color="#ff6a6c" iconfont="iconyouhui" @goto="couponShow = true"></use-list-title> -->
 		<!-- 04.01 优惠券弹出层 -->
 		<!-- <use-popup mode="bottom" v-model="couponShow" @open="couponOpen"> -->
-			<!-- 优惠券区 -->
-			<!-- <scroll-view v-if="couponDatas && couponDatas.length">
+		<!-- 优惠券区 -->
+		<!-- <scroll-view v-if="couponDatas && couponDatas.length">
 				<view class="coupon-area padding bg-drak">
 					<view class="coupon-item bg-main pos-r fs-xs" v-for="(item, index) in couponDatas" :key="index">
 						<view class="content pos-r padding dflex-b">
@@ -148,23 +160,52 @@
 					<text class="fs-xs">{{ item.name }}</text>
 				</view>
 			</view>
-			<view class="icon-detail pos-a"><view class="iconfont iconxiangqing ft-dark fs-sm"></view></view>
+			<!-- <view class="icon-detail pos-a"><view class="iconfont iconxiangqing ft-dark fs-sm"></view></view> -->
 		</view>
 		<view class="gap"></view>
 		<!-- 04.02 服务标签弹出层 -->
-		<use-popup mode="bottom" v-model="tagShow">
-			<view class="tac w-full padding-sm">服务说明</view>
-			<view class="padding-lr padding-bottom-sm">
-				<view v-for="(item, index) in tagDatas" :key="index" class="margin-right-sm margin-bottom-sm dflex dflex-s">
-					<view class="iconfont iconyiwancheng- fwb fs ft-base margin-right-xs"></view>
-					<view>
-						<view class="fs-sm">{{ item.name }}</view>
-						<view class="fs-xs">服务标签对应的描述</view>
-					</view>
+		<uni-popup ref="popupganxiefei" mode="bottom" v-model="tagShow">
+			<view class="popup-content margin">
+				<view class="tac w-full padding-sm">老师分享单</view>
+				<view class="padding-lr padding-bottom-sm">
+					<view class="fs-xs">平台老师分享出来的订单，老师可能会向您收取合理的感谢费，若存在不合理费用，可联系平台管理员！</view>
+					<!-- <view v-for="(item, index) in tagDatas" :key="index"
+						class="margin-right-sm margin-bottom-sm dflex dflex-s">
+						<view class="iconfont iconyiwancheng- fwb fs ft-base margin-right-xs"></view>
+						<view>
+							<view class="fs-sm">{{ item.name }}</view>
+							<view class="fs-xs">服务标签对应的描述</view>
+						</view>
+					</view> -->
 				</view>
 			</view>
-		</use-popup>
-		
+		</uni-popup>
+
+		<view v-if="goods.thanksMoney > 0">
+		<view class="bg-main padding-lr padding-top padding-bottom-xs pos-r" @click="opene1">
+			<!-- <view class="dflex dflex-wrap-w"> -->
+				<view class="margin-right-xl margin-bottom-sm flex-col">
+					<!-- <uni-icons type="star"></uni-icons> -->
+					<view class="dflex-b">
+						<view class="dflex">
+							<view class="iconfont iconaixin-01 fwb fs-xs ft-base margin-right-xs"></view>
+							<text class="fs-xs">老师分享单</text>
+						</view>
+						<view>
+							<text class="fs-xs">感谢费 </text>
+							<text class="price fwb fs-sm">{{ goods.thanksMoney || '' }}</text>
+						</view>
+					</view>
+					<text class="gray-char padding-lr">{{ goods.thanksDetails }}</text>
+				</view>
+			<!-- </view> -->
+			<view class="icon-detail pos-a">
+				<view class="iconfont iconxiangqing ft-dark fs-sm"></view>
+			</view>
+		</view>
+		<view class="gap"></view>
+		</view>
+
 		<view class="bg-main padding-lr padding-top padding-bottom-xs pos-r" @click="tagShow = true">
 			<view class="dflex dflex-wrap-w">
 				<view class="iconfont icondizhi- fwb fs-xs ft-base margin-right-xs"></view>
@@ -175,7 +216,8 @@
 
 		<!-- 05. 评价区 -->
 		<view class="evaluate-area" v-if="evaluateDatas.length > 0">
-			<use-list-title :title="evaluateTitle" tip="好评率 100%" color="#ff6a6c" iconfont=" " @goto="toevaluate"></use-list-title>
+			<use-list-title :title="evaluateTitle" tip="好评率 100%" color="#ff6a6c" iconfont=" "
+				@goto="toevaluate"></use-list-title>
 			<view class="padding-lr bg-main">
 				<view class="eva-box dflex-s padding-bottom-lg" v-for="(item, index) in evaluateDatas" :key="index">
 					<image class="portrait border-radius-c" :src="item.member_headimg"></image>
@@ -189,15 +231,8 @@
 						</view>
 						<view class="fs-sm ft-main padding-top-xs padding-bottom-sm">{{ item.review_content }}</view>
 						<view class="dflex dflex-wrap-w">
-							<image
-								class=""
-								mode="widthFix"
-								v-for="(img, i) in item.review_imgs"
-								:lazy-load="true"
-								:key="i"
-								:src="img"
-								@click="preview(item.review_imgs, img)"
-							></image>
+							<image class="" mode="widthFix" v-for="(img, i) in item.review_imgs" :lazy-load="true"
+								:key="i" :src="img" @click="preview(item.review_imgs, img)"></image>
 						</view>
 						<view class="">
 							<text class="fs-xs ft-dark">{{ item.goods_type || '套餐1' }}</text>
@@ -213,6 +248,7 @@
 		<view class="detail-area bg-main">
 			<view class="d-header padding dflex-c"><text>图文详情</text></view>
 			<rich-text class="pro-detail" :nodes="html_nodes"></rich-text>
+			<view class="gap-xxl"></view>
 		</view>
 
 		<!-- 07. 操作区 -->
@@ -222,33 +258,52 @@
 				<text>首页</text>
 			</view>
 
-		
+
 			<!-- <button class="btn no-border dflex" open-type="contact"> -->
-				<view class="btn-area dflex-c dflex-flow-c" @click="sendIm">
-					<text class="iconfont iconkefu-01"></text>
-					<text>消息</text>
-				</view>
+			<view class="btn-area dflex-c dflex-flow-c" @click="sendIm">
+				<text class="iconfont iconkefu-01"></text>
+				<text>消息</text>
+			</view>
 			<!-- </button> -->
-			 
+
 
 			<view class="btn-area dflex dflex-flow-c" :class="{ active: favorite }" @click="tofavorite">
 				<text class="iconfont" :class="favorite ? 'iconshoucang-' : 'iconshoucang-01'"></text>
 				<text>收藏</text>
 			</view>
-			<view class="flex1 btn-container dflex-b border-radius-big">
-				<view class="tac padding-tb-sm flex1 bg-warn" v-if="goods.stock_num > 0" @click="tocart(goods)">加入关注栏</view>
+			<view class="flex1 btn-container-2 dflex-b border-radius-big">
+				<view class="tac padding-tb-sm flex1 bg-warn font-size btn-container-2" v-if="goods.stock_num > 0"
+					@click="tocart(goods)">加入关注栏</view>
 				<!-- <view class="tac padding-tb-sm flex1 bg-base" v-if="goods.stock_num > 0" @click="tobuy(goods)">立即购买</view> -->
-				<view class="tac padding-tb-sm flex1 bg-base" v-if="goods.stock_num > 0 && (goods.canUsePhoneNo == undefined || goods.canUsePhoneNo)" @click="sendMsg(goods)">发送短信</view>
+				<!-- #ifdef APP-PLUS -->
+				<view class="tac padding-tb-sm flex1 bg-base"
+					v-if="goods.stock_num > 0 && (goods.canUsePhoneNo == undefined || goods.canUsePhoneNo)"
+					@click="sendMsg(goods)">发送短信</view>
+				<!-- #endif -->
+				<!-- #ifdef MP -->
+				<view class="tac padding-tb-sm flex1 bg-base">
+					<button class="bg-base full-height-btn" open-type="contact">
+						快速联系匹配
+					</button>
+				</view>
+				<!-- #endif -->
 				<!-- <view class="tac padding-tb-sm flex1 bg-disabled" v-else>已售磐</view> -->
 			</view>
 		</view>
 
 		<!-- #ifdef MP-ALIPAY -->
-		<view class="fixed-top dflex-c dflex-flow-c"><contact-button tnt-inst-id="0Xu_1aaW" scene="SCE00225456" size="50" color="#bbb" /></view>
+		<view class="fixed-top dflex-c dflex-flow-c"><contact-button tnt-inst-id="0Xu_1aaW" scene="SCE00225456"
+				size="50" color="#bbb" /></view>
 		<!-- #endif -->
+
+		<!-- <lime-painter /> -->
 
 		<!-- 置顶 -->
 		<use-totop ref="usetop" bottom="120"></use-totop>
+
+		<!-- <view>
+		        <mu-canvas ref="share" width="650" unit="rpx" height="1160" styles="margin-left: 50rpx;margin-top: 36rpx;" backgroundColor="#FFFFFF" :elementList="elementList" :auto="true"></mu-canvas>
+		    </view> -->
 	</view>
 </template>
 
@@ -257,19 +312,21 @@
 import aliParse from 'mini-html-parser2';
 // #endif
 
-import lPainter from '@/uni_modules/lime-painter/components/lime-painter/';
+// import lPainter from '@/uni_modules/lime-painter/components/lime-painter/';
+import Poster from '@/components/zhangyuhao-poster/Poster.vue'
 import uposter from '@/common/poster.js';
+import QRCode from 'qrcode';
 
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 
 const uniImCo = uniCloud.importObject('uni-im-co', {
   customUI: true
 });
 
 export default {
-	components: { lPainter },
+	components: { Poster },
 	computed: {
-		...mapState(['islogin', 'member'])
+		...mapGetters(['islogin', 'member'])
 	},
 	data() {
 		return {
@@ -290,8 +347,6 @@ export default {
 			posterQRcode: '',
 			posterUrl: '',
 			posterShow: false,
-			posterData: {},
-
 			//优惠券
 			couponShow: false,
 			couponDatas: [],
@@ -343,6 +398,10 @@ export default {
 	},
 	onLoad(options) {
 		console.log('onload opts', options);
+		let title = '豆豆学';
+		uni.setNavigationBarTitle({
+			title
+		});
 
 		if (options) {
 			this.mid = options.mid || '';
@@ -366,9 +425,92 @@ export default {
 		}
 		
 		this.loadData();
+		
+	// 	uni.showLoading({
+	// 	          title: '生成中...'
+	// 	        });
+		        
+	// 	        // 1. 使用 qrcode 库生成 base64 格式的二维码图片
+	// 	        const base64Image = this.createQRCodeAsBase64('大家号');
+		        
+	// 	        // 2. 将 base64 转换为临时文件路径
+	// 	        const tempFilePath = this.saveBase64ToTempFile(base64Image);
+		        
+	// 	        // 3. 更新界面显示
+	// 	        this.qrCodePath = tempFilePath;
+		        
+	// 	        uni.hideLoading();
+	// 	        uni.showToast({
+	// 	          title: '二维码生成成功',
+	// 	          icon: 'success'
+	// 	        });
+				
+	// 			console.log(this.qrCodePath)
 	},
 
 	methods: {
+		// redraw(){
+		//             this.$refs.share.redraw();
+		//         },
+		//         getImgSrc(){
+		//             this.$refs.share.getImgSrc();
+		//         },
+		//         save(){
+		//             this.$refs.share.saveImg();
+		//         },
+		// // 使用 qrcode 库生成 base64 格式的二维码
+		//     async createQRCodeAsBase64(text) {
+		//       return new Promise((resolve, reject) => {
+		//         QRCode.toDataURL(text, {
+		//           width: 200,
+		//           margin: 1,
+		//           errorCorrectionLevel: 'H'
+		//         }, (err, url) => {
+		//           if (err) {
+		//             reject(err);
+		//             return;
+		//           }
+		//           // 提取 base64 数据部分 (去掉 data:image/png;base64,)
+		//           const base64Data = url.split(',')[1];
+		//           resolve(base64Data);
+		//         });
+		//       });
+		//     },
+		    
+		//     // 将 base64 数据保存为临时文件
+		//     saveBase64ToTempFile(base64Data) {
+		//       return new Promise((resolve, reject) => {
+		//         // 将 base64 转换为 ArrayBuffer
+		//         const buffer = this.base64ToArrayBuffer(base64Data);
+		        
+		//         // 生成临时文件名
+		//         const tempFileName = `qrcode_${Date.now()}.png`;
+		        
+		//         // 使用 uni.getFileSystemManager() 保存文件
+		//         uni.getFileSystemManager().writeFile({
+		//           filePath: `${uni.env.USER_DATA_PATH}/${tempFileName}`,
+		//           data: buffer,
+		//           encoding: 'binary',
+		//           success: (res) => {
+		//             resolve(`${uni.env.USER_DATA_PATH}/${tempFileName}`);
+		//           },
+		//           fail: (err) => {
+		//             reject(new Error(`保存文件失败: ${err.errMsg}`));
+		//           }
+		//         });
+		//       });
+		//     },
+		    
+		//     // 将 base64 转换为 ArrayBuffer
+		//     base64ToArrayBuffer(base64) {
+		//       const binaryString = atob(base64);
+		//       const len = binaryString.length;
+		//       const bytes = new Uint8Array(len);
+		//       for (let i = 0; i < len; i++) {
+		//         bytes[i] = binaryString.charCodeAt(i);
+		//       }
+		//       return bytes.buffer;
+		//     },
 		async loadData() {
 			
 			await this.$func.usemall
@@ -479,49 +621,83 @@ export default {
 				}
 			});
 		},
+		
+		// 打开分享
+		opene1() {
+			// this.$refs.popup.open('bottom')
+			if (!this.loginCheck()) return;
+			this.$refs.popupganxiefei.open('bottom')
+		},
 
 		// 打开分享
 		shareOpen() {
+			// this.$refs.popup.open('bottom')
 			if (!this.loginCheck()) return;
-			
+			console.log('shareOpen 1111: ', this.shareShow)
 			this.shareShow = true;
+			console.log('shareOpen 2222: ', this.shareShow)
+			
+			// // #ifdef MP
+			// // 此处的二维码内容，需自己在小程序端配置普通二维码规则
+			// this.posterQRcode = `https://usemall.use-cloud.com/wxmp-product/${this.goods._id}_${this.member._id}`;
+			// // #endif
+			
+			// // #ifdef H5
+			// // 如果为 h5，二维码内容需配置为线上版本产品详情路径
+			// this.posterQRcode = `https://usemall-h5.use-cloud.com/#/pages/goods/goods?id=${this.goods._id}&mid=${this.member._id}`;
+			// // #endif
+			this.createPoster()
 		},
 		// 创建海报
 		createPoster() {
+			console.log('createPoster 1111: ', this.posterUrl, this.posterQRcode)
 			if (this.posterUrl) {
 				this.posterShow = true;
-				return;
+				this.$refs.popuphaibao.open('bottom')
+			} else {
+			console.log('createPoster 2222: ', this.member, this.goods)
+			
+			this.posterQRcode = `https://static-mp-0fe42d5b-82e4-482d-8ad1-81bb97905319.next.bspapp.com/${this.goods._id}_${this.member._id}`;
+			
+			this.list = uposter.getGoodsData2(this.member, this.goods, this.posterQRcode);
+			this.$refs.popuphaibao.open('bottom')
 			}
-			uni.showLoading({
-				title: '生成海报中'
-			});
 			
-			// #ifdef MP
-			// 此处的二维码内容，需自己在小程序端配置普通二维码规则
-			this.posterQRcode = `https://usemall.use-cloud.com/wxmp-product/${this.goods._id}_${this.member._id}`;
-			// #endif
-			
-			// #ifdef H5
-			// 如果为 h5，二维码内容需配置为线上版本产品详情路径
-			this.posterQRcode = `https://usemall-h5.use-cloud.com/#/pages/goods/goods?id=${this.goods._id}&mid=${this.member._id}`;
-			// #endif
+			// this.$nextTick(() => {
+			//     // 要放在$nextTick()里，不然会空白
+			//     // this.$refs.poster.create();
+			// })
 		},
 		// 海报二维码生成成功
 		posterQRcodeResult(res) {
+			console.log('posterQRcodeResult 1111: ', this.posterData, this.posterQRcode, res)
 			// 获取产品海报数据
-			this.posterData = uposter.getGoodsData(this.member, this.goods, res);
-			// console.log('this.posterData', this.posterData);
+			// this.list = uposter.getGoodsData2(this.member, this.goods, res);
+			console.log('this.posterData', this.list);
+			// 生成图片
+			// this.$nextTick(() => {
+			//     // 要放在$nextTick()里，不然会空白
+			//     this.$refs.poster.create();
+			// })
 
 			this.posterShow = true;
+			
+			console.log('posterQRcodeResult 2222: ', this.posterData, this.posterQRcode)
+			
+			this.$refs.popuphaibao.open('bottom')
+			
 		},
 		// 海报生成完成
 		posterSuccess(res) {
 			this.posterUrl = res;
+			
+			console.log('posterSuccess: ', this.posterUrl)
 
 			uni.hideLoading();
 		},
 		// 保存海报
 		posterSave() {
+			let _this = this
 			if (this.posterUrl) {
 				uni.showLoading({
 					title: '保存中'
@@ -537,6 +713,8 @@ export default {
 							icon: 'success',
 							duration: 2000
 						});
+						
+						_this.$refs.popuphaibao.close()
 					}
 				});
 			}
@@ -566,12 +744,30 @@ export default {
 			this.$api.tohome();
 		},
 		async sendIm() {
+			if (!this.loginCheck()) return;
+
 			uni.$emit('refreshIm', true);
 
 			console.log('sendIm', this.goods);
-			uni.navigateTo({
-				url: `/pages/chat/contactList?touid=${this.goods.create_uid}`
-			});
+			if (this.goods.create_uid == '6686df138a5c7863b1fb1c3d') {
+				uni.showToast({
+					title: '对方未公开联系方式，平台客服将为您服务！',
+					icon: 'none',      // 不使用图标，只显示文字
+					duration: 2000,    // 1秒后自动关闭
+					mask: true         // 显示遮罩层，防止点击穿透
+				});
+
+				setTimeout(() => {
+					uni.navigateTo({
+						url:  `/uni_modules/uni-im/pages/chat/chat?user_id=${this.goods.create_uid}` // 替换为目标页面路径
+					});
+				}, 2200); // 等待1秒后跳转
+			} else {
+				uni.navigateTo({
+					// url: `/pages/chat/contactList?touid=${this.goods.create_uid}`
+					url: `/uni_modules/uni-im/pages/chat/chat?user_id=${this.goods.create_uid}`
+				});
+			}
 			// uni.switchTab({
 			// 	url: '/pages/tabbar/message'
 			// });
@@ -631,12 +827,14 @@ export default {
 		},
 		// 发短信
 		sendMsg(item) {
+			if (!this.loginCheck()) return;
+
 			console.log("sendMsg", item)
 		    //#ifdef APP-PLUS
 		    plus.messaging.TYPE_SMS;
 		    var msg = plus.messaging.createMessage(plus.messaging.TYPE_SMS);
 		    msg.to = [item.mobile];
-		    msg.body = item.consignee + "，你好！我在“豆豆学”平台上，看到你的家教信息：“" + item.name + "”。想进一步跟你交流一下，看到请回复，感谢！（豆学家教https://mp-0fe42d5b-82e4-482d-8ad1-81bb97905319.cdn.bspapp.com/apk/douxue.apk）";
+		    msg.body = item.consignee + "，你好！我在“豆豆学”，看到你的家教信息：“" + item.name + "”。想进一步跟你交流一下，看到请回复，感谢！（找家教，微信搜索“豆豆学Pro”小程序）";
 		    plus.messaging.sendMessage(msg);
 		    // #endif
 		    //#ifdef H5
@@ -677,6 +875,12 @@ export default {
 page {
 	background: $page-color-base;
 	padding-bottom: 120rpx;
+}
+
+.popup-content {
+  padding: 20rpx;
+  background-color: #f5f5f5; /* 浅色背景 */
+  border-radius: 10rpx;
 }
 
 contact-button {
@@ -868,5 +1072,34 @@ contact-button {
 			}
 		}
 	}
+}
+
+.font-size {
+  font-size: 24upx; /* 继承文字大小 */
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+}
+
+.full-height-btn {
+  width: 100%;
+  height: 100%; /* 继承父容器高度 */
+  padding: 0; /* 移除默认内边距 */
+  margin: 0; /* 移除默认外边距 */
+  border: none; /* 移除默认边框 */
+  // background-color: transparent; /* 移除默认背景 */
+  // color: inherit; /* 继承文字颜色 */
+  // font-size: inherit; /* 继承文字大小 */
+  font-size: 24upx; /* 继承文字大小 */
+}
+
+.btn-container-2 {
+  // display: flex;
+  height: 80rpx; /* 设置容器高度 */
+  // border-radius: 12rpx;
+  // overflow: hidden; /* 确保圆角生效 */
+ //  .button {
+	// font-size: 14upx;
+ //  }
 }
 </style>
